@@ -1,7 +1,94 @@
 import { React } from "react";
-import { Button, Row, Col, Divider } from "antd";
+import { Button, Row, Col, Progress, Table, Tag, Avatar } from "antd";
+import { UserOutlined, StarFilled } from "@ant-design/icons";
 import withAuth from "../utils/protectRoute";
 import { primary_color } from "../utils/constants";
+import {CustomCard} from '../Components/CustomCard/CustomCard'
+
+
+
+const columns = [
+  {
+    title: "Name",
+    dataIndex: "name",
+    key: "name",
+    render: (text, record) => (
+      <Row>
+        {" "}
+        <Avatar
+          shape="circle"
+          size="small"
+          src={`https://joeschmoe.io/api/v1/${record.age}`}
+          style={{ backgroundColor: "#10c70e" }}
+          icon={<UserOutlined />}
+        />
+        <div style={{ padding: "0px 10px" }}>{text}</div>
+      </Row>
+    ),
+  },
+  {
+    title: "Points",
+    dataIndex: "age",
+    key: "age",
+    render: (text) => (
+      <Row>
+        {" "}
+        <div style={{ color: "red" }}>
+          <StarFilled />
+        </div>
+        <div style={{ padding: "0px 10px", color: primary_color }}>
+          {text} Points
+        </div>
+      </Row>
+    ),
+  },
+  {
+    title: "Progress",
+    dataIndex: "address",
+    key: "address",
+    render: (text) => (
+      <Row>
+        {" "}
+        <div style={{ color: primary_color }}>Course Progress</div>
+        <div style={{ padding: "0px 10px" }}>
+          <Progress
+            percent={30}
+            size="small"
+            showInfo={false}
+            strokeColor={primary_color}
+            trailColor={"grey"}
+            style={{ width: "200px" }}
+          />
+        </div>
+        
+      </Row>
+    ),
+  },
+];
+
+const data = [
+  {
+    key: "1",
+    name: "John Brown",
+    age: 125,
+    address: "New York No. 1 Lake Park",
+    tags: ["nice", "developer"],
+  },
+  {
+    key: "2",
+    name: "Jim Green",
+    age: 100,
+    address: "London No. 1 Lake Park",
+    tags: ["loser"],
+  },
+  {
+    key: "3",
+    name: "Joe Black",
+    age: 75,
+    address: "Sidney No. 1 Lake Park",
+    tags: ["cool", "teacher"],
+  },
+];
 
 function Dashboard() {
   return (
@@ -10,10 +97,18 @@ function Dashboard() {
         <Col
           span={16}
           style={{
-            padding: "0px 30px",
+            padding: "0px 50px",
           }}
         >
-          <h1>Overview</h1>
+          <h1
+            style={{
+              fontSize: 20,
+              fontWeight: 600,
+              color: primary_color,
+            }}
+          >
+            Overview
+          </h1>
           <div
             style={{
               width: "auto",
@@ -21,29 +116,48 @@ function Dashboard() {
               height: "2px",
             }}
           ></div>
+          <Row
+            gutter={{
+              xs: 8,
+              sm: 16,
+              md: 24,
+              lg: 32,
+            }}
+          >
+            <Col span={8}>
+              <CustomCard num={25} text={"Trainees"} />
+            </Col>
+            <Col span={8}>
+              <CustomCard num={36} text={"Logins in 24 Hours"} />
+            </Col>
+            <Col span={8}>
+              <CustomCard num={214} text={"Lessons"} />
+            </Col>
+          </Row>
 
-<div
-style={{
-  width:"auto",
-  margin:"15px",
-  height:"200px",
-  backgroundColor:primary_color
-}}
->
-
-
-</div>
-
-
+          <div
+            style={{
+              backgroundColor: primary_color,
+              padding: 25,
+              borderRadius: 12,
+            }}
+          >
+            <h1 style={{ color: "white" }}>Top 3 Trainees</h1>
+            <Table
+              columns={columns}
+              dataSource={data}
+              pagination={false}
+              showHeader={false}
+            />
+          </div>
         </Col>
 
-
-
-
-        <Col span={8}>
+        <Col span={6}>
           <h1
             style={{
-              padding: "0px 30px",
+              fontSize: 20,
+              fontWeight: 600,
+              color: primary_color,
             }}
           >
             Actions
@@ -55,6 +169,10 @@ style={{
               height: "2px",
             }}
           ></div>
+
+          <Button style={{ width: "202px", margin: "20px 0px" }} type="primary">
+            All Trainees
+          </Button>
         </Col>
       </Row>
     </div>

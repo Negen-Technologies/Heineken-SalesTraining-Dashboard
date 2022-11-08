@@ -1,5 +1,5 @@
 import React from "react";
-import { Menu,Row,Avatar,Col,Popover,Popconfirm } from "antd";
+import { Menu, Row, Avatar, Col, Popover, Popconfirm, Divider } from "antd";
 import {
   MenuOutlined,
   LogoutOutlined,
@@ -51,27 +51,28 @@ export default function TopicMenu({ items, selectedKey, changeSelectedKey }) {
           </span>
           <Col>
             {" "}
-            <h1
+            <div
               style={{
                 paddingLeft: "10px",
                 paddingTop: "5px",
                 paddingRight: "5px",
                 color: primary_color,
+                fontSize: 20,
+                fontWeight: 600,
               }}
             >
-              {/* Hi, {userData.data.name} */}
               John Doe
-            </h1>
-            {/* <h6
+            </div>
+            <div
               style={{
                 paddingLeft: "10px",
-                paddingTop: "-5px",
                 paddingRight: "5px",
                 color: primary_color,
+                fontSize: 11,
               }}
             >
               Training Admin
-            </h6> */}
+            </div>
           </Col>
 
           <Popover
@@ -91,13 +92,7 @@ export default function TopicMenu({ items, selectedKey, changeSelectedKey }) {
                 </Row>
                 <Popconfirm
                   title="Are you sure you want to log out?"
-                  onConfirm={() => {
-                    // loadingTrue();
-                    // router.replace("/Login").then(() => {
-                    //   logout();
-                    //   loadingFalse();
-                    // });
-                  }}
+                  onConfirm={() => {}}
                   okText="Logout"
                   cancelText="Cancel"
                 >
@@ -116,7 +111,7 @@ export default function TopicMenu({ items, selectedKey, changeSelectedKey }) {
           </Popover>
         </Row>
       </div>
-
+      <Divider style={{ margin: "7px 0px" }} />
       <Menu
         selectedKeys={[selectedKey]}
         defaultSelectedKeys={["0"]}

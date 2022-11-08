@@ -6,7 +6,7 @@ import {
   UserOutlined,
   DownOutlined,
   BellOutlined,
-  SearchOutlined
+  SearchOutlined,
 } from "@ant-design/icons";
 import useWindowSize from "../../utils/windowsSize";
 
@@ -67,45 +67,37 @@ function NavBar({
           >
             {menu}
           </Drawer>
-          <a href="/">
-            {/* <img style={{ height: "42px", padding:"0" }} src="/school-logo.png" alt="logo" /> */}
-            <h3
-              style={{
-                marginTop: "10px",
-                color: "white",
-                fontWeight: 700,
-                fontSize: 18,
-              }}
-            >
-              Trainees
-            </h3>
-          </a>
+
+          {/* <img style={{ height: "42px", padding:"0" }} src="/school-logo.png" alt="logo" /> */}
+          {/* <div style={{display:'flex',justifyContent:'center'}}> */}
+          <h3
+            style={{
+              marginTop: "10px",
+              color: "white",
+              fontWeight: 700,
+              fontSize: 18,
+            }}
+          >
+            Trainees
+          </h3>
+          {/* </div> */}
         </Col>
         <Col>
           <Row align="middle">
             <Input
+            placeholder="Keywords"
               suffix={<SearchOutlined />}
               style={{
                 width: "150px",
-                
+
                 borderRadius: 22,
               }}
             ></Input>
 
-            {/* <input
-            placeholder="Keywords"
-              style={{
-                width: "150px",
-                
-                backgroundColor: primary_color,
-                borderColor:'grey',
-                borderRadius: 22,
-              }}
-            ></input> */}
             <div
               style={{
                 width: "1px",
-                backgroundColor: "gray",
+                backgroundColor: "lightgray",
                 height: "40px",
                 margin: "0px 10px",
               }}

@@ -4,18 +4,18 @@ import { Layout } from "antd";
 import TopicMenu from "../Components/layoutComponents/TopicMenu";
 import NavBar from "../Components/layoutComponents/NavBar";
 import SideBar from "../Components/layoutComponents/SideBar";
-import {adminmenu} from "./menuLinks";
+import { adminmenu } from "./menuLinks";
 import { connect } from "react-redux";
 
 export function index(props) {
   const router = useRouter();
-  const items =adminmenu;
-
-      
+  const items = adminmenu;
   const [contentIndex, setContentIndex] = useState(0);
-  const [selectedKey, setSelectedKey] = useState(localStorage.getItem("selectedKey")||"0");
+  const [selectedKey, setSelectedKey] = useState(
+    localStorage.getItem("selectedKey") || "0"
+  );
   const [breakpointBool, setBreakpointBool] = useState(false);
-  
+
   const changeSelectedKey = (event) => {
     localStorage.setItem("selectedKey", event.key);
     const key = event.key;
@@ -27,41 +27,46 @@ export function index(props) {
     <TopicMenu
       items={items}
       selectedKey={selectedKey}
-      
       changeSelectedKey={changeSelectedKey}
     />
   );
   return (
     <div>
-      <Layout hasSider width="100%">
-        <SideBar
-          menu={Menu}
-          onBreakpoint={(broken) => {
-            setBreakpointBool(broken);
-          }}
-          theme="dark"
-        />
-        <Layout
-          style={breakpointBool ? { marginLeft: 0 } : { marginLeft: 200 }}
-          width="100%"
-        >
-          <NavBar menu={Menu} style={{ padding: 0 }} />
-          <Layout.Content
-            style={
-              breakpointBool
-                ? { margin: "24px 16px 0",height:"100%" }
-                : { margin: "24px 16px 0", overflow: "initial" ,height:"100%"}
-            }
+      <Layout>
+        <NavBar menu={Menu} style={{ padding: 0 }} />
+        <Layout>
+          <SideBar
+            menu={Menu}
+            onBreakpoint={(broken) => {
+              setBreakpointBool(broken);
+            }}
+            theme="dark"
+          />
+          <Layout
+            style={{
+              padding: "0 24px 24px",
+            }}
           >
-            {props.children}
-          </Layout.Content>
+            <Layout.Content
+              style={
+                breakpointBool
+                  ? { margin: "24px 16px 0", height: "90vh" }
+                  : {
+                      margin: "24px 16px 0",
+                      overflow: "initial",
+                      height: "90vh",
+                    }
+              }
+            >
+              {props.children}
+            </Layout.Content>
+          </Layout>
         </Layout>
       </Layout>
+      ;
     </div>
   );
 }
-
-
 
 const mapStateToProps = (state) => {
   return {
@@ -77,3 +82,29 @@ const mapDispatchToProps = (dispatch) => {
 
 export default connect(mapStateToProps, mapDispatchToProps)(index);
 
+{
+  /* <Layout hasSider width="100%">
+  <SideBar
+    menu={Menu}
+    onBreakpoint={(broken) => {
+      setBreakpointBool(broken);
+    }}
+    theme="dark"
+  />
+  <Layout
+    style={breakpointBool ? { marginLeft: 0 } : { marginLeft: 200 }}
+    width="100%"
+  >
+    <NavBar menu={Menu} style={{ padding: 0 }} />
+    <Layout.Content
+      style={
+        breakpointBool
+          ? { margin: "24px 16px 0", height: "90vh" }
+          : { margin: "24px 16px 0", overflow: "initial", height: "90vh" }
+      }
+    >
+      {props.children}
+    </Layout.Content>
+  </Layout>
+</Layout>; */
+}

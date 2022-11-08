@@ -7,7 +7,7 @@ export default function SideBar({ menu, onBreakpoint }) {
       style={{
         overflow: "auto",
         height: "100vh",
-        position: "fixed",
+        // position: "fixed",
         left: 0,
         top: 0,
         bottom: 0,
