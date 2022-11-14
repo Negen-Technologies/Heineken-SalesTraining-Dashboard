@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Row, Col, Collapse, Avatar, Divider } from "antd";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import withAuth from "../utils/protectRoute";
 import { primary_color } from "../utils/constants";
 import { CustomCard } from "../Components/CustomCard/CustomCard";
@@ -50,7 +50,7 @@ function Courses() {
             </Col>
           </Row>
 
-          <Collapse accordion defaultActiveKey={["1"]}>
+          <Collapse collapsible="header" accordion defaultActiveKey={["1"]}>
             <Collapse.Panel
               style={{ fontSize: 18, fontWeight: 600 }}
               header="Essential Sales Training"
@@ -63,12 +63,38 @@ function Courses() {
                       backgroundColor: primary_color,
                       margin: "0px 2px",
                     }}
-                    icon={<EditOutlined />}
+                    icon={
+                      <EditOutlined
+                        onClick={() => {
+                          console.log("hjhj");
+                        }}
+                      />
+                    }
+                  />
+                  <Avatar
+                    size="small"
+                    style={{
+                      backgroundColor: primary_color,
+                      margin: "0px 2px",
+                    }}
+                    icon={
+                      <EyeOutlined
+                        onClick={() => {
+                          console.log("hjhj");
+                        }}
+                      />
+                    }
                   />
                   <Avatar
                     size="small"
                     style={{ backgroundColor: "red", margin: "0px 2px" }}
-                    icon={<DeleteOutlined />}
+                    icon={
+                      <DeleteOutlined
+                        onClick={() => {
+                          console.log("jkkjk");
+                        }}
+                      />
+                    }
                   />
                 </Row>
               }
@@ -76,27 +102,7 @@ function Courses() {
               <div
                 style={{ fontSize: 14, fontWeight: 400, color: primary_color }}
               >
-                <Collapse
-                  defaultActiveKey={["1"]}
-                  ghost
-                  expandIconPosition={"right"}
-                >
-                  <Collapse.Panel
-                    header="Module 1: Introduction to Heiniken products"
-                    key="1"
-                    // style={{ color: 'red' }}
-                  >
-                    <div style={{color:'black'}}>
-                      <div>Heiniken Beer</div>
-                      <div>Walia Beer</div>
-                      <div>Harar Beer</div>
-                      <div>Bedele Beer</div>
-                      <div>Harar Beer</div>
-                      <div>Bedele Beer</div>
-                    </div>
-                  </Collapse.Panel>
-                </Collapse>
-
+                <div>Module 1: Introduction to Heiniken products</div>
                 <Divider style={{ margin: "7px 0px" }} />
                 <div>Module 2: Grooming and business etiquette</div>
                 <Divider style={{ margin: "7px 0px" }} />

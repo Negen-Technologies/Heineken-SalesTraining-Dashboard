@@ -6,10 +6,11 @@ import {
   SearchOutlined,
   EditOutlined,
   DeleteOutlined,
-  EyeOutlined 
+  EyeOutlined,
 } from "@ant-design/icons";
 import withAuth from "../utils/protectRoute";
 import { primary_color } from "../utils/constants";
+import { useRouter } from "next/router";
 
 const columns = [
   {
@@ -152,6 +153,8 @@ const data = [
 ];
 
 function Trainees() {
+  const router = useRouter();
+
   return (
     <div>
       <Row>
@@ -218,8 +221,14 @@ function Trainees() {
             }}
           ></div>
 
-          <Button style={{ width: "202px", margin: "20px 0px" }} type="primary">
-            All Trainees
+          <Button
+            style={{ width: "202px", margin: "20px 0px" }}
+            type="primary"
+            onClick={() => {
+              router.push("/Trainees/add-new");
+            }}
+          >
+            Add Trainee
           </Button>
         </Col>
       </Row>
