@@ -1,5 +1,15 @@
 import { React, useEffect, useState } from "react";
-import { Button, Row, Col, Progress, Table, Input, Avatar } from "antd";
+import {
+  Button,
+  Row,
+  Col,
+  Progress,
+  Table,
+  Input,
+  Avatar,
+  Modal,
+  Form,
+} from "antd";
 import {
   UserOutlined,
   StarFilled,
@@ -37,7 +47,9 @@ let origindata = [
 ];
 function Trainees() {
   var [data, setData] = useState(origindata);
+  const [visible, setvisible] = useState(false);
   const router = useRouter();
+  const form=Form.useForm()
   useEffect(() => {
     // localStorage.setItem("trainee_data", JSON.stringify(data));
 
@@ -110,16 +122,9 @@ function Trainees() {
       title: "Action",
       dataIndex: "",
       key: "action",
-      render: (_,record) => (
+      render: (_, record) => (
         <Row>
-          <Avatar
-            size="small"
-            style={{
-              backgroundColor: primary_color,
-              margin: "0px 2px",
-            }}
-            icon={<EditOutlined onClick={()=>{}}/>}
-          />
+          
           {/* <Avatar
           size="small"
           style={{
@@ -228,6 +233,68 @@ function Trainees() {
           </Button>
         </Col>
       </Row>
+
+      <Modal
+        visible={visible}
+        onCancel={() => {
+          setvisible(false);
+        }}
+      >
+        <Form
+          form={form}
+          labelCol={{
+            span: 8,
+          }}
+          wrapperCol={{
+            span: 8,
+          }}
+          onFinish={(doc) => {
+            // console.log(JSON.stringify(doc));
+            // var t_data = localStorage.getItem("trainee_data");
+            // var final = JSON.parse(t_data);
+            // final = [
+            //   ...final,
+            //   {
+            //     name: doc.name,
+            //     username: doc.username,
+            //     department: doc.department,
+            //     phone: doc.phone,
+            //     email: doc.email,
+            //   },
+            // ];
+            // localStorage.setItem("trainee_data", JSON.stringify(final));
+            // console.log(final);
+          }}
+        >
+          <h3>Trainee Information</h3>
+
+          <Form.Item name="name">
+            <Input placeholder="Full Name" />
+          </Form.Item>
+          <Form.Item name="username">
+            <Input placeholder="Username" />
+          </Form.Item>
+          <Form.Item name="department">
+            <Input placeholder="Department" />
+          </Form.Item>
+          <h3>Contact Information</h3>
+          <Form.Item name="phone">
+            <Input placeholder="Phone Number" />
+          </Form.Item>
+          <Form.Item name="email">
+            <Input placeholder="Email(optional)" />
+          </Form.Item>
+          <Form.Item>
+            <Button
+              style={{ borderRadius: 5 }}
+              type="primary"
+              htmlType="submit"
+            >
+              Edit Trainee
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 }
