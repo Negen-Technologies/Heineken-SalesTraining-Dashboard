@@ -1,3 +1,5 @@
+/** @format */
+
 import React, { useState, useEffect } from "react";
 import { Row, Col, Form, Input, Button, Card, Modal } from "antd";
 import { primary_color } from "../utils/constants";
@@ -21,7 +23,7 @@ function Avatar({ data, avatarCreate, avatarGet, loading }) {
   const formData = new FormData();
   const [isVisible, setVisible] = useState(false);
   const [isEditing, setEditing] = useState(false);
-  const [editingkey,seteditingkey]=useState(null)
+  const [editingkey, seteditingkey] = useState(null);
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -45,7 +47,7 @@ function Avatar({ data, avatarCreate, avatarGet, loading }) {
           cover={
             <img
               alt="example"
-              src={`http://165.22.190.111:3000/images${ele.image}`}
+              src={`https://api.seleda.hahu.one/${ele.image}`}
             />
           }
           actions={[
@@ -58,7 +60,12 @@ function Avatar({ data, avatarCreate, avatarGet, loading }) {
                 setVisible(true);
               }}
             />,
-            <DeleteOutlined key="setting" onClick={()=>{avatarDelete(ele.id,data);}}/>,
+            <DeleteOutlined
+              key="setting"
+              onClick={() => {
+                avatarDelete(ele.id, data);
+              }}
+            />,
           ]}
         >
           <Meta
@@ -74,7 +81,7 @@ function Avatar({ data, avatarCreate, avatarGet, loading }) {
   const handleCancel = () => {
     setVisible(false);
     setEditing(false);
-    seteditingkey(null)
+    seteditingkey(null);
   };
   return (
     <div>
@@ -166,7 +173,7 @@ function Avatar({ data, avatarCreate, avatarGet, loading }) {
             formData.append("name", doc.name);
             formData.append("description", doc.description);
             if (isEditing) {
-              avatarEdit(doc,editingkey);
+              avatarEdit(doc, editingkey);
             } else {
               avatarCreate(formData);
             }
@@ -210,7 +217,7 @@ const mapDispatchToProps = (dispatch) => {
     avatarCreate: (value) => dispatch(avatarCreate(value)),
     avatarGet: () => dispatch(avatarGet()),
     avatarEdit: (value, id) => dispatch(avatarEdit(value, id)),
-    avatarDelete: (id,data) => dispatch(avatarDelete(id,data)),
+    avatarDelete: (id, data) => dispatch(avatarDelete(id, data)),
   };
 };
 
