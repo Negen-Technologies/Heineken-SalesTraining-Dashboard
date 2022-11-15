@@ -1,4 +1,4 @@
-import { React } from "react";
+import { React, useEffect, useState } from "react";
 import { Button, Row, Col, Progress, Table, Input, Avatar } from "antd";
 import {
   UserOutlined,
@@ -12,148 +12,144 @@ import withAuth from "../utils/protectRoute";
 import { primary_color } from "../utils/constants";
 import { useRouter } from "next/router";
 
-const columns = [
+let origindata = [
   {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
-    render: (text, record) => (
-      <Row>
-        {" "}
-        <Avatar
-          shape="circle"
-          size="small"
-          src={`https://joeschmoe.io/api/v1/${record.age}`}
-          style={{ backgroundColor: "#10c70e" }}
-          icon={<UserOutlined />}
-        />
-        <div style={{ padding: "0px 10px" }}>{text}</div>
-      </Row>
-    ),
+    key: "1",
+    name: "John Brown",
+    age: 0,
+    address: "New York No. 1 Lake Park",
+    percent: 0,
   },
   {
-    title: "Points",
-    dataIndex: "age",
-    key: "age",
-    render: (text) => (
-      <Row>
-        {" "}
-        <div style={{ color: "red" }}>
-          <StarFilled />
-        </div>
-        <div style={{ padding: "0px 10px", color: primary_color }}>
-          {text} Points
-        </div>
-      </Row>
-    ),
+    key: "2",
+    name: "Jim Green",
+    age: 0,
+    address: "London No. 1 Lake Park",
+    percent: 0,
   },
   {
-    title: "Progress",
-    dataIndex: "percent",
-    key: "percent",
-    render: (text) => (
-      <Row>
-        {" "}
-        <div style={{ color: primary_color }}>Course Progress</div>
-        <div style={{ padding: "0px 10px" }}>
-          <Progress
-            percent={text}
+    key: "3",
+    name: "Joe Black",
+    age: 0,
+    address: "Sidney No. 1 Lake Park",
+    percent: 0,
+  },
+];
+function Trainees() {
+  var [data, setData] = useState(origindata);
+  const router = useRouter();
+  useEffect(() => {
+    // localStorage.setItem("trainee_data", JSON.stringify(data));
+
+    var tr_da = localStorage.getItem("trainee_data");
+    if (tr_da == (undefined || null)) {
+      localStorage.setItem("trainee_data", JSON.stringify(data));
+    } else {
+      var tt = JSON.parse(localStorage.getItem("trainee_data"));
+      setData(tt);
+    }
+  }, []);
+
+  const columns = [
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      render: (text, record) => (
+        <Row>
+          {" "}
+          <Avatar
+            shape="circle"
             size="small"
-            showInfo={false}
-            strokeColor={primary_color}
-            trailColor={"grey"}
-            style={{ width: "150px" }}
+            src={`https://joeschmoe.io/api/v1/${record.key}`}
+            style={{ backgroundColor: "#10c70e" }}
+            icon={<UserOutlined />}
           />
-        </div>
-      </Row>
-    ),
-  },
-  {
-    title: "Action",
-    dataIndex: "",
-    key: "action",
-    render: () => (
-      <Row>
-        <Avatar
-          size="small"
-          style={{
-            backgroundColor: primary_color,
-            margin: "0px 2px",
-          }}
-          icon={<EditOutlined />}
-        />
-        <Avatar
+          <div style={{ padding: "0px 10px" }}>{text}</div>
+        </Row>
+      ),
+    },
+    {
+      title: "Points",
+      dataIndex: "age",
+      key: "age",
+      render: (text) => (
+        <Row>
+          {" "}
+          <div style={{ color: "red" }}>
+            <StarFilled />
+          </div>
+          <div style={{ padding: "0px 10px", color: primary_color }}>
+            {text} Points
+          </div>
+        </Row>
+      ),
+    },
+    {
+      title: "Progress",
+      dataIndex: "percent",
+      key: "percent",
+      render: (text) => (
+        <Row>
+          {" "}
+          <div style={{ color: primary_color }}>Course Progress</div>
+          <div style={{ padding: "0px 10px" }}>
+            <Progress
+              percent={text}
+              size="small"
+              showInfo={false}
+              strokeColor={primary_color}
+              trailColor={"grey"}
+              style={{ width: "150px" }}
+            />
+          </div>
+        </Row>
+      ),
+    },
+    {
+      title: "Action",
+      dataIndex: "",
+      key: "action",
+      render: (_,record) => (
+        <Row>
+          <Avatar
+            size="small"
+            style={{
+              backgroundColor: primary_color,
+              margin: "0px 2px",
+            }}
+            icon={<EditOutlined onClick={()=>{}}/>}
+          />
+          {/* <Avatar
           size="small"
           style={{
             backgroundColor: primary_color,
             margin: "0px 2px",
           }}
           icon={<EyeOutlined />}
-        />
-        <Avatar
-          size="small"
-          style={{ backgroundColor: "red", margin: "0px 2px" }}
-          icon={<DeleteOutlined />}
-        />
-      </Row>
-    ),
-  },
-];
-
-const data = [
-  {
-    key: "1",
-    name: "John Brown",
-    age: 125,
-    address: "New York No. 1 Lake Park",
-    percent: 89,
-  },
-  {
-    key: "2",
-    name: "Jim Green",
-    age: 100,
-    address: "London No. 1 Lake Park",
-    percent: 35,
-  },
-  {
-    key: "3",
-    name: "Joe Black",
-    age: 75,
-    address: "Sidney No. 1 Lake Park",
-    percent: 77,
-  },
-  {
-    key: "4",
-    name: "Amy Winehouse",
-    age: 175,
-    address: "Sidney No. 1 Lake Park",
-    percent: 98,
-  },
-  {
-    key: "5",
-    name: "Joe Rogan",
-    age: 180,
-    address: "Sidney No. 1 Lake Park",
-    percent: 15,
-  },
-  {
-    key: "6",
-    name: "Bruno Mars",
-    age: 115,
-    address: "Sidney No. 1 Lake Park",
-    percent: 57,
-  },
-  {
-    key: "7",
-    name: "Barak Obama",
-    age: 68,
-    address: "Sidney No. 1 Lake Park",
-    percent: 68,
-  },
-];
-
-function Trainees() {
-  const router = useRouter();
+        /> */}
+          <Avatar
+            size="small"
+            style={{ backgroundColor: "red", margin: "0px 2px" }}
+            icon={
+              <DeleteOutlined
+                onClick={() => {
+                  var filtereddata = data.filter(
+                    (item) => item.key !== record.key
+                  );
+                  setData(filtereddata);
+                  localStorage.setItem(
+                    "trainee_data",
+                    JSON.stringify(filtereddata)
+                  );
+                }}
+              />
+            }
+          />
+        </Row>
+      ),
+    },
+  ];
 
   return (
     <div>

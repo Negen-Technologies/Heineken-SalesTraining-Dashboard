@@ -1,5 +1,5 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
+sqltools_20221114200323_6444.log
 # dependencies
 /node_modules
 /.pnp

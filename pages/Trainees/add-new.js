@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import withAuth from "../../utils/protectRoute";
 import { primary_color } from "../../utils/constants";
 import { Button, Input, Avatar, Upload, Space, Form } from "antd";
@@ -17,6 +17,7 @@ const props = {
 
 function addnew() {
   const router = useRouter();
+
   return (
     <div>
       <Space
@@ -54,9 +55,29 @@ function addnew() {
         wrapperCol={{
           span: 8,
         }}
+        onFinish={(doc) => {
+          console.log(JSON.stringify(doc));
+          var t_data = localStorage.getItem("trainee_data");
+          var final = JSON.parse(t_data);
+
+          final = [
+            ...final,
+            {
+              name: doc.name,
+              username: doc.username,
+              department: doc.department,
+              phone: doc.phone,
+              email: doc.email,
+            },
+          ];
+
+          localStorage.setItem("trainee_data", JSON.stringify(final));
+          console.log(final);
+          router.replace("/Trainees");
+        }}
       >
         <h3>Trainee Information</h3>
-        <Form.Item>
+        {/* <Form.Item>
           {" "}
           <Upload
             {...props}
@@ -74,26 +95,26 @@ function addnew() {
               <PlusCircleFilled />
             </Avatar>
           </Upload>
-        </Form.Item>
+        </Form.Item> */}
 
-        <Form.Item>
+        <Form.Item name="name">
           <Input placeholder="Full Name" />
         </Form.Item>
-        <Form.Item>
+        <Form.Item name="username">
           <Input placeholder="Username" />
         </Form.Item>
-        <Form.Item>
+        <Form.Item name="department">
           <Input placeholder="Department" />
         </Form.Item>
         <h3>Contact Information</h3>
-        <Form.Item>
+        <Form.Item name="phone">
           <Input placeholder="Phone Number" />
         </Form.Item>
-        <Form.Item>
+        <Form.Item name="email">
           <Input placeholder="Email(optional)" />
         </Form.Item>
         <Form.Item>
-          <Button style={{ borderRadius: 5 }} type="primary">
+          <Button style={{ borderRadius: 5 }} type="primary" htmlType="submit">
             Create Account
           </Button>
         </Form.Item>

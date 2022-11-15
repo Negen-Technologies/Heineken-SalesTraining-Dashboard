@@ -5,6 +5,7 @@ import {
   SettingOutlined,
   TeamOutlined,
   FileDoneOutlined,
+  BulbOutlined
  
 } from "@ant-design/icons";
 
@@ -14,6 +15,11 @@ export const adminmenu = [
     name: "Dashboard",
     link: "/Dashboard",
     icon: <DashboardOutlined style={{ fontSize: "26px" }} />,
+  },
+  {
+    name: "Avatar",
+    link: "/Avatar",
+    icon: <BulbOutlined style={{ fontSize: "26px" }} />,
   },
   {
     name: "Courses",
