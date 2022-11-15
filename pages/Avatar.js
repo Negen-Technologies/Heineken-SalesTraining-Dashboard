@@ -47,7 +47,7 @@ function Avatar({ data, avatarCreate, avatarGet, loading }) {
           cover={
             <img
               alt="example"
-              src={`https://api.seleda.hahu.one/${ele.image}`}
+              src={`https://api.seleda.hahu.one/images/${ele.image}`}
             />
           }
           actions={[
