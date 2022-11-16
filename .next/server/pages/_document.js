@@ -436,9 +436,6 @@ class MyDocument extends next_document__WEBPACK_IMPORTED_MODULE_2___default.a {
         children: [/*#__PURE__*/Object(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__["jsx"])("meta", {
           charSet: "utf-8"
         }), /*#__PURE__*/Object(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__["jsx"])("meta", {
-          "http-equiv": "Content-Security-Policy",
-          content: "upgrade-insecure-requests"
-        }), /*#__PURE__*/Object(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__["jsx"])("meta", {
           name: "description",
           content: METADATA.APP_DESCRIPTION
         }), /*#__PURE__*/Object(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__["jsx"])("meta", {

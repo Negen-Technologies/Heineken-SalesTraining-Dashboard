@@ -233,8 +233,6 @@ const avatarGetSuccess = (state, action) => {
 };
 
 const avatarEditSuccess = (state, action) => {
-  var index = state.data.findIndex(user => user.id === action.data.id);
-  state.data.splice(index, 1, action.data);
   return avatar_reducer_objectSpread(avatar_reducer_objectSpread({}, state), {}, {
     data: action.data,
     error: null,
@@ -247,7 +245,7 @@ const avatarDeleteSuccess = (state, action) => {
     return user.id !== action.data.id;
   });
   return avatar_reducer_objectSpread(avatar_reducer_objectSpread({}, state), {}, {
-    data: newUsers,
+    data: action.data,
     error: null,
     loading: false
   });
