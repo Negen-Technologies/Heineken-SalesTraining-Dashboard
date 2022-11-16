@@ -9,7 +9,7 @@ sqltools_20221114200323_6444.log
 /coverage
 
 # next.js
-/.next/
+# /.next/
 /out/
 
 # production
