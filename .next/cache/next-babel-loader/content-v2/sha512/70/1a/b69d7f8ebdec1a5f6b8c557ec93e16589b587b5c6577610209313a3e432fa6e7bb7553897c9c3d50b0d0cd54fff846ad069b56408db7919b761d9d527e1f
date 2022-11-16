@@ -1,0 +1,1 @@
+{"ast":null,"code":"import { combineReducers } from \"redux\";\nimport auth_reducer from \"./Authentication/authreducer\";\nimport avatar_reducer from './Avatar/avatar_reducer';\nconst rootReducer = combineReducers({\n  auth: auth_reducer,\n  avatar_reducer: avatar_reducer\n});\nexport default rootReducer;","map":null,"metadata":{},"sourceType":"module"}
