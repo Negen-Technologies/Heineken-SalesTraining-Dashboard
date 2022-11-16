@@ -68,7 +68,15 @@ function addnew() {
               department: doc.department,
               phone: doc.phone,
               email: doc.email,
+              age:0
             },
+            // {
+            //   key: "1",
+            //   name: "John Brown",
+            //   age: 0,
+            //   address: "New York No. 1 Lake Park",
+            //   percent: 0,
+            // },
           ];
 
           localStorage.setItem("trainee_data", JSON.stringify(final));

@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import { Row, Col, Form, Input, Button } from "antd";
 import { primary_color } from "../utils/constants";
 import { connect } from "react-redux";
@@ -6,17 +6,11 @@ import { authLogin } from "../store/index";
 import Router from "next/router";
 
 function Login({ userData, authLogin }) {
-
-  const [loading, setLoading] = useState(false);
-
   if (userData.token) {
-    // setLoading(false);
     Router.replace("/Dashboard");
   }
 
   const onFinish = (data) => {
-    setLoading(true);
-    
     authLogin({
       username: data.username,
       password: data.password,
@@ -113,7 +107,6 @@ function Login({ userData, authLogin }) {
                 >
                   <Input style={{ borderRadius: 6 }} placeholder="Username" />
                 </Form.Item>
-
                 <Form.Item
                   style={{ margin: "20px 30px" }}
                   name="password"
@@ -129,7 +122,16 @@ function Login({ userData, authLogin }) {
                     placeholder="Password"
                   />
                 </Form.Item>
-
+                <Form.Item style={{ margin: "20px 30px" }}>
+                  {userData.error == null ? (
+                    <div></div>
+                  ) : (
+                    <div>
+                      {/* <br /> */}
+                      <p style={{ color: "red" }}>{userData.error}</p>
+                    </div>
+                  )}
+                </Form.Item>
                 <Form.Item
                   wrapperCol={{
                     offset: 8,
@@ -140,7 +142,7 @@ function Login({ userData, authLogin }) {
                     type="primary"
                     htmlType="submit"
                     style={{ borderRadius: 14, padding: "5px 35px" }}
-                    loading={loading}
+                    loading={userData.loading}
                   >
                     Submit
                   </Button>

@@ -1,6 +1,8 @@
 import axios from "axios";
 import * as actionTypes from "./avatar_actionTypes";
-import URLst from "../../utils/constants";
+import URLst, { handle401 } from "../../utils/constants";
+
+// import handle401 from "../../utils/constants"
 
 export const avatarStart = () => {
   return {
@@ -44,11 +46,10 @@ export const avatarFail = (error) => {
 };
 
 export const avatarEdit = (formData, id) => {
-  console.log(id);
-  console.log(formData);
   const token = localStorage.getItem("token");
-  return (dispatch) => {
-    console.log("jkkkkkkkkk");
+  return (dispatch, getState) => {
+    const { data } = getState().avatar_reducer;
+
     dispatch(avatarStart());
 
     axios
@@ -58,13 +59,18 @@ export const avatarEdit = (formData, id) => {
         },
       })
       .then((res) => {
-        console.log(res.data);
+        let newData = [...data];
+        let index = newData.findIndex((av) => av.id === res.data.id);
 
-        dispatch(avatarEditSuccess(res.data));
+        newData[index] = res.data;
+
+        dispatch(avatarEditSuccess(newData));
       })
       .catch((err) => {
-        console.log(err);
-        var errorData;
+        if (err.response.data.code == 401) {
+          handle401();
+        }
+        let errorData;
         if (err.response != null) {
           errorData = err.response.data.message;
         } else {
@@ -92,6 +98,9 @@ export const avatarCreate = (formData) => {
         dispatch(avatarCreateSuccess(res.data));
       })
       .catch((err) => {
+        if (err.response.data.code == 401) {
+          handle401();
+        }
         var errorData;
         if (err.response != null) {
           errorData = err.response.data.message;
@@ -143,11 +152,13 @@ export const avatarDelete = (id, users) => {
       },
     })
       .then((res) => {
-        console.log(res)
-        // dispatch(deleteUserSuccess({ id: id }));
-        // dispatch(avatarDeleteSuccess(res.data.results));
+        console.log(res);
+        dispatch(avatarDeleteSuccess(filtereddata));
       })
       .catch((err) => {
+        if (err.response.data.code == 401) {
+          handle401();
+        }
         var errorData;
         if (err.response != null) {
           errorData = err.response.data.message;
@@ -158,30 +169,3 @@ export const avatarDelete = (id, users) => {
       });
   };
 };
-// export const avatarDelete = (id) => {
-//   console.log(id)
-//   return (dispatch) => {
-//     dispatch(avatarStart());
-//     const token = localStorage.getItem("token");
-//     axios
-//       .delete(URLst + `v1/avatars/${id}`, {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//         },
-//       })
-//       .then((res) => {
-//         console.log("res.data");
-
-//         // dispatch(avatarDeleteSuccess(res.data.results));
-//       })
-//       .catch((err) => {
-//         var errorData;
-//         if (err.response != null) {
-//           errorData = err.response.data.message;
-//         } else {
-//           errorData = err.message;
-//         }
-//         dispatch(avatarFail(errorData));
-//       });
-//   };
-// };

@@ -50,11 +50,11 @@ export function index(props) {
             <Layout.Content
               style={
                 breakpointBool
-                  ? { margin: "24px 16px 0", height: "100vh" }
+                  ? { margin: "24px 16px 0", height: "100 vh" }
                   : {
                       margin: "24px 16px 0",
                       overflow: "initial",
-                      height: "100vh",
+                      height: "100 vh",
                     }
               }
             >

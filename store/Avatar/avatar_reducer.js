@@ -32,8 +32,7 @@ const avatarGetSuccess = (state, action) => {
 };
 
 const avatarEditSuccess = (state, action) => {
-  var index = state.data.findIndex((user) => user.id === action.data.id);
-  state.data.splice(index, 1, action.data);
+
   return {
     ...state,
     data: action.data,
@@ -47,7 +46,7 @@ const avatarDeleteSuccess = (state, action) => {
   });
   return {
     ...state,
-    data: newUsers,
+    data: action.data,
     error: null,
     loading: false,
   };

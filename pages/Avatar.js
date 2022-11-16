@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Form, Input, Button, Card, Modal } from "antd";
+import { Row, Col, Form, Input, Button, Card, Modal, Popconfirm } from "antd";
 import { primary_color } from "../utils/constants";
 import withAuth from "../utils/protectRoute";
 import { connect } from "react-redux";
@@ -17,11 +17,18 @@ import {
 } from "@ant-design/icons";
 
 const { Meta } = Card;
-function Avatar({ data, avatarCreate, avatarGet, loading }) {
+function Avatar({
+  data,
+  avatarCreate,
+  avatarGet,
+  avatarEdit,
+  avatarDelete,
+  loading,
+}) {
   const formData = new FormData();
   const [isVisible, setVisible] = useState(false);
   const [isEditing, setEditing] = useState(false);
-  const [editingkey,seteditingkey]=useState(null)
+  const [editingkey, seteditingkey] = useState(null);
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -36,7 +43,16 @@ function Avatar({ data, avatarCreate, avatarGet, loading }) {
   };
   const finalCard = data.map((ele) => {
     return (
-      <Col span={8} key={ele.id}>
+      <Col
+        span={8}
+        xs={24}
+        sm={24}
+        md={24}
+        lg={12}
+        xl={8}
+        xxl={8}
+        key={ele.id}
+      >
         {" "}
         <Card
           style={{
@@ -52,13 +68,24 @@ function Avatar({ data, avatarCreate, avatarGet, loading }) {
             <EditOutlined
               key="edit"
               onClick={() => {
+                form.resetFields();
                 seteditingkey(ele.id);
                 setEditing(true);
                 onFill(ele);
                 setVisible(true);
               }}
             />,
-            <DeleteOutlined key="setting" onClick={()=>{avatarDelete(ele.id,data);}}/>,
+            <Popconfirm
+              title="Are you sure to delete this task?"
+              onConfirm={() => {
+                avatarDelete(ele.id, data);
+              }}
+              okText="Yes"
+              cancelText="No"
+            >
+              <DeleteOutlined key="setting" />
+            </Popconfirm>,
+            // <DeleteOutlined key="setting" onClick={()=>{avatarDelete(ele.id,data);}}/>,
           ]}
         >
           <Meta
@@ -74,10 +101,16 @@ function Avatar({ data, avatarCreate, avatarGet, loading }) {
   const handleCancel = () => {
     setVisible(false);
     setEditing(false);
-    seteditingkey(null)
+    seteditingkey(null);
   };
   return (
-    <div>
+    <div
+      style={{
+        height: "100vh",
+        width: "100 vw",
+        overflow: "auto",
+      }}
+    >
       {data.length == 0 ? (
         <div
           style={{
@@ -121,7 +154,7 @@ function Avatar({ data, avatarCreate, avatarGet, loading }) {
             ></div>
             <Row gutter={[2, 16]}> {finalCard}</Row>
           </Col>
-          <Col span={6}>
+          <Col span={6}  xs={24} sm={24} md={6} lg={6} xl={6} xxl={6}>
             <h1
               style={{
                 fontSize: 20,
@@ -143,6 +176,8 @@ function Avatar({ data, avatarCreate, avatarGet, loading }) {
               style={{ width: "202px", margin: "20px 0px" }}
               type="primary"
               onClick={() => {
+                form.resetFields();
+
                 setVisible(true);
               }}
             >
@@ -166,7 +201,7 @@ function Avatar({ data, avatarCreate, avatarGet, loading }) {
             formData.append("name", doc.name);
             formData.append("description", doc.description);
             if (isEditing) {
-              avatarEdit(doc,editingkey);
+              avatarEdit(doc, editingkey);
             } else {
               avatarCreate(formData);
             }
@@ -180,6 +215,7 @@ function Avatar({ data, avatarCreate, avatarGet, loading }) {
           </Form.Item>
           <Form.Item>
             <Input
+              disabled={isEditing}
               placeholder="image"
               type="file"
               onChange={(e) => {
@@ -210,7 +246,7 @@ const mapDispatchToProps = (dispatch) => {
     avatarCreate: (value) => dispatch(avatarCreate(value)),
     avatarGet: () => dispatch(avatarGet()),
     avatarEdit: (value, id) => dispatch(avatarEdit(value, id)),
-    avatarDelete: (id,data) => dispatch(avatarDelete(id,data)),
+    avatarDelete: (id, data) => dispatch(avatarDelete(id, data)),
   };
 };
 

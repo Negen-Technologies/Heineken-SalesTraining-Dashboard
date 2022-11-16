@@ -21,7 +21,7 @@ export default class MyDocument extends Document {
       <Html lang="en" dir="ltr">
         <Head>
           <meta charSet="utf-8" />
-          <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"></meta>
+          {/* <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"></meta> */}
           {/* PWA */}
           {/* <link rel="manifest" href="/manifest.json" />
 
