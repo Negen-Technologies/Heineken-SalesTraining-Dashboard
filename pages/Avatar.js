@@ -1,3 +1,5 @@
+/** @format */
+
 import React, { useState, useEffect } from "react";
 import { Row, Col, Form, Input, Button, Card, Modal, Popconfirm } from "antd";
 import { primary_color } from "../utils/constants";
@@ -61,7 +63,7 @@ function Avatar({
           cover={
             <img
               alt="example"
-              src={`http://165.22.190.111:3000/images${ele.image}`}
+              src={`https://api.seleda.hahu.one/images/${ele.image}`}
             />
           }
           actions={[
