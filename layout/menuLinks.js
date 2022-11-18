@@ -6,6 +6,7 @@ import {
   TeamOutlined,
   FileDoneOutlined,
   UsergroupAddOutlined,
+  UserOutlined 
   // <UsergroupAddOutlined />
 } from "@ant-design/icons";
 
@@ -17,8 +18,8 @@ export const adminmenu = [
     icon: <DashboardOutlined style={{ fontSize: "26px" }} />,
   },
   {
-    name: "Avatar",
-    link: "/Avatar",
+    name: "User Managment",
+    link: "/UserManagment",
     icon: <UsergroupAddOutlined style={{ fontSize: "26px" }} />,
   },
   {
@@ -35,6 +36,11 @@ export const adminmenu = [
     name: "Badges",
     link: "/Badges",
     icon: <AuditOutlined style={{ fontSize: "26px" }} />,
+  },
+  {
+    name: "Avatar",
+    link: "/Avatar",
+    icon: <UserOutlined style={{ fontSize: "26px" }} />,
   },
   {
     name: "Reports",

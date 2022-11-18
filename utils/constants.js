@@ -1,6 +1,6 @@
 // var URLst = "http://165.22.190.111:3000/";
 
-var URLst = "https://api.seleda.hahu.one/";
+const URLst = "https://api.seleda.hahu.one/";
 
 export default URLst;
 

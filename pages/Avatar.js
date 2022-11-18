@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Row, Col, Form, Input, Button, Card, Modal, Popconfirm } from "antd";
-import { primary_color } from "../utils/constants";
+import URLst,{ primary_color } from "../utils/constants";
 import withAuth from "../utils/protectRoute";
 import { connect } from "react-redux";
 import {
@@ -45,27 +45,13 @@ function Avatar({
   };
   const finalCard = data.map((ele) => {
     return (
-      <Col
-        span={8}
-        xs={24}
-        sm={24}
-        md={24}
-        lg={12}
-        xl={8}
-        xxl={8}
-        key={ele.id}
-      >
+      <Col span={8} xs={24} sm={24} md={24} lg={12} xl={8} xxl={8} key={ele.id}>
         {" "}
         <Card
           style={{
             width: 250,
           }}
-          cover={
-            <img
-              alt="example"
-              src={`https://api.seleda.hahu.one/images/${ele.image}`}
-            />
-          }
+          cover={<img alt="example" src={`${URLst}images/${ele.image}`} />}
           actions={[
             <EditOutlined
               key="edit"

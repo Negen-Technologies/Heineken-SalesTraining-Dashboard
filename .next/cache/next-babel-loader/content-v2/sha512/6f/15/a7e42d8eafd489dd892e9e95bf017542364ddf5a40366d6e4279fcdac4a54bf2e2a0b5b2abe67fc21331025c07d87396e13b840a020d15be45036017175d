@@ -1,1 +1,0 @@
-{"ast":null,"code":"/** @format */\nvar URLst = \"https://api.seleda.hahu.one/\"; // var URLst = \"http://127.0.0.1:3030/\";\n\nexport default URLst;\nexport const primary_color = \"#298a40\";","map":null,"metadata":{},"sourceType":"module"}
