@@ -28,7 +28,7 @@ function addnew() {
         <LeftCircleFilled
           style={{ fontSize: "20px", color: primary_color }}
           onClick={() => {
-            router.replace("/Trainees");
+            router.back();
           }}
         />
         <div style={{ fontSize: "20px", fontWeight: 500 }}>Trainees</div>
