@@ -1,3 +1,5 @@
+/** @format */
+
 import axios from "axios";
 import URLst, { handle401 } from "../../utils/constants";
 import * as actionTypes from "./allBadgesActionTypes";
