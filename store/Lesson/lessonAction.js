@@ -1,69 +1,69 @@
 import axios from "axios";
 import URLst, { handle401 } from "../../utils/constants";
-import * as actionTypes from "./moduleActionTypes";
-import { AddModuleToCourse } from "../Courses/courseAction";
+import * as actionTypes from "./lessonActionTypes";
+import { AddLessonToModule } from "../Modules/moduleAction";
 
-export const allmodulePending = () => {
+export const alllessonPending = () => {
   return {
-    type: actionTypes.MODULE_PENDING,
+    type: actionTypes.LESSON_PENDING,
     isPending: true,
   };
 };
-export const allmoduleSuccess = (data) => {
+export const alllessonSuccess = (data) => {
   return {
-    type: actionTypes.MODULE_SUCCESS,
+    type: actionTypes.LESSON_SUCCESS,
     isPending: false,
     data: data.results,
     count: data.totalResults,
   };
 };
 
-export const moduleCreateSuccess = (data) => {
+export const lessonCreateSuccess = (data) => {
   return {
-    type: actionTypes.CREATE_MODULE_SUCCESS,
+    type: actionTypes.CREATE_LESSON_SUCCESS,
     data: data,
   };
 };
 
-export const updateModuleSuccess = (data) => {
+export const updatelessonSuccess = (data) => {
   return {
-    type: actionTypes.UPDATE_MODULE_SUCCESS,
+    type: actionTypes.UPDATE_LESSON_SUCCESS,
     isPending: false,
     data: data,
   };
 };
 
-export const deleteModuleSuccess = (data) => {
+export const deletelessonSuccess = (data) => {
   return {
-    type: actionTypes.DELETE_MODULE_SUCCESS,
+    type: actionTypes.DELETE_LESSON_SUCCESS,
     isPending: false,
     data: data,
   };
 };
 
-export const allmoduleFail = (error) => {
+export const alllessonFail = (error) => {
   return {
-    type: actionTypes.MODULE_FAILED,
+    type: actionTypes.LESSON_FAILED,
     error: error,
     isPending: false,
   };
 };
 
-export const getAllModuleSuccess = (limit, page) => {
+export const getAllLessonSuccess = (limit, page) => {
   var token = localStorage.getItem("token");
   return (dispatch) => {
-    dispatch(allmodulePending());
+    dispatch(alllessonPending());
 
     axios({
       method: "get",
-      url: URLst + `v1/modules?limit=${limit}&page=${page}`,
+      url: URLst + `v1/lessons?limit=${limit}&page=${page}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
       .then((res) => {
         console.log(res.data);
-        dispatch(allmoduleSuccess(res.data));
+        dispatch(alllessonSuccess(res.data));
       })
       .catch((err) => {
         var errorData;
@@ -76,19 +76,21 @@ export const getAllModuleSuccess = (limit, page) => {
           errorData = err.message;
         }
         console.log(errorData);
-        dispatch(allmoduleFail(errorData));
+        dispatch(alllessonFail(errorData));
       });
   };
 };
 
-export const moduleCreate = (courseid, formData, modules) => {
+export const lessonCreate = (moduleid, formData, lessons) => {
+  console.log(formData);
   return (dispatch) => {
-    dispatch(allmodulePending());
+    dispatch(alllessonPending());
     const token = localStorage.getItem("token");
     axios
       .post(
-        URLst + "v1/modules",
+        URLst + "v1/lessons",
         formData,
+    
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -97,56 +99,54 @@ export const moduleCreate = (courseid, formData, modules) => {
       )
       .then((res) => {
         console.log(res.data);
-        AddModuleToCourse(courseid, res.data.id, modules).then((result) => {
+        AddLessonToModule(moduleid, res.data.id, lessons).then((result) => {
           console.log(result);
-          if (result==200) {
-            dispatch(moduleCreateSuccess(res.data));
+          if (result == 200) {
+            dispatch(lessonCreateSuccess(res.data));
           }
-          
         });
-
-        
       })
       .catch((err) => {
-        if (err.response.data.code == 401) {
-          handle401();
-        }
-
         var errorData;
         if (err.response != null) {
+          if (err.response.data.code == 401) {
+            handle401();
+          }
           errorData = err.response.data.message;
         } else {
           errorData = err.message;
         }
         console.log(errorData);
-        dispatch(allmoduleFail(errorData));
+        dispatch(alllessonFail(errorData));
       });
   };
 };
 
-export const AllModuleEdit = (id, modules, edited) => {
+export const AllLessonEdit = (id, lessons, edited) => {
   const token = localStorage.getItem("token");
 
   return (dispatch, getState) => {
-    dispatch(allmodulePending());
+    dispatch(alllessonPending());
 
     axios({
       method: "patch",
-      url: URLst + `v1/modules/${id}`,
+      url: URLst + `v1/lessons/${id}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      data: edited,
+      data:edited,
     })
       .then((res) => {
-        let newData = [...modules];
+        console.log(res.data)
+        let newData = [...lessons];
         let index = newData.findIndex((av) => av.id === res.data.id);
-         newData[index].title = edited.title;
+
         newData[index].summary = edited.summary;
+        newData[index].title = edited.title;
+        newData[index].video_source = edited.video_source;
         newData[index].order = edited.order;
 
-
-        dispatch(updateModuleSuccess(newData));
+        dispatch(updatelessonSuccess(newData));
       })
       .catch((err) => {
         var errorData;
@@ -159,26 +159,26 @@ export const AllModuleEdit = (id, modules, edited) => {
           errorData = err.message;
         }
         console.log(errorData);
-        dispatch(allmoduleFail(errorData));
+        dispatch(alllessonFail(errorData));
       });
   };
 };
 
-export const AllModuleDelete = (id, modules) => {
-  var filtereddata = modules.filter((item) => item.id !== id);
+export const AllLessonDelete = (id, lessons) => {
+  var filtereddata = lessons.filter((item) => item.id !== id);
   var token = localStorage.getItem("token");
   return (dispatch) => {
-    dispatch(allmodulePending());
+    dispatch(alllessonPending());
 
     axios({
       method: "delete",
-      url: URLst + `v1/modules/${id}`,
+      url: URLst + `v1/lessons/${id}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
       .then((res) => {
-        dispatch(deleteModuleSuccess(filtereddata));
+        dispatch(deletelessonSuccess(filtereddata));
       })
       .catch((err) => {
         var errorData;
@@ -190,37 +190,7 @@ export const AllModuleDelete = (id, modules) => {
         } else {
           errorData = err.message;
         }
-        dispatch(allmoduleFail(errorData));
+        dispatch(alllessonFail(errorData));
       });
   };
-};
-export const AddLessonToModule = async (moduleid, lessonid, lessons) => {
-  const token = localStorage.getItem("token");
-
-  let res = await axios({
-    method: "patch",
-    url: URLst + `v1/modules/${moduleid}`,
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    data: {
-      'lessons': [...lessons, lessonid],
-    },
-  })
-    .then((res) => {
-      console.log(res.data);
-      return 200;
-    })
-    .catch((err) => {
-      let errorData;
-      if (err.response != null) {
-        errorData = err.response.data.message;
-      } else {
-        errorData = err.message;
-      }
-      console.log(errorData);
-      return 400;
-    });
-
-  return res;
 };

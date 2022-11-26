@@ -11,6 +11,8 @@ import {
   Modal,
   Form,
   Input,
+  Popconfirm,
+  InputNumber,
 } from "antd";
 import {
   DeleteOutlined,
@@ -32,25 +34,94 @@ import URLst, { primary_color } from "../../utils/constants";
 import { useRouter } from "next/router";
 const { Panel } = Collapse;
 
-function view_course(props) {
-  const [visible,setvisible]=useState(false)
+function View_course(props) {
+  const [form] = Form.useForm();
+  const [data,setdata]=useState([])
+  const [routervals, setroutervals] = useState({
+    id: "",
+    element: [],
+    courseName:"",
+  });
+  const [visible, setvisible] = useState(false);
+  const [isediting, setisediting] = useState(false);
+  const [editingkey, seteditingkey] = useState("");
   const router = useRouter();
   console.log(router.query);
-  const { id, element } = router.query;
-  let data = [];
-  let moduleId=[]
-  let passedData = JSON.parse(element);
-  console.log("DATA ", passedData);
-
-  // props.modules.forEach((element) => {
-  //   data.push({ ...element, key: element.id });
-  // });
-  // useEffect(() => {
-  //   props.getAllModuleSuccess(10, 1);
-  // }, [id]);
 
 
-  return (
+  // const { id, element, courseName } = router.query;
+  let smpdata = [];
+  let moduleId = [];
+  let lessonId = [];
+
+  // let passedModules = JSON.parse(element);
+
+  useEffect(() => {
+    const { id, element, courseName } = router.query;
+     console.log(element);
+    setroutervals({
+      id: id,
+      element: JSON.parse(element),
+      courseName: courseName,
+    });
+    props.getAllModuleSuccess(10, 1);
+  }, []);
+
+  useEffect(() => {
+   
+    if (data.length == 0) {
+      props.modules.forEach((element) => {
+        if (routervals.element.includes(element.id)) {
+          smpdata.push({ ...element, key: element.id });
+        }
+      });
+      setdata(smpdata)
+      smpdata=[]
+    } else {
+      let ddata = [];
+      ddata = routervals.element;
+      ddata.push(props.modules[props.modules.length - 1].id);
+      setroutervals({
+        ...routervals,
+        element: ddata,
+      });
+      props.modules.forEach((element) => {
+        smpdata.push({ ...element, key: element.id });
+      });
+     
+      setdata(smpdata);
+      smpdata = [];
+    }
+  
+  }, [props.modules]);
+
+  const editor = (e) => {
+    setisediting(true);
+    seteditingkey(e.id);
+    form.setFieldsValue({
+      title: e.title,
+      summary: e.summary,
+      order:e.order
+    });
+    setvisible(true);
+  };
+
+  return props.modulesPending && data.length == 0 ? (
+    <div
+      style={{
+        height: "100vh",
+        width: "100 vw",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      {" "}
+      <div>
+        <LoadingOutlined style={{ fontSize: 80 }} />
+      </div>
+    </div>
+  ) : (
     <div>
       <Row>
         <Col
@@ -72,7 +143,7 @@ function view_course(props) {
               }}
             />
             <div style={{ fontSize: "20px", fontWeight: 500 }}>
-              Active Courses
+              {routervals.courseName}
             </div>
             <div style={{ fontSize: "20px", fontWeight: 600 }}>|</div>
             <div
@@ -92,95 +163,140 @@ function view_course(props) {
               height: "2px",
             }}
           ></div>
-          <Collapse
-            collapsible="header"
-            defaultActiveKey={"1"}
-            style={{ margin: "20px 0px" }}
-          >
-            <Panel header={"name"} key="1">
-              {passedData.modules.map((e, i) => {
-                return (
-                  <Collapse
-                    collapsible="header"
-                    defaultActiveKey="1"
-                    style={{ margin: "10px 0px" }}
-                    key={e.id}
-                  >
-                    <Panel
-                      header={e.title}
-                      key={i + 1}
-                      extra={
-                        <Row>
-                          {" "}
-                          <Avatar
-                            size="small"
-                            style={{
-                              backgroundColor: primary_color,
-                              margin: "0px 2px",
-                            }}
-                            icon={
-                              <EyeOutlined
-                                onClick={() => {
-                                  console.log("hjhj");
-                                  // router.push(`Courses/view-course?id=${e.id}`);
+          {data.length == 0 ? (
+            <div
+              style={{
+                height: "50vh",
+                width: "100 vw",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Empty description="No Modules" />
+            </div>
+          ) : props.modulesPending ? (
+            <div
+              style={{
+                height: "50vh",
+                width: "100 vw",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <LoadingOutlined style={{ fontSize: 80 }} />
+            </div>
+          ) : (
+            <Collapse
+              collapsible="header"
+              defaultActiveKey={"1"}
+              style={{ margin: "20px 0px" }}
+            >
+              <Panel header={"Modules"} key="1">
+                {data
+                  .sort((a, b) => a.order - b.order)
+                  .map((e, i) => {
+                    return (
+                      <Collapse
+                        collapsible="header"
+                        defaultActiveKey="1"
+                        style={{ margin: "10px 0px" }}
+                        key={e.id}
+                      >
+                        <Panel
+                          header={e.title}
+                          key={i + 1}
+                          extra={
+                            <Row>
+                              {" "}
+                              <Avatar
+                                size="small"
+                                style={{
+                                  backgroundColor: primary_color,
+                                  margin: "0px 2px",
                                 }}
+                                icon={
+                                  <EyeOutlined
+                                    onClick={() => {
+                                      console.log("hjhj");
+                                      e.lessons.forEach((el) => {
+                                        lessonId.push(el.id);
+                                      });
+
+                                      router.push({
+                                        pathname: "Lesson",
+                                        query: {
+                                          id: e.id,
+
+                                          element: JSON.stringify(lessonId),
+                                        },
+                                      });
+                                    }}
+                                  />
+                                }
                               />
-                            }
-                          />
-                          <Avatar
-                            size="small"
-                            style={{
-                              backgroundColor: primary_color,
-                              margin: "0px 2px",
-                            }}
-                            icon={
-                              <EditOutlined
-                                onClick={() => {
-                                  console.log("hjhj");
+                              <Avatar
+                                size="small"
+                                style={{
+                                  backgroundColor: primary_color,
+                                  margin: "0px 2px",
                                 }}
+                                icon={
+                                  <EditOutlined
+                                    onClick={() => {
+                                      editor(e);
+                                    }}
+                                  />
+                                }
                               />
-                            }
-                          />
-                          <Avatar
-                            size="small"
-                            style={{
-                              backgroundColor: "red",
-                              margin: "0px 2px",
-                            }}
-                            icon={
-                              <DeleteOutlined
-                                onClick={() => {
-                                  console.log("jkkjk");
+                              <Avatar
+                                size="small"
+                                style={{
+                                  backgroundColor: "red",
+                                  margin: "0px 2px",
                                 }}
+                                icon={
+                                  <Popconfirm
+                                    title={
+                                      "Are you sure you want to delete this Module?\n\n(Deleting this Module will also delete the lessons of the course)"
+                                    }
+                                    onConfirm={() => {
+                                      props.AllModuleDelete(e.id, data);
+                                    }}
+                                  >
+                                    <DeleteOutlined />
+                                  </Popconfirm>
+                                }
                               />
-                            }
-                          />
-                        </Row>
-                      }
-                    >
-                      {e.lessons.length == 0 ? (
-                        <div>
-                          <Empty description="No Lesson" />
-                        </div>
-                      ) : (
-                        e.lessons.map((el, ii) => {
-                          return (
-                            <div key={ii}>
-                              <div>
-                                Lesson {ii + 1}: {el.title}
-                              </div>
-                              <Divider style={{ margin: "7px 0px" }} />
+                            </Row>
+                          }
+                        >
+                          {e.lessons.length == 0 ? (
+                            <div>
+                              <Empty description="No Lesson" />
                             </div>
-                          );
-                        })
-                      )}
-                    </Panel>
-                  </Collapse>
-                );
-              })}
-            </Panel>
-          </Collapse>
+                          ) : (
+                            e.lessons.map((el, ii) => {
+                              return (
+                                <div key={ii}>
+                                  <div>
+                                    Lesson {ii + 1}: {el.title}
+                                  </div>
+                                  <Divider style={{ margin: "7px 0px" }} />
+                                </div>
+                              );
+                            })
+                          )}
+                        </Panel>
+                      </Collapse>
+                    );
+                  })}
+              </Panel>
+            </Collapse>
+          )}
         </Col>
+
         <Col span={6}>
           <h1
             style={{
@@ -199,70 +315,70 @@ function view_course(props) {
             }}
           ></div>
           <div style={{ marginBottom: 12 }}></div>
-          <Button
-            style={{ width: "202px", margin: "8px 0px", borderRadius: 6 }}
-            type="primary"
-          >
-            Edit Course
-          </Button>
 
           <Button
             style={{ width: "202px", margin: "8px 0px", borderRadius: 6 }}
             type="primary"
-            onClick={()=>{setvisible(true);}}
+            onClick={() => {
+              setvisible(true);
+            }}
           >
             Add Module
           </Button>
         </Col>
       </Row>
-      <Modal visible={visible} onCancel={()=>{setvisible(false)}}>
+      <Modal
+        title={isediting ? "Edit Modules" : "Add Modules"}
+        closable={true}
+        okButtonProps={{ style: { display: "none" } }}
+        cancelButtonProps={{ style: { display: "none" } }}
+        visible={visible}
+        onCancel={() => {
+          setvisible(false);
+          setisediting(false);
+          form.resetFields();
+        }}
+      >
         <Form
+          form={form}
           onFinish={(e) => {
             console.log(e);
-            passedData.modules.forEach(element => {
-              moduleId.push(element.id)
-            });
-            props.moduleCreate(e, id, moduleId);
+            if (isediting) {
+              props.AllModuleEdit(editingkey, data, e);
+            } else {
+              data.forEach((element) => {
+                moduleId.push(element.id);
+              });
+              props.moduleCreate(routervals.id, e, moduleId);
+            }
           }}
         >
           <Form.Item name="title">
             <Input placeholder="Title" />
           </Form.Item>
           <Form.Item name="summary">
-            <Input placeholder="Summary" />
+            <Input.TextArea placeholder="Summary" />
           </Form.Item>
-          <Button type="primary" htmlType="submit">
-            Add Module
-          </Button>
+          <Form.Item name="order">
+            <InputNumber placeholder="Order" />
+          </Form.Item>
+          <Form.Item>
+            <p style={{ color: "red" }}>{props.modulesError}</p>
+          </Form.Item>
+          <Form.Item style={{ textAlign: "right" }}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={props.modulesPending}
+            >
+              {isediting ? "Edit Module" : "Add Module"}
+            </Button>
+          </Form.Item>
         </Form>
       </Modal>
     </div>
   );
 }
-// const mapStateToProps = (state) => {
-//   return {
-//     courses: state.allcourses.allcourses,
-//     count: state.allcourses.count,
-//     coursesPending: state.allcourses.loading,
-//     coursesError: state.allcourses.error,
-//   };
-// };
-
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     getSingleCourseSuccess: (id) =>
-//       dispatch(getSingleCourseSuccess(id)),
-//     AllCourseEdit: (id, courses, edited) =>
-//       dispatch(AllCourseEdit(id, courses, edited)),
-//     AllCourseDelete: (id, courses) => dispatch(AllCourseDelete(id, courses)),
-//     courseCreate: (formData) => dispatch(courseCreate(formData)),
-//   };
-// };
-
-// export default connect(
-//   mapStateToProps,
-//   mapDispatchToProps
-// )(withAuth(view_course));
 
 const mapStateToProps = (state) => {
   return {
@@ -288,4 +404,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withAuth(view_course));
+)(withAuth(View_course));
