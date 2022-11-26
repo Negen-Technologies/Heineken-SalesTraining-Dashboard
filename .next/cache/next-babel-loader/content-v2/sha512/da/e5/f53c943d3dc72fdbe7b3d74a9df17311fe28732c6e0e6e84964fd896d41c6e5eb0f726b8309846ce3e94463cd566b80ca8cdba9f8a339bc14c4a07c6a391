@@ -1,0 +1,1 @@
+{"ast":null,"code":"// var URLst = \"http://165.22.190.111:3000/\";\nvar URLst = \"https://api.seleda.hahu.one/\";\nexport default URLst;\nexport var primary_color = \"#298a40\";\nexport var handle401 = function handle401() {\n  localStorage.clear();\n};","map":null,"metadata":{},"sourceType":"module"}

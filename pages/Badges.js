@@ -1,3 +1,5 @@
+/** @format */
+
 import React, { useState, useEffect, useRef } from "react";
 import {
   Button,
@@ -221,7 +223,7 @@ function Badges(props) {
             formData.append("name", e.name);
             formData.append("description", e.description);
             formData.append("code", e.code);
-            formData.append("image", e.image.file);
+            formData.append("image", e.image.file.originFileObj);
             if (isediting) {
               props.AllBadgeEdit(editingkey, data, e);
             } else {
