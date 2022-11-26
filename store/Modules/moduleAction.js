@@ -1,7 +1,7 @@
 import axios from "axios";
 import URLst, { handle401 } from "../../utils/constants";
 import * as actionTypes from "./moduleActionTypes";
-import {AddModuleToCourse} from "../Courses/courseAction";
+import { AddModuleToCourse } from "../Courses/courseAction";
 
 export const allmodulePending = () => {
   return {
@@ -81,14 +81,14 @@ export const getAllModuleSuccess = (limit, page) => {
   };
 };
 
-export const moduleCreate = (courseid,formData,modules) => {
+export const moduleCreate = (courseid, formData, modules) => {
   return (dispatch) => {
     dispatch(allmodulePending());
     const token = localStorage.getItem("token");
     axios
       .post(
         URLst + "v1/modules",
-        { title: formData.title, summary: formData.summary },
+        formData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -97,10 +97,15 @@ export const moduleCreate = (courseid,formData,modules) => {
       )
       .then((res) => {
         console.log(res.data);
-        let result= AddModuleToCourse(courseid, res.data.id,modules)
-        console.log(result)
+        AddModuleToCourse(courseid, res.data.id, modules).then((result) => {
+          console.log(result);
+          if (result==200) {
+            dispatch(moduleCreateSuccess(res.data));
+          }
+          
+        });
 
-        dispatch(moduleCreateSuccess(res.data));
+        
       })
       .catch((err) => {
         if (err.response.data.code == 401) {
@@ -136,8 +141,10 @@ export const AllModuleEdit = (id, modules, edited) => {
       .then((res) => {
         let newData = [...modules];
         let index = newData.findIndex((av) => av.id === res.data.id);
+         newData[index].title = edited.title;
+        newData[index].summary = edited.summary;
+        newData[index].order = edited.order;
 
-        newData[index] = res.data;
 
         dispatch(updateModuleSuccess(newData));
       })
@@ -186,4 +193,34 @@ export const AllModuleDelete = (id, modules) => {
         dispatch(allmoduleFail(errorData));
       });
   };
+};
+export const AddLessonToModule = async (moduleid, lessonid, lessons) => {
+  const token = localStorage.getItem("token");
+
+  let res = await axios({
+    method: "patch",
+    url: URLst + `v1/modules/${moduleid}`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    data: {
+      'lessons': [...lessons, lessonid],
+    },
+  })
+    .then((res) => {
+      console.log(res.data);
+      return 200;
+    })
+    .catch((err) => {
+      let errorData;
+      if (err.response != null) {
+        errorData = err.response.data.message;
+      } else {
+        errorData = err.message;
+      }
+      console.log(errorData);
+      return 400;
+    });
+
+  return res;
 };

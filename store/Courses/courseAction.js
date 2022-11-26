@@ -125,7 +125,8 @@ export const courseCreate = (formData) => {
     axios
       .post(
         URLst + "v1/courses",
-        { name: formData.name },
+        // { name: formData.name },
+        formData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -172,7 +173,8 @@ export const AllCourseEdit = (id, courses, edited) => {
         let newData = [...courses];
         let index = newData.findIndex((av) => av.id === res.data.id);
 
-        newData[index] = res.data;
+        newData[index].title = edited.title;
+        newData[index].summary = edited.summary;
 
         dispatch(updateCourseSuccess(newData));
       })
@@ -223,23 +225,34 @@ export const AllCourseDelete = (id, courses) => {
   };
 };
 
-export const  AddModuleToCourse = async (courseid, moduleid) => {
+export const AddModuleToCourse = async (courseid, moduleid, modules) => {
   const token = localStorage.getItem("token");
 
-  axios({
+  let res=await axios({
     method: "patch",
     url: URLst + `v1/courses/${courseid}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    data: [...modules, moduleid],
+    data: {
+      "modules": [...modules, moduleid],
+    },
   })
     .then((res) => {
       console.log(res.data);
       return 200;
+      
     })
     .catch((err) => {
-      console.log(err.response.data.message)
+      let errorData;
+      if (err.response != null) {
+        errorData = err.response.data.message;
+      } else {
+        errorData = err.message;
+      }
+      console.log(errorData);
       return 400;
     });
+
+    return res;
 };

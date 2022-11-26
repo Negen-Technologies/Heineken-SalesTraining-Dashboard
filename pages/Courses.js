@@ -1,5 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { Button, Row, Col, Collapse, Avatar, Divider, Empty } from "antd";
+import {
+  Button,
+  Row,
+  Col,
+  Collapse,
+  Avatar,
+  Divider,
+  Empty,
+  Modal,
+  Form,
+  Input,
+  Popconfirm,
+} from "antd";
 import {
   DeleteOutlined,
   EditOutlined,
@@ -17,13 +29,20 @@ import {
 import withAuth from "../utils/protectRoute";
 import URLst, { primary_color } from "../utils/constants";
 import { useRouter } from "next/router";
-import { options } from "less";
+import ActionsTab from "../Components/SupplimentaryComponents/actionsTab";
+import OverviewTab from "../Components/SupplimentaryComponents/overviewTab";
 
 function Courses(props) {
+  const [form] = Form.useForm();
+  const [visible, setvisible] = useState(false);
+  const [isediting, setisediting] = useState(false);
+  const [editingkey, seteditingkey] = useState("");
+
   const router = useRouter();
 
   const numEachPage = 10;
   let data = [];
+  let moduleIds = [];
   let courses = 0;
   let modules = 0;
   let lessons = 0;
@@ -41,16 +60,23 @@ function Courses(props) {
         lessons += ee.lessons.length;
       });
     });
-    console.log("Courses: ", data.length);
-    console.log("Modules: ", modules);
-    console.log("Lessons: ", lessons);
   }
 
   useEffect(() => {
     props.getAllCourseSuccess(numEachPage, 1);
   }, []);
 
-  return data.length == 0 ? (
+  const editor = (e) => {
+    setisediting(true);
+    seteditingkey(e.id);
+    form.setFieldsValue({
+      title: e.title,
+      summary: e.summary,
+    });
+    setvisible(true);
+  };
+
+  return props.coursesPending && data.length == 0 ? (
     <div
       style={{
         height: "100vh",
@@ -74,22 +100,7 @@ function Courses(props) {
             padding: "0px 50px",
           }}
         >
-          <h1
-            style={{
-              fontSize: 20,
-              fontWeight: 600,
-              color: primary_color,
-            }}
-          >
-            Overview
-          </h1>
-          <div
-            style={{
-              width: "auto",
-              backgroundColor: primary_color,
-              height: "2px",
-            }}
-          ></div>
+          <OverviewTab title={"Overview"} />
           <Row
             gutter={{
               xs: 8,
@@ -109,131 +120,194 @@ function Courses(props) {
             </Col>
           </Row>
 
-          <Collapse collapsible="header" accordion defaultActiveKey={["1"]}>
-            {data.map((e, i) => {
-              return (
-                <Collapse.Panel
-                  style={{ fontSize: 18, fontWeight: 600 }}
-                  header={e.title}
-                  key={i + 1}
-                  extra={
-                    <Row>
-                      {" "}
-                      <Avatar
-                        size="small"
+          {data.length == 0 ? (
+            <div
+              style={{
+                height: "50vh",
+                width: "100 vw",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Empty description="No Courses" />
+            </div>
+          ) : props.coursesPending ? (
+            <div
+              style={{
+                height: "50vh",
+                width: "100 vw",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <LoadingOutlined style={{ fontSize: 80 }} />
+            </div>
+          ) : (
+            <Collapse collapsible="header" accordion defaultActiveKey={["1"]}>
+              {data
+                .map((e, i) => {
+                  return (
+                    <Collapse.Panel
+                      style={{ fontSize: 18, fontWeight: 600 }}
+                      header={e.title}
+                      key={i + 1}
+                      extra={
+                        <Row>
+                          {" "}
+                          <Avatar
+                            size="small"
+                            style={{
+                              backgroundColor: primary_color,
+                              margin: "0px 2px",
+                            }}
+                            icon={
+                              <EyeOutlined
+                                onClick={() => {
+                                  console.log("hjhj");
+                                  e.modules.forEach((el) => {
+                                    moduleIds.push(el.id);
+                                  });
+
+                                  router.push({
+                                    pathname: "Courses/view-course",
+                                    query: {
+                                      id: e.id,
+                                      courseName: e.title,
+                                      element: JSON.stringify(moduleIds),
+                                    },
+                                  });
+                                }}
+                              />
+                            }
+                          />
+                          <Avatar
+                            size="small"
+                            style={{
+                              backgroundColor: primary_color,
+                              margin: "0px 2px",
+                            }}
+                            icon={
+                              <EditOutlined
+                                onClick={() => {
+                                  editor(e);
+                                }}
+                              />
+                            }
+                          />
+                          <Avatar
+                            size="small"
+                            style={{
+                              backgroundColor: "red",
+                              margin: "0px 2px",
+                            }}
+                            icon={
+                              <Popconfirm
+                                title={
+                                  "Are you sure you want to delete this course?\n\n(Deleting this course will also delete modules and lessons of the course)"
+                                }
+                                onConfirm={() => {
+                                  props.AllCourseDelete(e.id, data);
+                                }}
+                              >
+                                <DeleteOutlined />
+                              </Popconfirm>
+                            }
+                          />
+                        </Row>
+                      }
+                    >
+                      <div
                         style={{
-                          backgroundColor: primary_color,
-                          margin: "0px 2px",
+                          fontSize: 14,
+                          fontWeight: 400,
+                          color: primary_color,
                         }}
-                        icon={
-                          <EyeOutlined
-                            onClick={() => {
-                              console.log("hjhj");
-                              // router.push(
-                              //   `Courses/view-course?id=${e.id}&e=${e}`
-                              // );
-                              router.push({
-                                pathname: "Courses/view-course",
-                                query: {
-                                  "id":e.id,
-                                  "element":JSON.stringify(e)
-                                },
-                              });
-                            }}
-                          />
-                        }
-                      />
-                      <Avatar
-                        size="small"
-                        style={{
-                          backgroundColor: primary_color,
-                          margin: "0px 2px",
-                        }}
-                        icon={
-                          <EditOutlined
-                            onClick={() => {
-                              console.log("hjhj");
-                            }}
-                          />
-                        }
-                      />
-                      <Avatar
-                        size="small"
-                        style={{ backgroundColor: "red", margin: "0px 2px" }}
-                        icon={
-                          <DeleteOutlined
-                            onClick={() => {
-                              console.log("jkkjk");
-                            }}
-                          />
-                        }
-                      />
-                    </Row>
-                  }
-                >
-                  <div
-                    style={{
-                      fontSize: 14,
-                      fontWeight: 400,
-                      color: primary_color,
-                    }}
-                  >
-                    {e.modules.length == 0 ? (
-                      <div>
-                        <Empty description="No Module" />
-                      </div>
-                    ) : (
-                      e.modules.map((el, ii) => {
-                        return (
-                          <div key={ii}>
-                            <div>
-                              Module {ii + 1}: {el.title}
-                            </div>
-                            <Divider style={{ margin: "7px 0px" }} />
+                      >
+                        {e.modules.length == 0 ? (
+                          <div>
+                            <Empty description="No Module" />
                           </div>
-                        );
-                      })
-                    )}
-                  </div>
-                </Collapse.Panel>
-              );
-            })}
-          </Collapse>
+                        ) : (
+                          e.modules
+                            .sort((a, b) => a.order - b.order)
+                            .map((el, ii) => {
+                              return (
+                                <div key={ii}>
+                                  <div>
+                                    Module {el.order}: {el.title}
+                                  </div>
+                                  <Divider style={{ margin: "7px 0px" }} />
+                                </div>
+                              );
+                            })
+                        )}
+                      </div>
+                    </Collapse.Panel>
+                  );
+                })}
+            </Collapse>
+          )}
         </Col>
 
         <Col span={6}>
-          <h1
-            style={{
-              fontSize: 20,
-              fontWeight: 600,
-              color: primary_color,
-            }}
-          >
-            Actions
-          </h1>
-          <div
-            style={{
-              width: "auto",
-              backgroundColor: primary_color,
-              height: "2px",
-            }}
-          ></div>
-          <div style={{ marginBottom: 12 }}></div>
+          <ActionsTab />
           <Button
             style={{ width: "202px", margin: "8px 0px", borderRadius: 6 }}
             type="primary"
+            onClick={() => {
+              setvisible(true);
+            }}
           >
             Course Builder
           </Button>
-
-          <Button
-            style={{ width: "202px", margin: "8px 0px", borderRadius: 6 }}
-            type="primary"
-          >
-            View Trainees
-          </Button>
         </Col>
       </Row>
+      <Modal
+        title={isediting ? "Edit Course" : "Add Course"}
+        closable={true}
+        okButtonProps={{ style: { display: "none" } }}
+        cancelButtonProps={{ style: { display: "none" } }}
+        visible={visible}
+        onCancel={() => {
+          setvisible(false);
+          setisediting(false);
+          form.resetFields();
+        }}
+      >
+        <Form
+          form={form}
+          onFinish={(e) => {
+            console.log(e);
+            if (isediting) {
+              props.AllCourseEdit(editingkey, data, e);
+              // AllCourseEdit: id, courses, edited;
+            } else {
+              props.courseCreate(e);
+            }
+          }}
+        >
+          <Form.Item name="title">
+            <Input placeholder="Title" />
+          </Form.Item>
+          <Form.Item name="summary">
+            <Input.TextArea placeholder="Summary" />
+          </Form.Item>
+          <Form.Item>
+            <p style={{ color: "red" }}>{props.coursesError}</p>
+          </Form.Item>
+          <Form.Item style={{ textAlign: "right" }}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={props.coursesPending}
+            >
+              {isediting ? "Edit Course" : "Add Course"}
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 }

@@ -189,6 +189,7 @@ eval("var assign=Object.assign.bind(Object);module.exports=assign;module.exports
 
 /***/ }),
 
+<<<<<<< HEAD
 /***/ "./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?page=%2Fnext%2Fdist%2Fpages%2F_error&absolutePagePath=%2Fhome%2Feleni%2FDesktop%2Fheniken%2FHeineken-SalesTraining-Dashboard%2Fnode_modules%2Fnext%2Fdist%2Fpages%2F_error.js!./":
 /*!****************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?page=%2Fnext%2Fdist%2Fpages%2F_error&absolutePagePath=%2Fhome%2Feleni%2FDesktop%2Fheniken%2FHeineken-SalesTraining-Dashboard%2Fnode_modules%2Fnext%2Fdist%2Fpages%2F_error.js ***!
@@ -197,6 +198,16 @@ eval("var assign=Object.assign.bind(Object);module.exports=assign;module.exports
 /***/ (function(module, exports, __webpack_require__) {
 
 eval("\n    (window.__NEXT_P = window.__NEXT_P || []).push([\n      \"/next/dist/pages/_error\",\n      function () {\n        return __webpack_require__(/*! ./node_modules/next/dist/pages/_error.js */ \"./node_modules/next/dist/pages/_error.js\");\n      }\n    ]);\n  //# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly9fTl9FLy4vbm9kZV9tb2R1bGVzL25leHQvZGlzdC9idWlsZC93ZWJwYWNrL2xvYWRlcnMvbmV4dC1jbGllbnQtcGFnZXMtbG9hZGVyLmpzP2U2ZmQiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtBQUNBO0FBQ0E7QUFDQTtBQUNBLGVBQWUsbUJBQU8sQ0FBQywwRkFBcUc7QUFDNUg7QUFDQSIsImZpbGUiOiIuL25vZGVfbW9kdWxlcy9uZXh0L2Rpc3QvYnVpbGQvd2VicGFjay9sb2FkZXJzL25leHQtY2xpZW50LXBhZ2VzLWxvYWRlci5qcz9wYWdlPSUyRm5leHQlMkZkaXN0JTJGcGFnZXMlMkZfZXJyb3ImYWJzb2x1dGVQYWdlUGF0aD0lMkZob21lJTJGZWxlbmklMkZEZXNrdG9wJTJGaGVuaWtlbiUyRkhlaW5la2VuLVNhbGVzVHJhaW5pbmctRGFzaGJvYXJkJTJGbm9kZV9tb2R1bGVzJTJGbmV4dCUyRmRpc3QlMkZwYWdlcyUyRl9lcnJvci5qcyEuLy5qcyIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgICh3aW5kb3cuX19ORVhUX1AgPSB3aW5kb3cuX19ORVhUX1AgfHwgW10pLnB1c2goW1xuICAgICAgXCIvbmV4dC9kaXN0L3BhZ2VzL19lcnJvclwiLFxuICAgICAgZnVuY3Rpb24gKCkge1xuICAgICAgICByZXR1cm4gcmVxdWlyZShcIi9ob21lL2VsZW5pL0Rlc2t0b3AvaGVuaWtlbi9IZWluZWtlbi1TYWxlc1RyYWluaW5nLURhc2hib2FyZC9ub2RlX21vZHVsZXMvbmV4dC9kaXN0L3BhZ2VzL19lcnJvci5qc1wiKTtcbiAgICAgIH1cbiAgICBdKTtcbiAgIl0sInNvdXJjZVJvb3QiOiIifQ==\n//# sourceURL=webpack-internal:///./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?page=%2Fnext%2Fdist%2Fpages%2F_error&absolutePagePath=%2Fhome%2Feleni%2FDesktop%2Fheniken%2FHeineken-SalesTraining-Dashboard%2Fnode_modules%2Fnext%2Fdist%2Fpages%2F_error.js!./\n");
+=======
+/***/ "./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?page=%2Fnext%2Fdist%2Fpages%2F_error&absolutePagePath=%2FUsers%2Feyasu%2FDesktop%2Fleanbits%2FHeineken-SalesTraining-Dashboard%2Fnode_modules%2Fnext%2Fdist%2Fpages%2F_error.js!./":
+/*!******************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?page=%2Fnext%2Fdist%2Fpages%2F_error&absolutePagePath=%2FUsers%2Feyasu%2FDesktop%2Fleanbits%2FHeineken-SalesTraining-Dashboard%2Fnode_modules%2Fnext%2Fdist%2Fpages%2F_error.js ***!
+  \******************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("\n    (window.__NEXT_P = window.__NEXT_P || []).push([\n      \"/next/dist/pages/_error\",\n      function () {\n        return __webpack_require__(/*! ./node_modules/next/dist/pages/_error.js */ \"./node_modules/next/dist/pages/_error.js\");\n      }\n    ]);\n  //# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly9fTl9FLy4vbm9kZV9tb2R1bGVzL25leHQvZGlzdC9idWlsZC93ZWJwYWNrL2xvYWRlcnMvbmV4dC1jbGllbnQtcGFnZXMtbG9hZGVyLmpzP2FkMTgiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtBQUNBO0FBQ0E7QUFDQTtBQUNBLGVBQWUsbUJBQU8sQ0FBQywwRkFBdUc7QUFDOUg7QUFDQSIsImZpbGUiOiIuL25vZGVfbW9kdWxlcy9uZXh0L2Rpc3QvYnVpbGQvd2VicGFjay9sb2FkZXJzL25leHQtY2xpZW50LXBhZ2VzLWxvYWRlci5qcz9wYWdlPSUyRm5leHQlMkZkaXN0JTJGcGFnZXMlMkZfZXJyb3ImYWJzb2x1dGVQYWdlUGF0aD0lMkZVc2VycyUyRmV5YXN1JTJGRGVza3RvcCUyRmxlYW5iaXRzJTJGSGVpbmVrZW4tU2FsZXNUcmFpbmluZy1EYXNoYm9hcmQlMkZub2RlX21vZHVsZXMlMkZuZXh0JTJGZGlzdCUyRnBhZ2VzJTJGX2Vycm9yLmpzIS4vLmpzIiwic291cmNlc0NvbnRlbnQiOlsiXG4gICAgKHdpbmRvdy5fX05FWFRfUCA9IHdpbmRvdy5fX05FWFRfUCB8fCBbXSkucHVzaChbXG4gICAgICBcIi9uZXh0L2Rpc3QvcGFnZXMvX2Vycm9yXCIsXG4gICAgICBmdW5jdGlvbiAoKSB7XG4gICAgICAgIHJldHVybiByZXF1aXJlKFwiL1VzZXJzL2V5YXN1L0Rlc2t0b3AvbGVhbmJpdHMvSGVpbmVrZW4tU2FsZXNUcmFpbmluZy1EYXNoYm9hcmQvbm9kZV9tb2R1bGVzL25leHQvZGlzdC9wYWdlcy9fZXJyb3IuanNcIik7XG4gICAgICB9XG4gICAgXSk7XG4gICJdLCJzb3VyY2VSb290IjoiIn0=\n//# sourceURL=webpack-internal:///./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?page=%2Fnext%2Fdist%2Fpages%2F_error&absolutePagePath=%2FUsers%2Feyasu%2FDesktop%2Fleanbits%2FHeineken-SalesTraining-Dashboard%2Fnode_modules%2Fnext%2Fdist%2Fpages%2F_error.js!./\n");
+>>>>>>> ae2b2ff0ab4d467288320d65fd96aad10f847102
 
 /***/ }),
 
@@ -307,4 +318,8 @@ eval("\n\nif (false) {} else {\n  module.exports = __webpack_require__(/*! ./cjs
 
 /***/ })
 
+<<<<<<< HEAD
 },[["./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?page=%2Fnext%2Fdist%2Fpages%2F_error&absolutePagePath=%2Fhome%2Feleni%2FDesktop%2Fheniken%2FHeineken-SalesTraining-Dashboard%2Fnode_modules%2Fnext%2Fdist%2Fpages%2F_error.js!./","webpack"]]]);
+=======
+},[["./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?page=%2Fnext%2Fdist%2Fpages%2F_error&absolutePagePath=%2FUsers%2Feyasu%2FDesktop%2Fleanbits%2FHeineken-SalesTraining-Dashboard%2Fnode_modules%2Fnext%2Fdist%2Fpages%2F_error.js!./","webpack"]]]);
+>>>>>>> ae2b2ff0ab4d467288320d65fd96aad10f847102

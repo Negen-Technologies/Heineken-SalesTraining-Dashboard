@@ -5,6 +5,9 @@ import allusersreducer from './Users/allUsersReducer'
 import allregionsreducer from './Region/regionReducer'
 import allcoursesreducer from './Courses/courseReducer'
 import allmodulesreducer from './Modules/moduleReducer'
+import alllessonsreducer from './Lesson/lessonReducer'
+import allquizsreducer from './Quiz/quizReducer'
+import allbadgesreducer from './Badges/allBadgesReducer'
 
 const rootReducer = combineReducers({
   auth: auth_reducer,
@@ -13,6 +16,9 @@ const rootReducer = combineReducers({
   allregions: allregionsreducer,
   allcourses: allcoursesreducer,
   allmodules: allmodulesreducer,
+  alllessons: alllessonsreducer,
+  allquizs: allquizsreducer,
+  allbadges: allbadgesreducer,
 });
 
 export default rootReducer;

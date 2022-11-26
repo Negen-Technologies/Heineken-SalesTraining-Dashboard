@@ -14,19 +14,33 @@
     "static/development/_ssgManifest.js"
   ],
   "pages": {
+<<<<<<< HEAD
     "/Dashboard": [
+=======
+    "/Badges": [
+>>>>>>> ae2b2ff0ab4d467288320d65fd96aad10f847102
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/css/styles.chunk.css",
       "static/chunks/styles.js",
+<<<<<<< HEAD
       "static/chunks/pages/Dashboard.js"
     ],
     "/Login": [
+=======
+      "static/chunks/pages/Badges.js"
+    ],
+    "/Trainees": [
+>>>>>>> ae2b2ff0ab4d467288320d65fd96aad10f847102
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/css/styles.chunk.css",
       "static/chunks/styles.js",
+<<<<<<< HEAD
       "static/chunks/pages/Login.js"
+=======
+      "static/chunks/pages/Trainees.js"
+>>>>>>> ae2b2ff0ab4d467288320d65fd96aad10f847102
     ],
     "/_app": [
       "static/chunks/webpack.js",
