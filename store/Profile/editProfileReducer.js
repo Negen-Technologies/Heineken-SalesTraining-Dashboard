@@ -1,50 +1,67 @@
-import * as actionTypes from "./editProfileActionTypes";
-
+import { Action } from "@antv/g2";
+import * as actionTypes from "./EditProfileActionTypes";
 
 const initialState = {
-  isPending: false,
   error: null,
-  message:null
+  loading: false,
+  allprofile: {},
+  count: 0,
 };
 
-
-
-const editProfileStart = (state,) => {
-  return  {
-    ...state,
-    message:null,
-    error: null,
-    isPending: true
-  }
-};
-
-const editProfileSuccess = (state, action) => {
+const allprofileStart = (state, action) => {
   return {
     ...state,
-    message: action.payload,
     error: null,
-    isPending: false
-  }
+    loading: true,
+  };
 };
 
-const editProfileFail = (state, action) => {
+const allprofileSuccess = (state, action) => {
+console.log('in reducer: ', action.data)
+  return {
+    ...state,
+    allprofile: action.data,
+    error: null,
+    loading: false,
+    count: action.count,
+  };
+};
+
+const allprofileFail = (state, action) => {
   return {
     ...state,
     error: action.error,
-    isPending: false
-  }}
+    loading: false,
+  };
+};
+
+
+const updateprofileSuccess = (state, action) => {
+
+  return {
+    ...state,
+    allprofile: action.data,
+    error: null,
+    loading: false,
+  };
+};
 
 
 
-export const editProfileReducer = ( state = initialState, action) => {
+const allprofilereducer = (state = initialState, action) => {
   switch (action.type) {
-    case actionTypes.EDIT_PROFILE_PENDING:
-      return editProfileStart(state, );
-    case actionTypes.EDIT_PROFILE_SUCCESS:
-      return editProfileSuccess(state, action);
-    case actionTypes.EDIT_PROFILE_FAILED:
-      return editProfileFail(state, action);
+    case actionTypes.ALL_PROFILE_PENDING:
+      return allprofileStart(state, action);
+    case actionTypes.ALL_PROFILE_SUCCESS:
+      return allprofileSuccess(state, action);
+    case actionTypes.ALL_PROFILE_FAILED:
+      return allprofileFail(state, action);
+   
+    case actionTypes.UPDATE_PROFILE_SUCCESS:
+      return updateprofileSuccess(state, action);
     default:
       return state;
   }
 };
+
+export default allprofilereducer;

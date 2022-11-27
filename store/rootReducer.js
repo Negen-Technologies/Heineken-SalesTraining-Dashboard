@@ -3,12 +3,15 @@ import auth_reducer from "./Authentication/authreducer";
 import avatar_reducer from './Avatar/avatar_reducer'
 import allusersreducer from './Users/allUsersReducer'
 import allregionsreducer from './Region/regionReducer'
+import allsubregionsreducer from './Subregion/subregionReducer'
 import allcoursesreducer from './Courses/courseReducer'
 import allmodulesreducer from './Modules/moduleReducer'
 import alllessonsreducer from './Lesson/lessonReducer'
 import allquizsreducer from './Quiz/quizReducer'
 import allbadgesreducer from './Badges/allBadgesReducer'
 import alltraineesreducer from './Trainee/traineeReducer'
+import allterritoryreducer from './Territory/territoryReducer'
+import allprofilereducer from "./Profile/EditProfileReducer";
 
 const rootReducer = combineReducers({
   auth: auth_reducer,
@@ -21,6 +24,9 @@ const rootReducer = combineReducers({
   allquizs: allquizsreducer,
   allbadges: allbadgesreducer,
   alltrainees: alltraineesreducer,
+  allsubregions: allsubregionsreducer,
+  allterritory: allterritoryreducer,
+  allprofile: allprofilereducer
 });
 
 export default rootReducer;

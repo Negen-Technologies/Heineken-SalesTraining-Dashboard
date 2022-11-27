@@ -4,6 +4,7 @@ sqltools_20221114200323_6444.log
 /node_modules
 /.pnp
 .pnp.js
+.next
 
 # testing
 /coverage

@@ -5,22 +5,26 @@ import {
   Space,
   Button,
   Modal,
-
+  Row,
+  Col,
   Select,
+  Image
 } from "antd";
 import { connect } from "react-redux";
 import { useRouter } from "next/router";
-import { EditOutlined } from "@ant-design/icons";
-import { editProfileAction } from "../../store/Profile/editProfileAction";
-import URLst,{ primary_color } from "../utils/constants";
+import { EditOutlined, LoadingOutlined } from "@ant-design/icons";
+// import { editProfileAction } from "../../store/Profile/EditProfileAction";
+import URLst,{ primary_color } from "../../utils/constants";
 import FormData from "form-data";
 
-function ProfileLayout({
-  editProfileData,
-  userData,
+import {
+  getProfileSuccess,
+  editProfileAction,
+  allprofilePending,
+ } from "../../store";
 
-  editProfile,
-}) {
+
+function ProfileLayout(props) {
   const [fileList, setFileList] = useState([]);
 
   const [form] = Form.useForm();
@@ -28,33 +32,45 @@ function ProfileLayout({
   const router = useRouter();
 
   useEffect(() => {
-    if (userData.token) {
+    props.getProfileSuccess()
+    console.log('in layout: ', props.allprofile)
+
+  console.log(props.allprofile)
+
+      form.setFieldsValue({
+        name: props.allprofile.name,
+        username: props.allprofile.username,
+        email: props.allprofile.email,
+        role:props.allprofile.role
+      });
+  
+  }, []);
+
+  useEffect(() => {
   
 
       form.setFieldsValue({
-        name: userData.data.name,
-        username: userData.data.username,
-        email: userData.data.email,
-        password: userData.data.password,
-        
-        
+        name: props.allprofile.name,
+        username: props.allprofile.username,
+        email: props.allprofile.email,
+        role:props.allprofile.role
       });
-    }
-  });
+  
+  }, [props.allprofile]);
 
+  // function success() {
+  //   Modal.success({
+  //     title: editProfileData.message,
+  //   });
+  // }
+  // if (editProfileData.message) {
+  //   success();
+  // }
+  const onSubmit = async () => {
+    // checkedValues[URLst] = imageUrl;
+    const newData = await form.validateFields();
 
-  function success() {
-    Modal.success({
-      title: editProfileData.message,
-    });
-  }
-  if (editProfileData.message) {
-    success();
-  }
-  const onSubmit = (checkedValues) => {
-
-
-    editProfile(checkedValues);
+    props.editProfile(props.allprofile, newData);
   };
 
   return (
@@ -112,7 +128,7 @@ function ProfileLayout({
 
           <Form.Item name="username"
           rules={[{ required: true, message: "" }]}>
-            <Input placeholder="Username" />
+            <Input placeholder="Username" disabled = {true}/>
           </Form.Item>
         <Form.Item
             name="email"
@@ -129,12 +145,12 @@ function ProfileLayout({
           >
             <Input placeholder="Email" />
           </Form.Item>
-          <Form.Item name="password">
+          {/* <Form.Item name="password">
             <Input placeholder="Password" />
-          </Form.Item>
-          <Form.Item>
+          </Form.Item> */}
+          {/* <Form.Item>
             <p style={{ color: "red" }}>{props.usersError}</p>
-          </Form.Item>
+          </Form.Item> */}
 
           <Form.Item>
             <Button
@@ -151,8 +167,8 @@ function ProfileLayout({
               htmlType="submit"
               className="login-form-button"
               style={{ marginLeft: 30 }}
-              loading={editProfileData.isPending}
-              disabled={uploading}
+              // loading={editProfileData.isPending}
+              // disabled={uploading}
             >
               Submit
             </Button>
@@ -184,7 +200,7 @@ function ProfileLayout({
                  <Space size={12}>
       <Image
         width={200}
-        src={`${URLst}images/${record.image}`}
+        src={`${URLst}images/${props.allprofile.image}`}
         placeholder={
           <Image
             preview={false}
@@ -193,7 +209,7 @@ function ProfileLayout({
           />
         }
       />
-                <EditOutlined />
+                {/* <EditOutlined /> */}
               </Space>
             {/* </Upload>  */}
           </div>
@@ -207,15 +223,17 @@ function ProfileLayout({
 
 const mapStateToProps = (state) => {
   return {
-    userData: state.auth,
-    editProfileData: state.editProfile,
+    editProfile: state.editProfile,
+    allprofile: state.allprofile.allprofile,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    editProfile: (checkedValues) =>
-      dispatch(editProfileAction(checkedValues)),
+    editProfile: (profile, edited) =>
+      dispatch(editProfileAction(profile, edited)),
+    getProfileSuccess: () => dispatch(getProfileSuccess())
+    
   };
 };
 
