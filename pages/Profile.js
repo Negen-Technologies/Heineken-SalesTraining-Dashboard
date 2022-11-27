@@ -2,7 +2,7 @@ import React from "react";
 import ProfileLayout from "../Components/ProfilePage/ProfileLayout";
 import withAuth from "../utils/protectRoute";
 import { connect } from "react-redux";
-import { editProfileAction } from "../store/Profile/editProfileAction";
+import { editProfileAction } from "../store/index";
 
 function profile({ userData, editProfile, }) {
   return (

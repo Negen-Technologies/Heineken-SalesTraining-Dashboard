@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  Avatar,
   Input,
   Form,
   Space,
@@ -11,10 +10,9 @@ import {
 } from "antd";
 import { connect } from "react-redux";
 import { useRouter } from "next/router";
-import { EditOutlined, LoadingOutlined } from "@ant-design/icons";
+import { EditOutlined } from "@ant-design/icons";
 import { editProfileAction } from "../../store/Profile/editProfileAction";
-// import withAuth from "../utils/protectRoute";
-// import URLst,{ primary_color } from "../utils/constants";
+import URLst,{ primary_color } from "../utils/constants";
 import FormData from "form-data";
 
 function ProfileLayout({
@@ -121,11 +119,11 @@ function ProfileLayout({
             rules={[
               {
                 type: "email",
-                message: "The input is not valid E-mail!",
+                
               },
               {
                 required: true,
-                message: "Please input your E-mail!",
+                
               },
             ]}
           >
