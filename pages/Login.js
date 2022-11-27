@@ -83,8 +83,8 @@ function Login({ userData, authLogin }) {
                 <div>LOGIN TO</div>
                 <div>YOUR EXPERIENCE</div>
               </Col>
-              <Col span={12} style={{ textAlign: "right" }}>
-                Heiniken
+              <Col span={12} style={{ textAlign: "right",fontWeight:700 }}>
+                Heineken
               </Col>
             </Row>
             <hr style={{ backgroundColor: "red" }} />

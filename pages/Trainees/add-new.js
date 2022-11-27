@@ -1,22 +1,22 @@
 import React, { useState } from "react";
 import withAuth from "../../utils/protectRoute";
 import { primary_color } from "../../utils/constants";
-import { Button, Input, Avatar, Upload, Space, Form } from "antd";
-import { PlusCircleFilled, LeftCircleFilled } from "@ant-design/icons";
-import { useRouter } from "next/router";
-const props = {
-  onRemove: (file) => {
-    setFileList([]);
-  },
-  onChange: (info) => {},
-  beforeUpload: async (file) => {
-    // setImageFile(URL.createObjectURL(file));
-  },
-  //   fileList,
-};
+import { Button, Input, message, Upload, Space, Form } from "antd";
+import {
+  PlusCircleFilled,
+  LeftCircleFilled,
+  PlusOutlined,
+} from "@ant-design/icons";
+import { traineeCreate } from "../../store";
+import { connect } from "react-redux";
 
-function addnew() {
+import { useRouter } from "next/router";
+import FormData from "form-data";
+
+function Addnew(props) {
   const router = useRouter();
+  const [imageUrl, setImageUrl] = useState(null);
+  const formData = new FormData();
 
   return (
     <div>
@@ -55,55 +55,51 @@ function addnew() {
         wrapperCol={{
           span: 8,
         }}
-        onFinish={(doc) => {
-          console.log(JSON.stringify(doc));
-          var t_data = localStorage.getItem("trainee_data");
-          var final = JSON.parse(t_data);
-
-          final = [
-            ...final,
-            {
-              name: doc.name,
-              username: doc.username,
-              department: doc.department,
-              phone: doc.phone,
-              email: doc.email,
-              age:0
-            },
-            // {
-            //   key: "1",
-            //   name: "John Brown",
-            //   age: 0,
-            //   address: "New York No. 1 Lake Park",
-            //   percent: 0,
-            // },
-          ];
-
-          localStorage.setItem("trainee_data", JSON.stringify(final));
-          console.log(final);
-          router.replace("/Trainees");
+        onFinish={(e) => {
+          console.log(e);
+          formData.append("name", e.name);
+          formData.append("username", e.username);
+          formData.append("email", e.email);
+          formData.append("phone", e.phone);
+          formData.append("department", e.department);
+          formData.append("file", e.image.file.originFileObj);
+          props.traineeCreate(formData);
         }}
       >
         <h3>Trainee Information</h3>
-        {/* <Form.Item>
-          {" "}
+        <Form.Item name="image">
           <Upload
-            {...props}
-            showUploadList={{
-              showRemoveIcon: false,
-              showPreviewIcon: false,
-              showDownloadIcon: false,
+            name="avatar"
+            listType="picture-card"
+            className="avatar-uploader"
+            showUploadList={false}
+            beforeUpload={async (file) => {
+              setImageUrl(URL.createObjectURL(file));
+              console.log(file);
             }}
-            accept=".jpg, .jpeg, .png"
           >
-            <Avatar
-              offset={5}
-              size={{ xs: 60, sm: 60, md: 60, lg: 80, xl: 80, xxl: 80 }}
-            >
-              <PlusCircleFilled />
-            </Avatar>
+            {imageUrl ? (
+              <img
+                src={imageUrl}
+                alt="avatar"
+                style={{
+                  width: "100%",
+                }}
+              />
+            ) : (
+              <div>
+                <PlusOutlined />
+                <div
+                  style={{
+                    marginTop: 8,
+                  }}
+                >
+                  Upload Image
+                </div>
+              </div>
+            )}
           </Upload>
-        </Form.Item> */}
+        </Form.Item>
 
         <Form.Item name="name">
           <Input placeholder="Full Name" />
@@ -119,10 +115,18 @@ function addnew() {
           <Input placeholder="Phone Number" />
         </Form.Item>
         <Form.Item name="email">
-          <Input placeholder="Email(optional)" />
+          <Input placeholder="Email" />
         </Form.Item>
         <Form.Item>
-          <Button style={{ borderRadius: 5 }} type="primary" htmlType="submit">
+          <p style={{ color: "red" }}>{props.traineesError}</p>
+        </Form.Item>
+        <Form.Item>
+          <Button
+            style={{ borderRadius: 5 }}
+            type="primary"
+            htmlType="submit"
+            loading={props.traineesPending}
+          >
             Create Account
           </Button>
         </Form.Item>
@@ -131,4 +135,19 @@ function addnew() {
   );
 }
 
-export default withAuth(addnew);
+const mapStateToProps = (state) => {
+  return {
+    trainees: state.alltrainees.alltrainees,
+    count: state.alltrainees.count,
+    traineesPending: state.alltrainees.loading,
+    traineesError: state.alltrainees.error,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    traineeCreate: (formData) => dispatch(traineeCreate(formData)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withAuth(Addnew));

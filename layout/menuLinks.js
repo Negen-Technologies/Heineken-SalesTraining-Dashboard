@@ -48,16 +48,7 @@ export const adminmenu = [
     link: "/Regions",
     icon: <UngroupOutlined style={{ fontSize: "26px" }} />,
   },
-  {
-    name: "Reports",
-    link: "/Reports",
-    icon: <FileDoneOutlined style={{ fontSize: "26px" }} />,
-  },
-  {
-    name: "Settings",
-    link: "/Settings",
-    icon: <SettingOutlined style={{ fontSize: "26px" }} />,
-  },
+  
 ];
 
 export const adminroutes = [

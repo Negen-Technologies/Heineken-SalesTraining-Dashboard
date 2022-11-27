@@ -2,7 +2,7 @@ import React from "react";
 import { Space } from "antd";
 import { LeftCircleFilled } from "@ant-design/icons";
 import { primary_color } from "../../utils/constants";
-function OverviewTab({ title, backButton, onbuttonclick }) {
+function OverviewTab({ title, backButton, onbuttonclick, dividerText }) {
   return (
     <div>
       <Space>
@@ -23,6 +23,22 @@ function OverviewTab({ title, backButton, onbuttonclick }) {
         >
           {title}
         </div>
+        {dividerText != null ? (
+          <>
+            <div style={{ fontSize: "20px", fontWeight: 600 }}>|</div>
+            <div
+              style={{
+                fontSize: "20px",
+                fontWeight: 500,
+                color: primary_color,
+              }}
+            >
+              {dividerText}
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
       </Space>
 
       <div

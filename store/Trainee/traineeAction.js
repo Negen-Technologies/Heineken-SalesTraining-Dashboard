@@ -1,69 +1,69 @@
 import axios from "axios";
 import URLst, { handle401 } from "../../utils/constants";
-import * as actionTypes from "./quizActionTypes";
+import { userCreateSuccess } from "../Users/allUsersAction";
+import * as actionTypes from "./traineeActionTypes";
 
-
-export const allquizPending = () => {
+export const alltraineePending = () => {
   return {
-    type: actionTypes.QUIZ_PENDING,
+    type: actionTypes.TRAINEE_PENDING,
     isPending: true,
   };
 };
-export const allquizSuccess = (data) => {
+export const alltraineeSuccess = (data) => {
   return {
-    type: actionTypes.QUIZ_SUCCESS,
+    type: actionTypes.TRAINEE_SUCCESS,
     isPending: false,
     data: data.results,
     count: data.totalResults,
   };
 };
 
-export const quizCreateSuccess = (data) => {
+export const traineeCreateSuccess = (data) => {
   return {
-    type: actionTypes.CREATE_QUIZ_SUCCESS,
+    type: actionTypes.CREATE_TRAINEE_SUCCESS,
     data: data,
   };
 };
 
-export const updatequizSuccess = (data) => {
+export const updatetraineeSuccess = (data) => {
   return {
-    type: actionTypes.UPDATE_QUIZ_SUCCESS,
+    type: actionTypes.UPDATE_TRAINEE_SUCCESS,
     isPending: false,
     data: data,
   };
 };
 
-export const deletequizSuccess = (data) => {
+export const deletetraineeSuccess = (data) => {
   return {
-    type: actionTypes.DELETE_QUIZ_SUCCESS,
+    type: actionTypes.DELETE_TRAINEE_SUCCESS,
     isPending: false,
     data: data,
   };
 };
 
-export const allquizFail = (error) => {
+export const alltraineeFail = (error) => {
   return {
-    type: actionTypes.QUIZ_FAILED,
+    type: actionTypes.TRAINEE_FAILED,
     error: error,
     isPending: false,
   };
 };
 
-export const getAllQuizSuccess = (limit, page) => {
+export const getAllTraineeSuccess = (limit, page) => {
   var token = localStorage.getItem("token");
   return (dispatch) => {
-    dispatch(allquizPending());
+    dispatch(alltraineePending());
 
     axios({
       method: "get",
-      url: URLst + `v1/questions?limit=${limit}&page=${page}`,
+      url: URLst + `v1/trainees?limit=${limit}&page=${page}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
       .then((res) => {
         console.log(res.data);
-        dispatch(allquizSuccess(res.data));
+        dispatch(alltraineeSuccess(res.data));
       })
       .catch((err) => {
         var errorData;
@@ -76,23 +76,56 @@ export const getAllQuizSuccess = (limit, page) => {
           errorData = err.message;
         }
         console.log(errorData);
-        dispatch(allquizFail(errorData));
+        dispatch(alltraineeFail(errorData));
       });
   };
 };
 
-export const quizCreate = ( formData) => {
+export const getSingleTrainee = (id) => {
+  var token = localStorage.getItem("token");
+  return (dispatch) => {
+    dispatch(alltraineePending());
+
+    axios({
+      method: "get",
+      url: URLst + `v1/trainees/${id}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        console.log(res.data);
+
+        dispatch(alltraineeSuccess({ results: [res.data] }));
+      })
+      .catch((err) => {
+        var errorData;
+        if (err.response.data.code == 401) {
+          handle401();
+        }
+        if (err.response != null) {
+          errorData = err.response.data.message;
+        } else {
+          errorData = err.message;
+        }
+        console.log(errorData);
+        dispatch(alltraineeFail(errorData));
+      });
+  };
+};
+export const traineeCreate = (formData) => {
   console.log(formData);
   return (dispatch) => {
-    dispatch(allquizPending());
+    dispatch(alltraineePending());
     const token = localStorage.getItem("token");
     axios
       .post(
-        URLst + "v1/questions",
+        URLst + "v1/trainees",
         formData,
 
         {
           headers: {
+            "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`,
           },
         }
@@ -100,7 +133,7 @@ export const quizCreate = ( formData) => {
       .then((res) => {
         console.log(res.data);
 
-        dispatch(quizCreateSuccess(res.data));
+        dispatch(traineeCreateSuccess(res.data));
       })
       .catch((err) => {
         var errorData;
@@ -113,20 +146,20 @@ export const quizCreate = ( formData) => {
           errorData = err.message;
         }
         console.log(errorData);
-        dispatch(allquizFail(errorData));
+        dispatch(alltraineeFail(errorData));
       });
   };
 };
 
-export const AllQuizEdit = (id, quizs, edited) => {
+export const AllTraineeEdit = (id, trainees, edited) => {
   const token = localStorage.getItem("token");
 
   return (dispatch, getState) => {
-    dispatch(allquizPending());
+    dispatch(alltraineePending());
 
     axios({
       method: "patch",
-      url: URLst + `v1/questions/${id}`,
+      url: URLst + `v1/trainees/${id}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -134,15 +167,15 @@ export const AllQuizEdit = (id, quizs, edited) => {
     })
       .then((res) => {
         console.log(res.data);
-        let newData = [...quizs];
+        let newData = [...trainees];
         let index = newData.findIndex((av) => av.id === res.data.id);
 
-        newData[index].summary = edited.summary;
-        newData[index].title = edited.title;
-        newData[index].video_source = edited.video_source;
-        newData[index].order = edited.order;
+        newData[index].user.name = edited.name;
+        newData[index].user.email = edited.email;
+        newData[index].department = edited.department;
+        // newData[index].user.image = res.data;
 
-        dispatch(updatequizSuccess(newData));
+        dispatch(updatetraineeSuccess(newData));
       })
       .catch((err) => {
         var errorData;
@@ -155,26 +188,26 @@ export const AllQuizEdit = (id, quizs, edited) => {
           errorData = err.message;
         }
         console.log(errorData);
-        dispatch(allquizFail(errorData));
+        dispatch(alltraineeFail(errorData));
       });
   };
 };
 
-export const AllQuizDelete = (id, quizs) => {
-  var filtereddata = quizs.filter((item) => item.id !== id);
+export const AllTraineeDelete = (id, trainees) => {
+  var filtereddata = trainees.filter((item) => item.id !== id);
   var token = localStorage.getItem("token");
   return (dispatch) => {
-    dispatch(allquizPending());
+    dispatch(alltraineePending());
 
     axios({
       method: "delete",
-      url: URLst + `v1/questions/${id}`,
+      url: URLst + `v1/trainees/${id}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
       .then((res) => {
-        dispatch(deletequizSuccess(filtereddata));
+        dispatch(deletetraineeSuccess(filtereddata));
       })
       .catch((err) => {
         var errorData;
@@ -183,11 +216,10 @@ export const AllQuizDelete = (id, quizs) => {
         }
         if (err.response != null) {
           errorData = err.response.data.message;
-          console.log(errorData)
         } else {
           errorData = err.message;
         }
-        dispatch(allquizFail(errorData));
+        dispatch(alltraineeFail(errorData));
       });
   };
 };

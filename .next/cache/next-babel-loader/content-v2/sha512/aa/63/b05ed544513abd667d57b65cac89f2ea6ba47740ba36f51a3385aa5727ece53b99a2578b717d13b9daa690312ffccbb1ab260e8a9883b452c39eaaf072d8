@@ -1,1 +1,0 @@
-{"ast":null,"code":"export * from \"./Authentication/authactions\";\nexport * from \"./Avatar/avatar_actions\";\nexport * from \"./Users/allUsersAction\";\nexport * from \"./Region/regionAction\";\nexport * from \"./Courses/courseAction\";\nexport * from \"./Modules/moduleAction\";","map":null,"metadata":{},"sourceType":"module"}

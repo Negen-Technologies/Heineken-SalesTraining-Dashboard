@@ -68,10 +68,11 @@ export const getAllBadgeSuccess = (limit, page) => {
       })
       .catch((err) => {
         var errorData;
-        if (err.response.data.code == 401) {
-          handle401();
-        }
+
         if (err.response != null) {
+          if (err.response.data.code == 401) {
+            handle401();
+          }
           errorData = err.response.data.message;
         } else {
           errorData = err.message;
@@ -99,12 +100,11 @@ export const badgeCreate = (formData) => {
         dispatch(badgeCreateSuccess(res.data));
       })
       .catch((err) => {
-        if (err.response.data.code == 401) {
-          handle401();
-        }
-
         var errorData;
         if (err.response != null) {
+          if (err.response.data.code == 401) {
+            handle401();
+          }
           errorData = err.response.data.message;
         } else {
           errorData = err.message;
@@ -139,10 +139,11 @@ export const AllBadgeEdit = (id, badges, edited) => {
       })
       .catch((err) => {
         var errorData;
-        if (err.response.data.code == 401) {
-          handle401();
-        }
+
         if (err.response != null) {
+          if (err.response.data.code == 401) {
+            handle401();
+          }
           errorData = err.response.data.message;
         } else {
           errorData = err.message;
@@ -171,10 +172,11 @@ export const AllBadgeDelete = (id, badges) => {
       })
       .catch((err) => {
         var errorData;
-        if (err.response.data.code == 401) {
-          handle401();
-        }
+
         if (err.response != null) {
+          if (err.response.data.code == 401) {
+            handle401();
+          }
           errorData = err.response.data.message;
         } else {
           errorData = err.message;

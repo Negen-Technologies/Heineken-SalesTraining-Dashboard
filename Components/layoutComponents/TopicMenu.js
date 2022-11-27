@@ -57,11 +57,12 @@ export default function TopicMenu({ items, selectedKey, changeSelectedKey }) {
                 paddingTop: "5px",
                 paddingRight: "5px",
                 color: primary_color,
-                fontSize: 20,
+                fontSize: 16,
                 fontWeight: 600,
+                textOverflow: "ellipsis",
               }}
             >
-              John Doe
+              {localStorage.getItem("name")}
             </div>
             <div
               style={{
@@ -71,7 +72,7 @@ export default function TopicMenu({ items, selectedKey, changeSelectedKey }) {
                 fontSize: 11,
               }}
             >
-              Training Admin
+              {localStorage.getItem("role")}
             </div>
           </Col>
 
@@ -92,11 +93,14 @@ export default function TopicMenu({ items, selectedKey, changeSelectedKey }) {
                 </Row>
                 <Popconfirm
                   title="Are you sure you want to log out?"
-                  onConfirm={() => {}}
+                  onConfirm={() => { localStorage.clear();window.location.reload();}}
                   okText="Logout"
                   cancelText="Cancel"
                 >
-                  <Row style={{ cursor: "pointer" }}>
+                  <Row
+                    style={{ cursor: "pointer" }}
+                
+                  >
                     <LogoutOutlined
                       style={{ marginRight: "10px", marginTop: "4px" }}
                     />

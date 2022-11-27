@@ -64,8 +64,10 @@ function Badges(props) {
     seteditingkey(e.id);
     form.setFieldsValue({
       name: e.name,
-      summary: e.summary,
+      description: e.description,
+      code: e.code,
     });
+    setImageUrl(`${URLst}images/${e.image}`);
     setvisible(true);
   };
   return props.badgesPending && data.length == 0 ? (
@@ -219,12 +221,15 @@ function Badges(props) {
           form={form}
           onFinish={(e) => {
             console.log(e);
-
             formData.append("name", e.name);
             formData.append("description", e.description);
             formData.append("code", e.code);
-            formData.append("image", e.image.file.originFileObj);
+            if (!isediting) {
+               formData.append("image", e.image.file.originFileObj);
+            }
+           
             if (isediting) {
+              delete e.image;
               props.AllBadgeEdit(editingkey, data, e);
             } else {
               props.badgeCreate(formData);
@@ -240,39 +245,43 @@ function Badges(props) {
           <Form.Item name="code">
             <Input placeholder="Code" />
           </Form.Item>
-          <Form.Item name="image">
-            <Upload
-              name="avatar"
-              listType="picture-card"
-              className="avatar-uploader"
-              showUploadList={false}
-              beforeUpload={async (file) => {
-                setImageUrl(URL.createObjectURL(file));
-                console.log(file);
-              }}
-            >
-              {imageUrl ? (
-                <img
-                  src={imageUrl}
-                  alt="avatar"
-                  style={{
-                    width: "100%",
-                  }}
-                />
-              ) : (
-                <div>
-                  <PlusOutlined />
-                  <div
+          {isediting ? (
+            <></>
+          ) : (
+            <Form.Item name="image">
+              <Upload
+                name="avatar"
+                listType="picture-card"
+                className="avatar-uploader"
+                showUploadList={false}
+                beforeUpload={async (file) => {
+                  setImageUrl(URL.createObjectURL(file));
+                  console.log(file);
+                }}
+              >
+                {imageUrl ? (
+                  <img
+                    src={imageUrl}
+                    alt="avatar"
                     style={{
-                      marginTop: 8,
+                      width: "100%",
                     }}
-                  >
-                    Upload Image
+                  />
+                ) : (
+                  <div>
+                    <PlusOutlined />
+                    <div
+                      style={{
+                        marginTop: 8,
+                      }}
+                    >
+                      Upload Image
+                    </div>
                   </div>
-                </div>
-              )}
-            </Upload>
-          </Form.Item>
+                )}
+              </Upload>
+            </Form.Item>
+          )}
           <Form.Item>
             <p style={{ color: "red" }}>{props.badgesError}</p>
           </Form.Item>

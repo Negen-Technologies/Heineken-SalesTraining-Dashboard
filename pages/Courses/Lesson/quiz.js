@@ -157,20 +157,37 @@ function Quiz(props) {
                         header={e.question}
                         style={{ margin: "5px 0px" }}
                         extra={
-                          <Avatar
-                            size="small"
-                            style={{
-                              backgroundColor: primary_color,
-                              margin: "0px 2px",
-                            }}
-                            icon={
-                              <EditFilled
-                                onClick={() => {
-                                  editor(e);
-                                }}
-                              />
-                            }
-                          />
+                          <Row>
+                            <Avatar
+                              size="small"
+                              style={{
+                                backgroundColor: primary_color,
+                                margin: "0px 2px",
+                              }}
+                              icon={
+                                <EditFilled
+                                  onClick={() => {
+                                    editor(e);
+                                  }}
+                                />
+                              }
+                            />
+                            <Avatar
+                              size="small"
+                              style={{
+                                backgroundColor: "red",
+                                margin: "0px 2px",
+                              }}
+                              icon={
+                                <DeleteFilled
+                                  onClick={() => {
+                                    props.AllQuizDelete(e.id, data);
+                                  
+                                  }}
+                                />
+                              }
+                            />
+                          </Row>
                         }
                       >
                         <div>
@@ -269,7 +286,6 @@ function Quiz(props) {
                     <Radio value={el} name={el}>
                       {" "}
                       <Input
-                        
                         placeholder={`Choice ${el}`}
                         // initalvals[el - 1]
                         value={`${isediting ? initalvals[el - 1] : ""} `}

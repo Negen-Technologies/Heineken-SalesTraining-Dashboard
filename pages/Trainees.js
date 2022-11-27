@@ -18,8 +18,18 @@ import {
   DeleteOutlined,
   EyeOutlined,
 } from "@ant-design/icons";
-import withAuth from "../utils/protectRoute";
-import { primary_color } from "../utils/constants";
+
+import { connect } from "react-redux";
+import {
+  getAllTraineeSuccess,
+  AllTraineeEdit,
+  AllTraineeDelete,
+  traineeCreate,
+} from "./../store";
+import withAuth from "./../utils/protectRoute";
+import URLst, { primary_color } from "./../utils/constants";
+import ActionsTab from "./../Components/SupplimentaryComponents/actionsTab";
+import OverviewTab from "./../Components/SupplimentaryComponents/overviewTab";
 import { useRouter } from "next/router";
 
 let origindata = [
@@ -45,21 +55,19 @@ let origindata = [
     percent: 0,
   },
 ];
-function Trainees() {
-  var [data, setData] = useState(origindata);
+function Trainees(props) {
   const [visible, setvisible] = useState(false);
   const router = useRouter();
-  const form=Form.useForm()
-  useEffect(() => {
-    // localStorage.setItem("trainee_data", JSON.stringify(data));
+  const form = Form.useForm();
 
-    var tr_da = localStorage.getItem("trainee_data");
-    if (tr_da == (undefined || null)) {
-      localStorage.setItem("trainee_data", JSON.stringify(data));
-    } else {
-      var tt = JSON.parse(localStorage.getItem("trainee_data"));
-      setData(tt);
-    }
+  const data = [];
+
+  props.trainees.forEach((element) => {
+    console.log(element);
+    data.push({ ...element, key: element._id });
+  });
+  useEffect(() => {
+    props.getAllTraineeSuccess(10, 1);
   }, []);
 
   const columns = [
@@ -73,11 +81,18 @@ function Trainees() {
           <Avatar
             shape="circle"
             size="small"
-            src={`https://joeschmoe.io/api/v1/${record.key}`}
+            src={`${URLst}images/${record.user.image}`}
             style={{ backgroundColor: "#10c70e" }}
             icon={<UserOutlined />}
           />
-          <div style={{ padding: "0px 10px" }}>{text}</div>
+          <a
+            style={{ padding: "0px 10px" }}
+            onClick={() => {
+              router.push(`Trainees/detail-info?id=${record._id}`);
+            }}
+          >
+            {record.user.name}
+          </a>
         </Row>
       ),
     },
@@ -85,15 +100,21 @@ function Trainees() {
       title: "Points",
       dataIndex: "age",
       key: "age",
-      render: (text) => (
+      render: (text, record) => (
         <Row>
           {" "}
           <div style={{ color: "red" }}>
             <StarFilled />
           </div>
-          <div style={{ padding: "0px 10px", color: primary_color }}>
-            {text} Points
-          </div>
+          <Button
+            type="link"
+            style={{ padding: "0px 10px", color: primary_color }}
+            onClick={() => {
+              router.push(`Trainees/badge-detail?id=${record._id}`);
+            }}
+          >
+            {record.badges.length} Points
+          </Button>
         </Row>
       ),
     },
@@ -101,21 +122,28 @@ function Trainees() {
       title: "Progress",
       dataIndex: "percent",
       key: "percent",
-      render: (text) => (
-        <Row>
-          {" "}
-          <div style={{ color: primary_color }}>Course Progress</div>
-          <div style={{ padding: "0px 10px" }}>
-            <Progress
-              percent={text}
-              size="small"
-              showInfo={false}
-              strokeColor={primary_color}
-              trailColor={"grey"}
-              style={{ width: "150px" }}
-            />
-          </div>
-        </Row>
+      render: (text, record) => (
+        <Button
+          type="link"
+          onClick={() => {
+            router.push(`Trainees/course-progress?id=${record._id}`);
+          }}
+        >
+          <Row>
+            {" "}
+            <div style={{ color: primary_color }}>Course Progress</div>
+            <div style={{ padding: "0px 10px" }}>
+              <Progress
+                percent={text}
+                size="small"
+                showInfo={false}
+                strokeColor={primary_color}
+                trailColor={"grey"}
+                style={{ width: "150px" }}
+              />
+            </div>
+          </Row>
+        </Button>
       ),
     },
     {
@@ -124,7 +152,6 @@ function Trainees() {
       key: "action",
       render: (_, record) => (
         <Row>
-          
           {/* <Avatar
           size="small"
           style={{
@@ -133,22 +160,24 @@ function Trainees() {
           }}
           icon={<EyeOutlined />}
         /> */}
+
           <Avatar
             size="small"
             style={{ backgroundColor: "red", margin: "0px 2px" }}
             icon={
-              <DeleteOutlined
-                onClick={() => {
-                  var filtereddata = data.filter(
-                    (item) => item.key !== record.key
-                  );
-                  setData(filtereddata);
-                  localStorage.setItem(
-                    "trainee_data",
-                    JSON.stringify(filtereddata)
-                  );
+              <Popconfirm
+                title={"Are you sure you want to delete this Trainee?"}
+                onConfirm={() => {
+                  props.AllTraineeDelete(record.id, data);
                 }}
-              />
+              >
+                {" "}
+                <DeleteOutlined
+                  onClick={() => {
+                    props.AllTraineeDelete(record.id, data);
+                  }}
+                />
+              </Popconfirm>
             }
           />
         </Row>
@@ -197,7 +226,9 @@ function Trainees() {
           ></div>
 
           <Table
+            scroll={{ x: 200 }}
             style={{ margin: "20px 0px" }}
+            loading={props.traineesPending}
             columns={columns}
             dataSource={data}
             pagination={false}
@@ -298,5 +329,27 @@ function Trainees() {
     </div>
   );
 }
+const mapStateToProps = (state) => {
+  return {
+    trainees: state.alltrainees.alltrainees,
+    count: state.alltrainees.count,
+    traineesPending: state.alltrainees.loading,
+    traineesError: state.alltrainees.error,
+  };
+};
 
-export default withAuth(Trainees);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getAllTraineeSuccess: (limit, page) =>
+      dispatch(getAllTraineeSuccess(limit, page)),
+    AllTraineeEdit: (id, trainees, edited) =>
+      dispatch(AllTraineeEdit(id, trainees, edited)),
+    AllTraineeDelete: (id, trainees) =>
+      dispatch(AllTraineeDelete(id, trainees)),
+    traineeCreate: (formData) => dispatch(traineeCreate(formData)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withAuth(Trainees));
+
+// export default withAuth(Trainees);
