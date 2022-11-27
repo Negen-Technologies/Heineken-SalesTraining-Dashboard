@@ -12,9 +12,9 @@ import {
 import { connect } from "react-redux";
 import { useRouter } from "next/router";
 import { EditOutlined, LoadingOutlined } from "@ant-design/icons";
-import { editProfileAction } from "../../store/Profile/EditProfileAction";
+import { editProfileAction } from "../../store/Profile/editProfileAction";
 // import withAuth from "../utils/protectRoute";
-import URLst,{ primary_color } from "../utils/constants";
+// import URLst,{ primary_color } from "../utils/constants";
 import FormData from "form-data";
 
 function ProfileLayout({
@@ -24,9 +24,7 @@ function ProfileLayout({
   editProfile,
 }) {
   const [fileList, setFileList] = useState([]);
-//   const [uploading, setUploading] = useState(false);
-//   const [imageFile, setImageFile] = useState("");
-//   const [imageUrl, setImageUrl] = useState("");
+
   const [form] = Form.useForm();
   const formData = new FormData();
   const router = useRouter();
@@ -46,63 +44,6 @@ function ProfileLayout({
     }
   });
 
-//   const onUploadSuccess = (image) => {
-//     setFileList([]);
-//     image.status = "done";
-//     image.url = imageUrl;
-//     image.thumbUrl = imageUrl;
-//     image.percent = 100;
-//     const newFileList = [image];
-//     setFileList(newFileList);
-//   };
-//   const onUploadError = (image) => {
-//     setFileList([]);
-//     image.status = "error";
-//     image.url = "";
-//     image.thumbUrl = "";
-//     image.percent = 0;
-//     const newFileList = [image];
-//     setFileList(newFileList);
-//   };
-//   const uploadImg = async (image) => {
-//     if (image == null) return;
-//     setImageUrl("Getting Download Link...");
- 
-//     storage
-//       .ref(`/images/${image.name}`)
-//       .put(image)
-//       .then(() => {
-//         storage
-//           .ref("images")
-//           .child(image.name)
-//           .getDownloadURL()
-//           .then((url) => {
-//             setImageUrl(url);
-//             onUploadSuccess(image);
-//             setUploading(false);
-//           })
-//           .catch((err) => {
-//             setImageUrl("");
-//             onUploadError(image);
-//             setUploading(false);
-//           });
-//       });
-//   };
-
-//   const props = {
-//     onRemove: (file) => {
-//       setFileList([]);
-//     },
-//     onChange: (info) => {
-//       setUploading(true);
-//       setFileList([]);
-//       uploadImg(info.file);
-//     },
-//     beforeUpload: async (file) => {
-//       setImageFile(URL.createObjectURL(file));
-//     },
-//     fileList,
-//   };
 
   function success() {
     Modal.success({
@@ -113,7 +54,7 @@ function ProfileLayout({
     success();
   }
   const onSubmit = (checkedValues) => {
-    checkedValues[URLst] = imageUrl;
+
 
     editProfile(checkedValues);
   };
