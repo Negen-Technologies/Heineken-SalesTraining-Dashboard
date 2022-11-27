@@ -1,16 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ProfileLayout from "../Components/ProfilePage/ProfileLayout";
 import withAuth from "../utils/protectRoute";
 import { connect } from "react-redux";
-import { editProfileAction } from "../store/Profile/EditProfileAction";
+import {
+  getProfileSuccess,
+  editProfileAction,
+  allprofilePending,
+ } from "../store";
 
-function profile({ userData, editProfile, }) {
+function profile(props) {
+  useEffect(() => {
+    // props.getProfileSuccess();
+    // console.log('+++++')
+    // console.log(props.allprofile)
+  }, []);
   return (
     <div>
       <ProfileLayout
-        editProfile={editProfile}
-        userData={userData}
-        
       />
     </div>
   );
@@ -18,14 +24,14 @@ function profile({ userData, editProfile, }) {
 
 const mapStateToProps = (state) => {
   return {
-  editProfile: state.editProfile,
-    userData: state.auth,
+    // allprofile: state.allprofile.allprofile,
+    // allprofilePending: state.allprofile.loading
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    editProfile: (checkedValues) => dispatch(editProfileAction(checkedValues)),
+    // getProfileSuccess: () => dispatch(getProfileSuccess())
   };
 };
 

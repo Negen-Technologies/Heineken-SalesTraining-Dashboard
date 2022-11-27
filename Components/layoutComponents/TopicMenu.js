@@ -1,5 +1,6 @@
 import React from "react";
 import { Menu, Row, Avatar, Col, Popover, Popconfirm, Divider } from "antd";
+import Router from 'next/router';
 import {
   MenuOutlined,
   LogoutOutlined,
@@ -82,7 +83,7 @@ export default function TopicMenu({ items, selectedKey, changeSelectedKey }) {
                 <Row
                   style={{ cursor: "pointer" }}
                   onClick={() => {
-                    Router.push("/profile");
+                    Router.push("/Profile");
                   }}
                 >
                   <UserOutlined

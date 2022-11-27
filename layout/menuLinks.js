@@ -49,6 +49,16 @@ export const adminmenu = [
     icon: <UngroupOutlined style={{ fontSize: "26px" }} />,
   },
   {
+    name: "Subregion",
+    link: "/Subregions",
+    icon: <UngroupOutlined style={{ fontSize: "26px" }} />,
+  },
+  {
+    name: "Territories",
+    link: "/Territory",
+    icon: <UngroupOutlined style={{ fontSize: "26px" }} />,
+  },
+  {
     name: "Reports",
     link: "/Reports",
     icon: <FileDoneOutlined style={{ fontSize: "26px" }} />,
