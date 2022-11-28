@@ -161,7 +161,7 @@ function Trainees(props) {
               <Popconfirm
                 title={"Are you sure you want to delete this Trainee?"}
                 onConfirm={() => {
-                  props.AllTraineeDelete(record.id, data);
+                  props.AllTraineeDelete(record._id, data);
                 }}
               >
                 {" "}
