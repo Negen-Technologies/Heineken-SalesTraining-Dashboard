@@ -62,16 +62,13 @@ export const adminmenu = [
 ];
 
 export const adminroutes = [
-  "/HomePage",
-  "/students",
+  "/Dashboard",
   "/UserManagment",
-  "/assignClass",
-  "/notifications",
-  "/adminAttendancePage",
-  "/transcripts",
-  "/report-cards",
-  "/gradeChange",
-  "/gradeChangeLogs",
-  "/SingleStudent",
-  "/profile",
+  "/Courses",
+  "/Trainees",
+  "/Badges",
+  "/Avatar",
+  "/Regions",
+  "/Subregions",
+  "/Territory"
 ];

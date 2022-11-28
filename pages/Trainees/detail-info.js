@@ -9,6 +9,7 @@ import {
   Form,
   Input,
   Avatar,
+  Select,
   Collapse,
   Card,
   List,
@@ -32,6 +33,8 @@ import {
   AllTraineeEdit,
   AllTraineeDelete,
   traineeCreate,
+  getAllCourseSuccess,
+  assignTraineeToCourse,
 } from "../../store";
 import withAuth from "../../utils/protectRoute";
 import URLst, { primary_color } from "../../utils/constants";
@@ -46,11 +49,27 @@ function DetailInfo(props) {
   const [isediting, setisediting] = useState(false);
   const [editingkey, seteditingkey] = useState("");
   const [imageUrl, setImageUrl] = useState(null);
+  const [courses, setcourses] = useState([]);
 
   const router = useRouter();
   const data = [];
+  let userid = "";
 
   const formData = new FormData();
+  useEffect(() => {
+    let cdata = [];
+    if (isediting) {
+      props.courses.forEach((element) => {
+        cdata.push({ ...element, key: element.id });
+      });
+      console.log("CDATA", cdata);
+      setcourses(cdata);
+    }
+  }, [isediting]);
+
+  let corse_options = courses.map((e) => {
+    return <Select.Option value={e.id}>{e.title}</Select.Option>;
+  });
 
   props.trainees.forEach((element) => {
     console.log(element);
@@ -62,17 +81,9 @@ function DetailInfo(props) {
     props.getSingleTrainee(id);
   }, []);
 
-  const editor = (e) => {
-    // setImageUrl();
-
-    seteditingkey(e.id);
-    form.setFieldsValue({
-      name: e.user.name,
-      email: e.user.email,
-      department: e.department,
-    });
-    setImageUrl(`${URLst}images/${e.user.image}`);
+  const courseCreater = () => {
     setisediting(true);
+    props.getAllCourseSuccess(10, 1);
     setvisible(true);
   };
   return props.traineesPending && data.length == 0 ? (
@@ -146,6 +157,7 @@ function DetailInfo(props) {
               }}
             >
               {data.map((item) => {
+                userid = item.id;
                 return (
                   <>
                     <Row
@@ -194,22 +206,19 @@ function DetailInfo(props) {
         </Col>
         <Col span={6} xs={24} sm={24} md={6} lg={6} xl={6} xxl={6}>
           <ActionsTab />
-          {/* <Button
+          <Button
             style={{ width: "202px", margin: "8px 0px", borderRadius: 6 }}
             type="primary"
             onClick={() => {
-              setvisible(true);
-              data.forEach((e) => {
-                editor(e);
-              });
+              courseCreater();
             }}
           >
-            Edit Trainee
-          </Button> */}
+            Add Trainee to course
+          </Button>
         </Col>
       </Row>
       <Modal
-        title={isediting ? "Edit trainees" : "Add trainees"}
+        title={"Add trainee to course"}
         closable={true}
         okButtonProps={{ style: { display: "none" } }}
         cancelButtonProps={{ style: { display: "none" } }}
@@ -224,34 +233,12 @@ function DetailInfo(props) {
         <Form
           form={form}
           onFinish={(e) => {
-            console.log(e);
-
-       
-            formData.append("department", e.department);
-            var g = {
-              user: {
-                name: e.name,
-                email: e.email,
-              },
-              department: e.department,
-            };
-
-            props.AllTraineeEdit(editingkey, data, g);
-            // if (isediting) {
-            //
-            // } else {
-            //   props.traineeCreate(e);
-            // }
+            console.log(e, userid);
+            props.assignTraineeToCourse(e.courseId, userid);
           }}
         >
-          <Form.Item name="name">
-            <Input placeholder="Name" />
-          </Form.Item>
-          <Form.Item name="email">
-            <Input placeholder="Email" />
-          </Form.Item>
-          <Form.Item name="department">
-            <Input placeholder="Department" />
+          <Form.Item name="courseId">
+            <Select placeholder="Courses">{corse_options}</Select>
           </Form.Item>
 
           <Form.Item>
@@ -263,7 +250,7 @@ function DetailInfo(props) {
               htmlType="submit"
               loading={props.traineesPending}
             >
-              {isediting ? "Edit trainee" : "Add trainee"}
+              {"Add trainee to course"}
             </Button>
           </Form.Item>
         </Form>
@@ -277,6 +264,7 @@ const mapStateToProps = (state) => {
     count: state.alltrainees.count,
     traineesPending: state.alltrainees.loading,
     traineesError: state.alltrainees.error,
+    courses: state.allcourses.allcourses,
   };
 };
 
@@ -284,6 +272,12 @@ const mapDispatchToProps = (dispatch) => {
   return {
     getAllTraineeSuccess: (limit, page) =>
       dispatch(getAllTraineeSuccess(limit, page)),
+    getAllCourseSuccess: (limit, page) =>
+      dispatch(getAllCourseSuccess(limit, page)),
+
+    assignTraineeToCourse: (courseId, traineeId) =>
+      dispatch(assignTraineeToCourse(courseId, traineeId)),
+
     getSingleTrainee: (id) => dispatch(getSingleTrainee(id)),
 
     AllTraineeEdit: (id, trainees, edited) =>

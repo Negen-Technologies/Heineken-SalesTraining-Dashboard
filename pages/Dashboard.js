@@ -3,9 +3,8 @@ import { Button, Row, Col, Progress, Table, Tag, Avatar } from "antd";
 import { UserOutlined, StarFilled } from "@ant-design/icons";
 import withAuth from "../utils/protectRoute";
 import { primary_color } from "../utils/constants";
-import {CustomCard} from '../Components/CustomCard/CustomCard'
-
-
+import { CustomCard } from "../Components/CustomCard/CustomCard";
+import { useRouter } from "next/router";
 
 const columns = [
   {
@@ -60,7 +59,6 @@ const columns = [
             style={{ width: "200px" }}
           />
         </div>
-        
       </Row>
     ),
   },
@@ -91,6 +89,8 @@ const data = [
 ];
 
 function Dashboard() {
+  const router = useRouter();
+
   return (
     <div>
       <Row>
@@ -170,7 +170,13 @@ function Dashboard() {
             }}
           ></div>
 
-          <Button style={{ width: "202px", margin: "20px 0px" }} type="primary">
+          <Button
+            style={{ width: "202px", margin: "20px 0px" }}
+            type="primary"
+            onClick={() => {
+              router.push('/Trainees');
+            }}
+          >
             All Trainees
           </Button>
         </Col>

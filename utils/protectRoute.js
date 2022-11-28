@@ -1,6 +1,8 @@
 import { useRouter } from "next/router";
 import Layout from "../layout";
-
+import {
+  adminmenu
+} from "../layout/menuLinks";
 
 
 const withAuth = (WrappedComponent) => {
@@ -8,8 +10,12 @@ const withAuth = (WrappedComponent) => {
     if (typeof window !== "undefined") {
       const Router = useRouter();
       const accessToken = localStorage.getItem("token");
-      // const role = localStorage.getItem("role");
-      // const accessToken=true;
+       if (adminmenu.some((e) => e.link == Router.pathname)) {
+         var i = adminmenu.findIndex((element) => {
+           return element.link === Router.pathname;
+         });
+         localStorage.setItem("selectedKey", i.toString());
+       }
 
       if (!accessToken) {
         Router.replace("/Login");

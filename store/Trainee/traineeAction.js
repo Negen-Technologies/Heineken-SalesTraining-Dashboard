@@ -113,6 +113,42 @@ export const getSingleTrainee = (id) => {
       });
   };
 };
+
+export const assignTraineeToCourse = (courseId,traineeId) => {
+  var token = localStorage.getItem("token");
+  return (dispatch) => {
+    dispatch(alltraineePending());
+
+    axios({
+      method: "patch",
+      url: URLst + `v1/trainees/enroll/${traineeId}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: {
+        course: courseId,
+      },
+    })
+      .then((res) => {
+        console.log(res.data);
+        dispatch(alltraineeSuccess({ results: [res.data] }));
+      })
+      .catch((err) => {
+        var errorData;
+        if (err.response.data.code == 401) {
+          handle401();
+        }
+        if (err.response != null) {
+          errorData = err.response.data.message;
+        } else {
+          errorData = err.message;
+        }
+        console.log(errorData);
+        dispatch(alltraineeFail(errorData));
+      });
+  };
+};
+
 export const traineeCreate = (formData) => {
   console.log(formData);
   return (dispatch) => {
@@ -216,6 +252,7 @@ export const AllTraineeDelete = (id, trainees) => {
         }
         if (err.response != null) {
           errorData = err.response.data.message;
+          console.log(errorData);
         } else {
           errorData = err.message;
         }

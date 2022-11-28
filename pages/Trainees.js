@@ -9,6 +9,7 @@ import {
   Avatar,
   Modal,
   Form,
+  Popconfirm,
 } from "antd";
 import {
   UserOutlined,
@@ -63,7 +64,6 @@ function Trainees(props) {
   const data = [];
 
   props.trainees.forEach((element) => {
-    console.log(element);
     data.push({ ...element, key: element._id });
   });
   useEffect(() => {
@@ -152,14 +152,7 @@ function Trainees(props) {
       key: "action",
       render: (_, record) => (
         <Row>
-          {/* <Avatar
-          size="small"
-          style={{
-            backgroundColor: primary_color,
-            margin: "0px 2px",
-          }}
-          icon={<EyeOutlined />}
-        /> */}
+      
 
           <Avatar
             size="small"
@@ -173,9 +166,7 @@ function Trainees(props) {
               >
                 {" "}
                 <DeleteOutlined
-                  onClick={() => {
-                    props.AllTraineeDelete(record.id, data);
-                  }}
+                 
                 />
               </Popconfirm>
             }
