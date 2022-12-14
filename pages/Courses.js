@@ -96,6 +96,7 @@ function Courses(props) {
       <Row>
         <Col
           span={16}
+          xs={24} sm={24} md={16} lg={16}
           style={{
             padding: "0px 50px",
           }}
@@ -109,13 +110,13 @@ function Courses(props) {
               lg: 32,
             }}
           >
-            <Col span={8}>
+            <Col span={8} xs={12} sm={12} md={12} lg={8} xl={8} xxl={8}>
               <CustomCard num={courses} text={"Courses"} />
             </Col>
-            <Col span={8}>
+            <Col span={8} xs={12} sm={12} md={12} lg={8} xl={8} xxl={8}>
               <CustomCard num={modules} text={"Modules"} />
             </Col>
-            <Col span={8}>
+            <Col span={8} xs={12} sm={12} md={12} lg={8} xl={8} xxl={8}>
               <CustomCard num={lessons} text={"Lessons"} />
             </Col>
           </Row>
@@ -251,7 +252,7 @@ function Courses(props) {
           )}
         </Col>
 
-        <Col span={6}>
+        <Col span={6} xs={24} sm={24} md={6} lg={6}>
           <ActionsTab />
           <Button
             style={{ width: "202px", margin: "8px 0px", borderRadius: 6 }}

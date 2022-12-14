@@ -11,21 +11,20 @@ import {
   Modal,
   Select,
   Space,
-  Menu
+  Menu,
 } from "antd";
-import { DownOutlined } from '@ant-design/icons';
+import { DownOutlined } from "@ant-design/icons";
 import { connect } from "react-redux";
 import {
-getAllTerritorySuccess,
-territoryCreate,
-AllTerritoryEdit,
-AllTerritoryDelete,
-getAllSubRegionSuccess
+  getAllTerritorySuccess,
+  territoryCreate,
+  AllTerritoryEdit,
+  AllTerritoryDelete,
+  getAllSubRegionSuccess,
 } from "../store";
 import withAuth from "../utils/protectRoute";
 import URLst, { primary_color } from "../utils/constants";
 import { ContinuousLegend } from "@antv/g2/lib/dependents";
-
 
 const EditableCell = ({
   editing,
@@ -38,11 +37,7 @@ const EditableCell = ({
   ...restProps
 }) => {
   const inputNode =
-    dataIndex === "role" ? (
-      <Input disabled={true} />
-    ) : (
-      <Input />
-    );
+    dataIndex === "role" ? <Input disabled={true} /> : <Input />;
 
   return (
     <td {...restProps}>
@@ -70,15 +65,14 @@ const EditableCell = ({
 
 const Territory = (props) => {
   const [form] = Form.useForm();
-  
+
   var numEachPage = 10;
   var data = [];
   const [isVisible, setVisible] = useState(false);
   const [current, setCurrent] = useState(1);
   const [loadedpage, setLoadedPage] = useState([1]);
-  const [selectedRegion, setSelectedRegion] = useState('');
-  const [selectedSubRegionName, setSelectedSubRegionName] = useState('');
-
+  const [selectedRegion, setSelectedRegion] = useState("");
+  const [selectedSubRegionName, setSelectedSubRegionName] = useState("");
 
   props.territory.forEach((element) => {
     data.push({ ...element, key: element.id });
@@ -87,7 +81,7 @@ const Territory = (props) => {
 
   useEffect(() => {
     props.getAllTerritorySuccess(numEachPage, 1);
-    props.getAllSubRegionSuccess()
+    props.getAllSubRegionSuccess(numEachPage, 1);
   }, []);
 
   const isEditing = (record) => record.key === editingKey;
@@ -125,38 +119,29 @@ const Territory = (props) => {
   };
 
   const handleMenuClick = (id) => {
-      console.log(id)
-    setSelectedRegion(id.key)
-    setSelectedSubRegionName(id.name)
-  }
+    console.log(id);
+    setSelectedRegion(id.key);
+    setSelectedSubRegionName(id.name);
+  };
 
   const handleSelectChange = (value) => {
-      setSelectedRegion(value)
-      setSelectedSubRegionName(value)
-  }
+    setSelectedRegion(value);
+    setSelectedSubRegionName(value);
+  };
 
   const menus = Object.entries(props.subregions).map((key) => {
-    return (
-      <Menu.Item key={key[1].id}>
-        {key[1].name}
-      </Menu.Item>
-    )
+    return <Menu.Item key={key[1].id}>{key[1].name}</Menu.Item>;
   });
- const menu = () => {
-    return (
-      <Menu onClick={handleMenuClick}>
-        {menus}
-      </Menu>
-    )
- }
+  const menu = () => {
+    return <Menu onClick={handleMenuClick}>{menus}</Menu>;
+  };
 
   const columns = [
     {
       title: "Name",
       dataIndex: "name",
-      editable: true
+      editable: true,
     },
-
 
     {
       title: "",
@@ -332,53 +317,45 @@ const Territory = (props) => {
           setVisible(false);
         }}
       >
-
-<Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-    
-        
+        <Space direction="vertical" size="middle" style={{ display: "flex" }}>
           <Form
-          form={form}
-          onFinish={(doc) => {
-            props.territoryCreate(doc);
-          }}
-        >
+            form={form}
+            onFinish={(doc) => {
+              props.territoryCreate(doc);
+            }}
+          >
             <Form.Item name="subregions" label="Subregions">
-                <Select
-                  name="subregions"
-                  style={{ width: "100%" }}
-                  value={selectedSubRegionName}
-                  onChange={handleSelectChange}
-                  placeholder='Select Subregion'
-                  options= {props.subregions.map((subregion) => {
-                    return (
-                        {
-                            value: subregion.id,
-                            label:subregion.name
-                        }
-                    );
-                  })}
-                >
-                </Select>
-              </Form.Item>
-          <Form.Item name="name">
-            <Input placeholder="Name" />
-          </Form.Item>
-          <Form.Item>
-            <p style={{ color: "red" }}>{props.territoryError}</p>
-          </Form.Item>
-          <Form.Item style={{ textAlign: "right" }}>
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={props.territoryPending}
-            >
-              Submit
-            </Button>
-          </Form.Item>
-        </Form>
-              </Space>
-          
-       
+              <Select
+                name="subregions"
+                style={{ width: "100%" }}
+                value={selectedSubRegionName}
+                onChange={handleSelectChange}
+                placeholder="Select Subregion"
+                options={props.subregions.map((subregion) => {
+                  return {
+                    value: subregion.id,
+                    label: subregion.name,
+                  };
+                })}
+              ></Select>
+            </Form.Item>
+            <Form.Item name="name">
+              <Input placeholder="Name" />
+            </Form.Item>
+            <Form.Item>
+              <p style={{ color: "red" }}>{props.territoryError}</p>
+            </Form.Item>
+            <Form.Item style={{ textAlign: "right" }}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={props.territoryPending}
+              >
+                Submit
+              </Button>
+            </Form.Item>
+          </Form>
+        </Space>
       </Modal>
     </div>
   );
@@ -390,21 +367,24 @@ const mapStateToProps = (state) => {
     count: state.allterritory.count,
     territoryPending: state.allterritory.loading,
     territoryError: state.allterritory.error,
-    territory: state.allterritory.allterritory
+    territory: state.allterritory.allterritory,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getAllSubRegionSuccess: () =>
-    dispatch(getAllSubRegionSuccess()),
+    getAllSubRegionSuccess: (l, p) => dispatch(getAllSubRegionSuccess(l, p)),
     getAllTerritorySuccess: (limit, page) =>
-    dispatch(getAllTerritorySuccess(limit, page)),
+      dispatch(getAllTerritorySuccess(limit, page)),
     AllTerritoryEdit: (id, territory, edited) =>
-    dispatch(AllTerritoryEdit(id, territory, edited)),
-    AllTerritoryDelete: (id, territory) => dispatch(AllTerritoryDelete(id, territory)),
+      dispatch(AllTerritoryEdit(id, territory, edited)),
+    AllTerritoryDelete: (id, territory) =>
+      dispatch(AllTerritoryDelete(id, territory)),
     territoryCreate: (formData) => dispatch(territoryCreate(formData)),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withAuth(Territory));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withAuth(Territory));

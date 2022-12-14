@@ -18,7 +18,7 @@ const columns = [
           shape="circle"
           size="small"
           src={`https://joeschmoe.io/api/v1/${record.age}`}
-          style={{ backgroundColor: "#10c70e" }}
+          style={{ backgroundColor: "#008751" }}
           icon={<UserOutlined />}
         />
         <div style={{ padding: "0px 10px" }}>{text}</div>
@@ -32,9 +32,9 @@ const columns = [
     render: (text) => (
       <Row>
         {" "}
-        <div style={{ color: "red" }}>
+        {/* <div style={{ color: "red" }}>
           <StarFilled />
-        </div>
+        </div> */}
         <div style={{ padding: "0px 10px", color: primary_color }}>
           {text} Points
         </div>
@@ -95,7 +95,7 @@ function Dashboard() {
     <div>
       <Row>
         <Col
-          span={16}
+          span={16} xs={24} sm={24} md={16} lg={16}
           style={{
             padding: "0px 50px",
           }}
@@ -124,13 +124,13 @@ function Dashboard() {
               lg: 32,
             }}
           >
-            <Col span={8}>
+            <Col span={8} xs={12} sm={12} md={12} lg={8} xl={8} xxl={8}>
               <CustomCard num={25} text={"Trainees"} />
             </Col>
-            <Col span={8}>
+            <Col span={8} xs={12} sm={12} md={12} lg={8} xl={8} xxl={8}>
               <CustomCard num={36} text={"Logins in 24 Hours"} />
             </Col>
-            <Col span={8}>
+            <Col span={8} xs={12} sm={12} md={12} lg={8} xl={8} xxl={8}>
               <CustomCard num={214} text={"Lessons"} />
             </Col>
           </Row>
@@ -144,6 +144,7 @@ function Dashboard() {
           >
             <h1 style={{ color: "white" }}>Top 3 Trainees</h1>
             <Table
+              scroll={{ x: 200 }}
               columns={columns}
               dataSource={data}
               pagination={false}
@@ -152,7 +153,7 @@ function Dashboard() {
           </div>
         </Col>
 
-        <Col span={6}>
+        <Col span={6} xs={24} sm={24} md={6} lg={6} >
           <h1
             style={{
               fontSize: 20,

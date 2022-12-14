@@ -52,9 +52,9 @@ function CourseProgress(props) {
 
   props.trainees.forEach((element) => {
     console.log(element);
-    data.push({ ...dummydata, key: dummydata._id });
+    // data.push({ ...dummydata, key: dummydata._id });
 
-    // data.push({ ...element, key: element._id });
+    data.push({ ...element, key: element._id });
   });
 
   useEffect(() => {
@@ -138,7 +138,7 @@ function CourseProgress(props) {
                     <h1 style={{ fontSize: "30px", fontWeight: 600 }}>
                       Current Course
                     </h1>
-                    <Collapse defaultActiveKey={1}>
+                    {item.currentCourse==null?<></>:<Collapse defaultActiveKey={1}>
                       <Panel
                         header={
                           <div style={{ fontSize: "20px", fontWeight: 500 }}>
@@ -209,7 +209,7 @@ function CourseProgress(props) {
                             })
                         )}
                       </Panel>
-                    </Collapse>
+                    </Collapse>}
                   </>
                 );
               })}
@@ -220,18 +220,7 @@ function CourseProgress(props) {
         </Col>
         <Col span={6} xs={24} sm={24} md={6} lg={6} xl={6} xxl={6}>
           <ActionsTab />
-          {/* <Button
-            style={{ width: "202px", margin: "8px 0px", borderRadius: 6 }}
-            type="primary"
-            onClick={() => {
-              setvisible(true);
-              data.forEach((e) => {
-                editor(e);
-              });
-            }}
-          >
-            Edit Trainee
-          </Button> */}
+         
         </Col>
       </Row>
       <Modal

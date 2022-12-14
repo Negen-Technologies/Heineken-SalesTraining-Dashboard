@@ -10,22 +10,29 @@ import {
   Modal,
   Form,
   Popconfirm,
+  Upload,
+  Space,
+  Select,
 } from "antd";
 import {
   UserOutlined,
   StarFilled,
   SearchOutlined,
-  EditOutlined,
+  UploadOutlined,
   DeleteOutlined,
-  EyeOutlined,
+  InboxOutlined,
 } from "@ant-design/icons";
-
+import Papa from "papaparse";
 import { connect } from "react-redux";
 import {
   getAllTraineeSuccess,
   AllTraineeEdit,
   AllTraineeDelete,
   traineeCreate,
+  getAllTerritorySuccess,
+  getAllSubRegionSuccess,
+  getAllRegionSuccess,
+  traineeBulkCreate,
 } from "./../store";
 import withAuth from "./../utils/protectRoute";
 import URLst, { primary_color } from "./../utils/constants";
@@ -33,42 +40,41 @@ import ActionsTab from "./../Components/SupplimentaryComponents/actionsTab";
 import OverviewTab from "./../Components/SupplimentaryComponents/overviewTab";
 import { useRouter } from "next/router";
 
-let origindata = [
-  {
-    key: "1",
-    name: "John Brown",
-    age: 0,
-    address: "New York No. 1 Lake Park",
-    percent: 0,
-  },
-  {
-    key: "2",
-    name: "Jim Green",
-    age: 0,
-    address: "London No. 1 Lake Park",
-    percent: 0,
-  },
-  {
-    key: "3",
-    name: "Joe Black",
-    age: 0,
-    address: "Sidney No. 1 Lake Park",
-    percent: 0,
-  },
-];
 function Trainees(props) {
+  var numEachPage = 10;
+
   const [visible, setvisible] = useState(false);
+  const [tervisible, settervisible] = useState(false);
+  const [editingId, setEditingId] = useState("");
+  const [selectedRegion, setSelectedRegion] = useState("");
+  const [selectedSubRegion, setSelectedSubRegion] = useState("");
+  const [selectedTerritory, setselectedTerritory] = useState("");
+  const [current, setCurrent] = useState(1);
+
+  const [File, setFile] = useState(null);
+  const [FileList, setFileList] = useState([]);
+
   const router = useRouter();
-  const form = Form.useForm();
 
   const data = [];
 
   props.trainees.forEach((element) => {
     data.push({ ...element, key: element._id });
   });
+
   useEffect(() => {
     props.getAllTraineeSuccess(10, 1);
+    props.getAllTerritorySuccess(10, 1);
+    props.getAllSubRegionSuccess(10, 1);
+    props.getAllRegionSuccess(10, 1);
   }, []);
+
+  const handleChange = (pageNumber, size) => {
+    numEachPage = size;
+    setCurrent(pageNumber);
+    props.getAllTraineeSuccess(numEachPage, pageNumber);
+    
+  };
 
   const columns = [
     {
@@ -103,9 +109,9 @@ function Trainees(props) {
       render: (text, record) => (
         <Row>
           {" "}
-          <div style={{ color: "red" }}>
+          {/* <div style={{ color: "red" }}>
             <StarFilled />
-          </div>
+          </div> */}
           <Button
             type="link"
             style={{ padding: "0px 10px", color: primary_color }}
@@ -151,27 +157,33 @@ function Trainees(props) {
       dataIndex: "",
       key: "action",
       render: (_, record) => (
-        <Row>
-      
+        <Space>
+          {record.territories.length == 0 ? (
+            <div
+              onClick={() => {
+                settervisible(true);
+                setEditingId(record._id);
+              }}
+              style={{ color: "green", margin: "0px 2px", cursor: "pointer" }}
+            >
+              Add to territory
+            </div>
+          ) : (
+            <></>
+          )}
 
-          <Avatar
-            size="small"
-            style={{ backgroundColor: "red", margin: "0px 2px" }}
-            icon={
-              <Popconfirm
-                title={"Are you sure you want to delete this Trainee?"}
-                onConfirm={() => {
-                  props.AllTraineeDelete(record._id, data);
-                }}
-              >
-                {" "}
-                <DeleteOutlined
-                 
-                />
-              </Popconfirm>
-            }
-          />
-        </Row>
+          <Popconfirm
+            title={"Are you sure you want to delete this Trainee?"}
+            onConfirm={() => {
+              props.AllTraineeDelete(record._id, data);
+            }}
+          >
+            {" "}
+            <p style={{ color: "red", margin: "0px 2px", cursor: "pointer" }}>
+              Delete
+            </p>
+          </Popconfirm>
+        </Space>
       ),
     },
   ];
@@ -181,6 +193,10 @@ function Trainees(props) {
       <Row>
         <Col
           span={18}
+          xs={24}
+          sm={24}
+          md={24}
+          lg={18}
           style={{
             padding: "0px 50px",
           }}
@@ -222,11 +238,21 @@ function Trainees(props) {
             loading={props.traineesPending}
             columns={columns}
             dataSource={data}
-            pagination={false}
+            pagination={{
+              defaultCurrent: 1,
+              total: props.count,
+              onChange: handleChange,
+              defaultPageSize: numEachPage,
+              current: current,
+              responsive: true,
+              // showSizeChanger: true,
+              hideOnSinglePage: true,
+              pageSizeOptions: ["10", "20", "50", "100"],
+            }}
           />
         </Col>
 
-        <Col span={6}>
+        <Col span={6} xs={24} sm={24} md={6} lg={6}>
           <h1
             style={{
               fontSize: 20,
@@ -245,7 +271,7 @@ function Trainees(props) {
           ></div>
 
           <Button
-            style={{ width: "202px", margin: "20px 0px" }}
+            style={{ width: "202px", margin: "10px 0px" }}
             type="primary"
             onClick={() => {
               router.push("/Trainees/add-new");
@@ -253,66 +279,159 @@ function Trainees(props) {
           >
             Add Trainee
           </Button>
+
+          <Button
+            style={{ width: "202px", margin: "10px 0px" }}
+            type="primary"
+            onClick={() => {
+              setvisible(true);
+            }}
+          >
+            Bulk Add Trainees
+          </Button>
         </Col>
       </Row>
 
       <Modal
+        title="Bulk Add Trainees"
         visible={visible}
+        closable={true}
+        okButtonProps={{ style: { display: "none" } }}
+        cancelButtonProps={{ style: { display: "none" } }}
         onCancel={() => {
           setvisible(false);
+          setFile(null);
+          setFileList([]);
         }}
       >
         <Form
-          form={form}
-          labelCol={{
-            span: 8,
-          }}
-          wrapperCol={{
-            span: 8,
-          }}
-          onFinish={(doc) => {
-            // console.log(JSON.stringify(doc));
-            // var t_data = localStorage.getItem("trainee_data");
-            // var final = JSON.parse(t_data);
-            // final = [
-            //   ...final,
-            //   {
-            //     name: doc.name,
-            //     username: doc.username,
-            //     department: doc.department,
-            //     phone: doc.phone,
-            //     email: doc.email,
-            //   },
-            // ];
-            // localStorage.setItem("trainee_data", JSON.stringify(final));
-            // console.log(final);
+          name="formupload"
+          onFinish={(e) => {
+            Papa.parse(File, {
+              header: true,
+              skipEmptyLines: true,
+              complete: function (results) {
+                console.log({ data: results.data });
+
+                props.traineeBulkCreate({ data: results.data });
+              },
+            });
           }}
         >
-          <h3>Trainee Information</h3>
-
-          <Form.Item name="name">
-            <Input placeholder="Full Name" />
-          </Form.Item>
-          <Form.Item name="username">
-            <Input placeholder="Username" />
-          </Form.Item>
-          <Form.Item name="department">
-            <Input placeholder="Department" />
-          </Form.Item>
-          <h3>Contact Information</h3>
-          <Form.Item name="phone">
-            <Input placeholder="Phone Number" />
-          </Form.Item>
-          <Form.Item name="email">
-            <Input placeholder="Email(optional)" />
-          </Form.Item>
           <Form.Item>
+            <Upload
+              accept=".CSV"
+              onRemove={() => {
+                setFile(null);
+                setFileList([]);
+              }}
+              fileList={FileList}
+              beforeUpload={async (file) => {
+                setFile(file);
+                setFileList([file]);
+              }}
+            >
+              <Button
+                disabled={File == null ? false : true}
+                icon={<UploadOutlined />}
+              >
+                Click to Upload File
+              </Button>
+            </Upload>
+          </Form.Item>
+          <Form.Item style={{ textAlign: "right" }}>
             <Button
               style={{ borderRadius: 5 }}
               type="primary"
               htmlType="submit"
+              loading={props.traineesPending}
             >
-              Edit Trainee
+              Add Trainees
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      <Modal
+        title="Add To Territory"
+        visible={tervisible}
+        closable={true}
+        okButtonProps={{ style: { display: "none" } }}
+        cancelButtonProps={{ style: { display: "none" } }}
+        onCancel={() => {
+          settervisible(false);
+          setEditingId("");
+        }}
+      >
+        <Form
+          onFinish={(e) => {
+            console.log(selectedTerritory);
+            props.AllTraineeEdit(editingId, data, {
+              territories: [selectedTerritory],
+            });
+          }}
+        >
+          <Form.Item name="Region" label="Region">
+            <Select
+              name="Region"
+              style={{ width: "100%" }}
+              value={selectedRegion}
+              onChange={(e) => {
+                setSelectedRegion(e);
+              }}
+              placeholder="Select Region"
+              options={props.regions.map((regions) => {
+                return {
+                  value: regions.name,
+                  label: regions.name,
+                };
+              })}
+            />
+          </Form.Item>
+          <Form.Item name="Subregion" label="Subregion">
+            <Select
+              name="subregions"
+              style={{ width: "100%" }}
+              value={selectedSubRegion}
+              onChange={(e) => {
+                setSelectedSubRegion(e);
+              }}
+              placeholder="Select Subregion"
+              options={props.subregions.map((subregion) => {
+                return {
+                  value: subregion.name,
+                  label: subregion.name,
+                };
+              })}
+            />
+          </Form.Item>
+
+          <Form.Item name="Territory" label="Territory">
+            <Select
+              name="Territory"
+              style={{ width: "100%" }}
+              value={selectedTerritory}
+              onChange={(e) => {
+                setselectedTerritory(e);
+              }}
+              placeholder="Select Territory"
+              options={props.territory.map((territory) => {
+                return {
+                  value: territory.id,
+                  label: territory.name,
+                };
+              })}
+            />
+          </Form.Item>
+
+          <Form.Item style={{ textAlign: "right" }}>
+            <Button
+              style={{ borderRadius: 5 }}
+              loading={props.traineesPending}
+              type="primary"
+              htmlType="submit"
+            >
+              Add To Territory
             </Button>
           </Form.Item>
         </Form>
@@ -326,17 +445,29 @@ const mapStateToProps = (state) => {
     count: state.alltrainees.count,
     traineesPending: state.alltrainees.loading,
     traineesError: state.alltrainees.error,
+    subregions: state.allsubregions.allsubregions,
+    regions: state.allregions.allregions,
+    territory: state.allterritory.allterritory,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    getAllSubRegionSuccess: (limit, page) =>
+      dispatch(getAllSubRegionSuccess(limit, page)),
+    getAllRegionSuccess: (l, p) => dispatch(getAllRegionSuccess(l, p)),
+    getAllTerritorySuccess: (limit, page) =>
+      dispatch(getAllTerritorySuccess(limit, page)),
     getAllTraineeSuccess: (limit, page) =>
       dispatch(getAllTraineeSuccess(limit, page)),
+
     AllTraineeEdit: (id, trainees, edited) =>
       dispatch(AllTraineeEdit(id, trainees, edited)),
     AllTraineeDelete: (id, trainees) =>
       dispatch(AllTraineeDelete(id, trainees)),
+
+    traineeBulkCreate: (formData) => dispatch(traineeBulkCreate(formData)),
+
     traineeCreate: (formData) => dispatch(traineeCreate(formData)),
   };
 };

@@ -49,14 +49,14 @@ export const allquizFail = (error) => {
   };
 };
 
-export const getAllQuizSuccess = (limit, page) => {
+export const getAllQuizSuccess = (lessonId) => {
   var token = localStorage.getItem("token");
   return (dispatch) => {
     dispatch(allquizPending());
 
     axios({
       method: "get",
-      url: URLst + `v1/questions?limit=${limit}&page=${page}`,
+      url: URLst + `v1/questions?lesson=${lessonId}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },

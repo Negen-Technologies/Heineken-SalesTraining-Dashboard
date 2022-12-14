@@ -4,7 +4,7 @@ import {
   Row,
   Col,
   Space,
-  InputNumber,
+  Popconfirm,
   Divider,
   Empty,
   Modal,
@@ -57,7 +57,9 @@ function Quiz(props) {
     data.push({ ...element, key: element.id });
   });
   useEffect(() => {
-    props.getAllQuizSuccess(10, 1);
+  const { id } = router.query;
+
+    props.getAllQuizSuccess(id);
   }, []);
 
   const editor = (e) => {
@@ -158,7 +160,7 @@ function Quiz(props) {
                         style={{ margin: "5px 0px" }}
                         extra={
                           <Row>
-                            <Avatar
+                            {/* <Avatar
                               size="small"
                               style={{
                                 backgroundColor: primary_color,
@@ -171,7 +173,7 @@ function Quiz(props) {
                                   }}
                                 />
                               }
-                            />
+                            /> */}
                             <Avatar
                               size="small"
                               style={{
@@ -179,12 +181,17 @@ function Quiz(props) {
                                 margin: "0px 2px",
                               }}
                               icon={
-                                <DeleteFilled
-                                  onClick={() => {
-                                    props.AllQuizDelete(e.id, data);
-                                  
-                                  }}
-                                />
+                                <Popconfirm
+                                title={
+                                  "Are you sure you want to delete this quiz?"
+                                }
+                                onConfirm={() => {
+                                  props.AllQuizDelete(e.id, data);
+                                }}
+                              >
+                                <DeleteFilled />
+                              </Popconfirm>
+                              
                               }
                             />
                           </Row>
@@ -288,7 +295,7 @@ function Quiz(props) {
                       <Input
                         placeholder={`Choice ${el}`}
                         // initalvals[el - 1]
-                        value={`${isediting ? initalvals[el - 1] : ""} `}
+                        // value={`${isediting ? initalvals[el - 1] : ""} `}
                         onBlur={(e) => {
                           let obj = choicedict;
                           obj[el] = e.target.value;
@@ -358,8 +365,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getAllQuizSuccess: (limit, page) =>
-      dispatch(getAllQuizSuccess(limit, page)),
+    getAllQuizSuccess: (lesson) => dispatch(getAllQuizSuccess(lesson)),
     AllQuizEdit: (id, quizs, edited) =>
       dispatch(AllQuizEdit(id, quizs, edited)),
     AllQuizDelete: (id, quizs) => dispatch(AllQuizDelete(id, quizs)),

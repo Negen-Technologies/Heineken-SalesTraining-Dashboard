@@ -187,6 +187,45 @@ export const traineeCreate = (formData) => {
   };
 };
 
+
+export const traineeBulkCreate = (formData) => {
+  console.log(formData);
+  return (dispatch) => {
+    dispatch(alltraineePending());
+    const token = localStorage.getItem("token");
+    axios
+      .post(
+        URLst + "v1/trainees/bulk-create",
+        formData,
+
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res.data);
+
+        dispatch(traineeCreateSuccess(res.data));
+      })
+      .catch((err) => {
+        var errorData;
+        if (err.response != null) {
+          if (err.response.data.code == 401) {
+            handle401();
+          }
+          errorData = err.response.data.message;
+        } else {
+          errorData = err.message;
+        }
+        console.log(errorData);
+        dispatch(alltraineeFail(errorData));
+      });
+  };
+};
+
+
 export const AllTraineeEdit = (id, trainees, edited) => {
   const token = localStorage.getItem("token");
 
@@ -206,9 +245,9 @@ export const AllTraineeEdit = (id, trainees, edited) => {
         let newData = [...trainees];
         let index = newData.findIndex((av) => av.id === res.data.id);
 
-        newData[index].user.name = edited.name;
-        newData[index].user.email = edited.email;
-        newData[index].department = edited.department;
+        // newData[index].user.name = edited.name;
+        // newData[index].user.email = edited.email;
+        // newData[index].department = edited.department;
         // newData[index].user.image = res.data;
 
         dispatch(updatetraineeSuccess(newData));

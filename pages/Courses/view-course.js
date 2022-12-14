@@ -125,7 +125,7 @@ function View_course(props) {
     <div>
       <Row>
         <Col
-          span={16}
+         span={16} xs={24} sm={24} md={16} lg={16}
           style={{
             padding: "0px 50px",
           }}
@@ -203,6 +203,7 @@ function View_course(props) {
                         defaultActiveKey="1"
                         style={{ margin: "10px 0px" }}
                         key={e.id}
+
                       >
                         <Panel
                           header={e.title}
@@ -297,7 +298,7 @@ function View_course(props) {
           )}
         </Col>
 
-        <Col span={6}>
+        <Col span={6} xs={24} sm={24} md={6} lg={6}>
           <h1
             style={{
               fontSize: 20,

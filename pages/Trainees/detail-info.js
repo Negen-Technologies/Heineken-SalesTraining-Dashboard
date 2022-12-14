@@ -197,6 +197,8 @@ function DetailInfo(props) {
                         <div>Email: {item.user.email}</div>
                         <div>Username: {item.user.username}</div>
                       </div>
+
+                   
                     </Row>
                   </>
                 );

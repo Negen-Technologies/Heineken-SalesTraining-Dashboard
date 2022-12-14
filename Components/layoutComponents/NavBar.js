@@ -36,7 +36,7 @@ function NavBar({
   return (
     <nav
       style={{
-        backgroundColor: "#298a40",
+        backgroundColor: primary_color,
         paddingLeft: "2rem",
         paddingTop: "1rem",
         paddingBottom: "1rem",
@@ -51,7 +51,7 @@ function NavBar({
           />
           <Drawer
             bodyStyle={{
-              backgroundColor: primary_color,
+              backgroundColor: "#fff",
               padding: "0",
             }}
             headerStyle={{
@@ -107,7 +107,7 @@ function NavBar({
                 <Avatar
                   shape="circle"
                   size="default"
-                  style={{ backgroundColor: "#10c70e" }}
+                  style={{ backgroundColor: "#008751" }}
                   icon={<BellOutlined />}
                 />
               }

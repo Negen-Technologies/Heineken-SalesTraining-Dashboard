@@ -87,7 +87,7 @@ const SubRegions = (props) => {
 
   useEffect(() => {
     props.getAllSubRegionSuccess(numEachPage, 1);
-    props.getAllRegionSuccess()
+    props.getAllRegionSuccess(numEachPage, 1)
   }, []);
 
   const isEditing = (record) => record.key === editingKey;
@@ -398,8 +398,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     getAllSubRegionSuccess: (limit, page) =>
     dispatch(getAllSubRegionSuccess(limit, page)),
-    getAllRegionSuccess: () =>
-    dispatch(getAllRegionSuccess()),
+    getAllRegionSuccess: (l,p) =>
+    dispatch(getAllRegionSuccess(l,p)),
     AllSubRegionEdit: (id, subregions, edited) =>
     dispatch(AllSubRegionEdit(id, subregions, edited)),
     AllSubRegionDelete: (id, subregions) => dispatch(AllSubRegionDelete(id, subregions)),

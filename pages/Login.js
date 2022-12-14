@@ -43,12 +43,10 @@ function Login({ userData, authLogin }) {
             alignItems: "center",
           }}
         >
-          <Row style={{ color: "white" }}>
-            <Col>
-              <p style={{ fontSize: 100, fontWeight: 700 }}>Seleda</p>
-            </Col>
-            <Col style={{ fontSize: 48, fontWeight: 200 }}>&trade;</Col>
-          </Row>
+
+          <img src="/SeledaWordmark-White.png"  style={{ width: '100%',maxWidth: '300px',height: 'auto' }}/>
+      
+
         </Col>
 
         <Col
