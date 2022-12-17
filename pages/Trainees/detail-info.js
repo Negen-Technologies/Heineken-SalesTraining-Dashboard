@@ -35,6 +35,7 @@ import {
   traineeCreate,
   getAllCourseSuccess,
   assignTraineeToCourse,
+  getSingleTraineePerTerritory,
 } from "../../store";
 import withAuth from "../../utils/protectRoute";
 import URLst, { primary_color } from "../../utils/constants";
@@ -50,6 +51,7 @@ function DetailInfo(props) {
   const [editingkey, seteditingkey] = useState("");
   const [imageUrl, setImageUrl] = useState(null);
   const [courses, setcourses] = useState([]);
+  const role = localStorage.getItem("role");
 
   const router = useRouter();
   const data = [];
@@ -62,7 +64,6 @@ function DetailInfo(props) {
       props.courses.forEach((element) => {
         cdata.push({ ...element, key: element.id });
       });
-      console.log("CDATA", cdata);
       setcourses(cdata);
     }
   }, [isediting]);
@@ -72,13 +73,18 @@ function DetailInfo(props) {
   });
 
   props.trainees.forEach((element) => {
-    console.log(element);
+    
     data.push({ ...element, key: element.id });
   });
 
   useEffect(() => {
     const { id } = router.query;
-    props.getSingleTrainee(id);
+
+    if (localStorage.getItem("role") === "staff") {
+      props.getSingleTraineePerTerritory(id);
+    } else {
+      props.getSingleTrainee(id);
+    }
   }, []);
 
   const courseCreater = () => {
@@ -157,6 +163,7 @@ function DetailInfo(props) {
               }}
             >
               {data.map((item) => {
+                console.log(item)
                 userid = item.id;
                 return (
                   <>
@@ -198,7 +205,24 @@ function DetailInfo(props) {
                         <div>Username: {item.user.username}</div>
                       </div>
 
-                   
+                      {item.territories.length === 0 ? (
+                        <></>
+                      ) : (
+                        <div style={{ fontSize: "15px", fontWeight: 400 }}>
+                          <h1 style={{ fontSize: "20px", fontWeight: 700 }}>
+                            Regional Information
+                          </h1>
+                          {item.territories.map((e) => {
+                            return (
+                              <>
+                                <div>Region: {e.subregionId.regionId.name}</div>
+                                <div>Subregion: {e.subregionId.name}</div>
+                                <div>Territory: {e.name}</div>
+                              </>
+                            );
+                          })}
+                        </div>
+                      )}
                     </Row>
                   </>
                 );
@@ -281,6 +305,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(assignTraineeToCourse(courseId, traineeId)),
 
     getSingleTrainee: (id) => dispatch(getSingleTrainee(id)),
+    getSingleTraineePerTerritory: (id) =>
+      dispatch(getSingleTraineePerTerritory(id)),
 
     AllTraineeEdit: (id, trainees, edited) =>
       dispatch(AllTraineeEdit(id, trainees, edited)),

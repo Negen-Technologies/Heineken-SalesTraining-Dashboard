@@ -1,0 +1,3 @@
+export const RESULT_SUCCESS = "RESULT_SUCCESS";
+export const RESULT_FAILED = "RESULT_FAILED";
+export const RESULT_PENDING = "RESULT_PENDING";

@@ -183,3 +183,43 @@ export const AllUserDelete = (id, users) => {
       });
   };
 };
+
+
+export const editUserTerritory = (id, users, edited) => {
+  const token = localStorage.getItem("token");
+
+  return (dispatch, getState) => {
+    dispatch(alluserPending());
+    
+
+    axios({
+      method: "patch",
+      url: URLst + `v1/users/${id}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: edited,
+    })
+      .then((res) => {
+        let newData = [...users];
+        let index = newData.findIndex((av) => av.id === res.data.id);
+
+        newData[index] = res.data;
+
+        dispatch(updateUserSuccess(newData));
+      })
+      .catch((err) => {
+        var errorData;
+        if (err.response.data.code == 401) {
+          handle401();
+        }
+        if (err.response != null) {
+          errorData = err.response.data.message;
+        } else {
+          errorData = err.message;
+        }
+        console.log(errorData);
+        dispatch(alluserFail(errorData));
+      });
+  };
+};

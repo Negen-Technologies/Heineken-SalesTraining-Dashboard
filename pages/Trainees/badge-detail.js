@@ -32,6 +32,8 @@ import {
   AllTraineeEdit,
   AllTraineeDelete,
   traineeCreate,
+  getSingleTraineePerTerritory,
+
 } from "../../store";
 import withAuth from "../../utils/protectRoute";
 import URLst, { primary_color } from "../../utils/constants";
@@ -59,7 +61,11 @@ function badgeDetail(props) {
 
   useEffect(() => {
     const { id } = router.query;
-    props.getSingleTrainee(id);
+    if (localStorage.getItem("role") === "staff") {
+      props.getSingleTraineePerTerritory(id);
+    } else {
+      props.getSingleTrainee(id);
+    }
   }, []);
 
   return props.traineesPending && data.length == 0 ? (
@@ -271,6 +277,8 @@ const mapDispatchToProps = (dispatch) => {
     getAllTraineeSuccess: (limit, page) =>
       dispatch(getAllTraineeSuccess(limit, page)),
     getSingleTrainee: (id) => dispatch(getSingleTrainee(id)),
+    getSingleTraineePerTerritory: (id) =>
+      dispatch(getSingleTraineePerTerritory(id)),
 
     AllTraineeEdit: (id, trainees, edited) =>
       dispatch(AllTraineeEdit(id, trainees, edited)),

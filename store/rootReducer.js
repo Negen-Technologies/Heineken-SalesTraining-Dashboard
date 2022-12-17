@@ -12,6 +12,7 @@ import allbadgesreducer from './Badges/allBadgesReducer'
 import alltraineesreducer from './Trainee/traineeReducer'
 import allterritoryreducer from './Territory/territoryReducer'
 import allprofilereducer from "./Profile/EditProfileReducer";
+import allresultsreducer from "./Results/resultReducer"
 
 const rootReducer = combineReducers({
   auth: auth_reducer,
@@ -26,7 +27,8 @@ const rootReducer = combineReducers({
   alltrainees: alltraineesreducer,
   allsubregions: allsubregionsreducer,
   allterritory: allterritoryreducer,
-  allprofile: allprofilereducer
+  allprofile: allprofilereducer,
+  allresultsreducer:allresultsreducer
 });
 
 export default rootReducer;

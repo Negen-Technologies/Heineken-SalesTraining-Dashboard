@@ -40,6 +40,8 @@ function Courses(props) {
 
   const router = useRouter();
 
+  const role = localStorage.getItem("role");
+
   const numEachPage = 10;
   let data = [];
   let moduleIds = [];
@@ -96,7 +98,10 @@ function Courses(props) {
       <Row>
         <Col
           span={16}
-          xs={24} sm={24} md={16} lg={16}
+          xs={24}
+          sm={24}
+          md={16}
+          lg={16}
           style={{
             padding: "0px 50px",
           }}
@@ -147,42 +152,44 @@ function Courses(props) {
             </div>
           ) : (
             <Collapse collapsible="header" accordion defaultActiveKey={["1"]}>
-              {data
-                .map((e, i) => {
-                  return (
-                    <Collapse.Panel
-                      style={{ fontSize: 18, fontWeight: 600 }}
-                      header={e.title}
-                      key={i + 1}
-                      extra={
-                        <Row>
-                          {" "}
-                          <Avatar
-                            size="small"
-                            style={{
-                              backgroundColor: primary_color,
-                              margin: "0px 2px",
-                            }}
-                            icon={
-                              <EyeOutlined
-                                onClick={() => {
-                                  console.log("hjhj");
-                                  e.modules.forEach((el) => {
-                                    moduleIds.push(el.id);
-                                  });
+              {data.map((e, i) => {
+                return (
+                  <Collapse.Panel
+                    style={{ fontSize: 18, fontWeight: 600 }}
+                    header={e.title}
+                    key={i + 1}
+                    extra={
+                      <Row>
+                        {" "}
+                        <Avatar
+                          size="small"
+                          style={{
+                            backgroundColor: primary_color,
+                            margin: "0px 2px",
+                          }}
+                          icon={
+                            <EyeOutlined
+                              onClick={() => {
+                                console.log("hjhj");
+                                e.modules.forEach((el) => {
+                                  moduleIds.push(el.id);
+                                });
 
-                                  router.push({
-                                    pathname: "Courses/view-course",
-                                    query: {
-                                      id: e.id,
-                                      courseName: e.title,
-                                      element: JSON.stringify(moduleIds),
-                                    },
-                                  });
-                                }}
-                              />
-                            }
-                          />
+                                router.push({
+                                  pathname: "Courses/view-course",
+                                  query: {
+                                    id: e.id,
+                                    courseName: e.title,
+                                    element: JSON.stringify(moduleIds),
+                                  },
+                                });
+                              }}
+                            />
+                          }
+                        />
+                        {role === "staff" ? (
+                          <></>
+                        ) : (
                           <Avatar
                             size="small"
                             style={{
@@ -197,6 +204,10 @@ function Courses(props) {
                               />
                             }
                           />
+                        )}
+                        {role === "staff" ? (
+                          <></>
+                        ) : (
                           <Avatar
                             size="small"
                             style={{
@@ -216,53 +227,58 @@ function Courses(props) {
                               </Popconfirm>
                             }
                           />
-                        </Row>
-                      }
-                    >
-                      <div
-                        style={{
-                          fontSize: 14,
-                          fontWeight: 400,
-                          color: primary_color,
-                        }}
-                      >
-                        {e.modules.length == 0 ? (
-                          <div>
-                            <Empty description="No Module" />
-                          </div>
-                        ) : (
-                          e.modules
-                            .sort((a, b) => a.order - b.order)
-                            .map((el, ii) => {
-                              return (
-                                <div key={ii}>
-                                  <div>
-                                    Module {el.order}: {el.title}
-                                  </div>
-                                  <Divider style={{ margin: "7px 0px" }} />
-                                </div>
-                              );
-                            })
                         )}
-                      </div>
-                    </Collapse.Panel>
-                  );
-                })}
+                      </Row>
+                    }
+                  >
+                    <div
+                      style={{
+                        fontSize: 14,
+                        fontWeight: 400,
+                        color: primary_color,
+                      }}
+                    >
+                      {e.modules.length == 0 ? (
+                        <div>
+                          <Empty description="No Module" />
+                        </div>
+                      ) : (
+                        e.modules
+                          .sort((a, b) => a.order - b.order)
+                          .map((el, ii) => {
+                            return (
+                              <div key={ii}>
+                                <div>
+                                  Module {el.order}: {el.title}
+                                </div>
+                                <Divider style={{ margin: "7px 0px" }} />
+                              </div>
+                            );
+                          })
+                      )}
+                    </div>
+                  </Collapse.Panel>
+                );
+              })}
             </Collapse>
           )}
         </Col>
 
         <Col span={6} xs={24} sm={24} md={6} lg={6}>
           <ActionsTab />
-          <Button
-            style={{ width: "202px", margin: "8px 0px", borderRadius: 6 }}
-            type="primary"
-            onClick={() => {
-              setvisible(true);
-            }}
-          >
-            Course Builder
-          </Button>
+          {role === "staff" ? (
+            <></>
+          ) : (
+            <Button
+              style={{ width: "202px", margin: "8px 0px", borderRadius: 6 }}
+              type="primary"
+              onClick={() => {
+                setvisible(true);
+              }}
+            >
+              Course Builder
+            </Button>
+          )}
         </Col>
       </Row>
       <Modal

@@ -2,6 +2,7 @@ import axios from "axios";
 import URLst, { handle401 } from "../../utils/constants";
 import { userCreateSuccess } from "../Users/allUsersAction";
 import * as actionTypes from "./traineeActionTypes";
+import { territoryCreate } from "../Territory/territoryAction";
 
 export const alltraineePending = () => {
   return {
@@ -46,6 +47,38 @@ export const alltraineeFail = (error) => {
     type: actionTypes.TRAINEE_FAILED,
     error: error,
     isPending: false,
+  };
+};
+
+export const getAllTraineePerTerritory = (limit, page) => {
+  var token = localStorage.getItem("token");
+  return (dispatch) => {
+    dispatch(alltraineePending());
+
+    axios({
+      method: "get",
+      url: URLst + `v1/users/trainees`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        console.log(res.data);
+        dispatch(alltraineeSuccess(res.data));
+      })
+      .catch((err) => {
+        var errorData;
+        if (err.response.data.code == 401) {
+          handle401();
+        }
+        if (err.response != null) {
+          errorData = err.response.data.message;
+        } else {
+          errorData = err.message;
+        }
+        console.log(errorData);
+        dispatch(alltraineeFail(errorData));
+      });
   };
 };
 
@@ -114,7 +147,39 @@ export const getSingleTrainee = (id) => {
   };
 };
 
-export const assignTraineeToCourse = (courseId,traineeId) => {
+export const getSingleTraineePerTerritory = (id) => {
+  var token = localStorage.getItem("token");
+  return (dispatch) => {
+    dispatch(alltraineePending());
+
+    axios({
+      method: "get",
+      url: URLst + `v1/users/trainees?_id=${id}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        console.log(res.data);
+        dispatch(alltraineeSuccess(res.data));
+      })
+      .catch((err) => {
+        var errorData;
+        if (err.response.data.code == 401) {
+          handle401();
+        }
+        if (err.response != null) {
+          errorData = err.response.data.message;
+        } else {
+          errorData = err.message;
+        }
+        console.log(errorData);
+        dispatch(alltraineeFail(errorData));
+      });
+  };
+};
+
+export const assignTraineeToCourse = (courseId, traineeId) => {
   var token = localStorage.getItem("token");
   return (dispatch) => {
     dispatch(alltraineePending());
@@ -187,7 +252,6 @@ export const traineeCreate = (formData) => {
   };
 };
 
-
 export const traineeBulkCreate = (formData) => {
   console.log(formData);
   return (dispatch) => {
@@ -224,7 +288,6 @@ export const traineeBulkCreate = (formData) => {
       });
   };
 };
-
 
 export const AllTraineeEdit = (id, trainees, edited) => {
   const token = localStorage.getItem("token");
@@ -295,6 +358,43 @@ export const AllTraineeDelete = (id, trainees) => {
         } else {
           errorData = err.message;
         }
+        dispatch(alltraineeFail(errorData));
+      });
+  };
+};
+
+
+export const ActivateTrainee = (id, trainees, edited) => {
+  const token = localStorage.getItem("token");
+
+  return (dispatch, getState) => {
+    dispatch(alltraineePending());
+
+    axios({
+      method: "patch",
+      url: URLst + `v1/trainees/activate/${id}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      // data: edited,
+    })
+      .then((res) => {
+        console.log(res.data);
+        let newData = [...trainees];
+        let index = newData.findIndex((av) => av.id === res.data.id);
+        dispatch(updatetraineeSuccess(newData));
+      })
+      .catch((err) => {
+        var errorData;
+        if (err.response.data.code == 401) {
+          handle401();
+        }
+        if (err.response != null) {
+          errorData = err.response.data.message;
+        } else {
+          errorData = err.message;
+        }
+        console.log(errorData);
         dispatch(alltraineeFail(errorData));
       });
   };

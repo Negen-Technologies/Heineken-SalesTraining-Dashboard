@@ -13,6 +13,7 @@ import {
   Upload,
   Space,
   Select,
+  Tag,
 } from "antd";
 import {
   UserOutlined,
@@ -33,6 +34,8 @@ import {
   getAllSubRegionSuccess,
   getAllRegionSuccess,
   traineeBulkCreate,
+  getAllTraineePerTerritory,
+  ActivateTrainee
 } from "./../store";
 import withAuth from "./../utils/protectRoute";
 import URLst, { primary_color } from "./../utils/constants";
@@ -42,6 +45,8 @@ import { useRouter } from "next/router";
 
 function Trainees(props) {
   var numEachPage = 10;
+
+  const role = localStorage.getItem("role");
 
   const [visible, setvisible] = useState(false);
   const [tervisible, settervisible] = useState(false);
@@ -63,7 +68,12 @@ function Trainees(props) {
   });
 
   useEffect(() => {
-    props.getAllTraineeSuccess(10, 1);
+    if (localStorage.getItem("role") === "staff") {
+      
+      props.getAllTraineePerTerritory(10, 1);
+    } else {
+      props.getAllTraineeSuccess(10, 1);
+    }
     props.getAllTerritorySuccess(10, 1);
     props.getAllSubRegionSuccess(10, 1);
     props.getAllRegionSuccess(10, 1);
@@ -73,7 +83,6 @@ function Trainees(props) {
     numEachPage = size;
     setCurrent(pageNumber);
     props.getAllTraineeSuccess(numEachPage, pageNumber);
-    
   };
 
   const columns = [
@@ -103,10 +112,10 @@ function Trainees(props) {
       ),
     },
     {
-      title: "Points",
+      title: "Badges",
       dataIndex: "age",
       key: "age",
-      render: (text, record) => (
+      render: (_, record) => (
         <Row>
           {" "}
           {/* <div style={{ color: "red" }}>
@@ -119,7 +128,7 @@ function Trainees(props) {
               router.push(`Trainees/badge-detail?id=${record._id}`);
             }}
           >
-            {record.badges.length} Points
+            {record.badges.length} Badges
           </Button>
         </Row>
       ),
@@ -128,7 +137,7 @@ function Trainees(props) {
       title: "Progress",
       dataIndex: "percent",
       key: "percent",
-      render: (text, record) => (
+      render: (_, record) => (
         <Button
           type="link"
           onClick={() => {
@@ -140,7 +149,7 @@ function Trainees(props) {
             <div style={{ color: primary_color }}>Course Progress</div>
             <div style={{ padding: "0px 10px" }}>
               <Progress
-                percent={text}
+                percent={record.progress}
                 size="small"
                 showInfo={false}
                 strokeColor={primary_color}
@@ -153,36 +162,71 @@ function Trainees(props) {
       ),
     },
     {
+      title: "Territory",
+      dataIndex: "",
+      key: "action",
+      render: (_, record) => (
+        <div>
+          {" "}
+          {record.territories.length == 0 ? (
+            <Tag
+              color="processing"
+              onClick={() => {
+                settervisible(true);
+                setEditingId(record._id);
+              }}
+              style={{ cursor: "pointer" }}
+            >
+              {" "}
+              Add to territory
+            </Tag>
+          ) : (
+            <>
+              {record.territories.map((e) => {
+                return e.name;
+              })}
+            </>
+          )}
+        </div>
+      ),
+    },
+
+    {
       title: "Action",
       dataIndex: "",
       key: "action",
       render: (_, record) => (
         <Space>
-          {record.territories.length == 0 ? (
-            <div
-              onClick={() => {
-                settervisible(true);
-                setEditingId(record._id);
+          {record.active ? (
+            <Popconfirm
+              title={"Are you sure you want to deactivate this trainee?"}
+              onConfirm={() => {
+                props.AllTraineeDelete(record._id, data);
               }}
-              style={{ color: "green", margin: "0px 2px", cursor: "pointer" }}
             >
-              Add to territory
-            </div>
+              {" "}
+              {/* <p style={{ color: "red", margin: "0px 2px", cursor: "pointer" }}>
+                Deactivate
+              </p> */}
+              <Tag color="volcano" style={{ cursor: "pointer" }}>
+                Deactivate
+              </Tag>
+            </Popconfirm>
           ) : (
-            <></>
+            <Popconfirm
+              title={"Are you sure you want to activate this trainee?"}
+              onConfirm={() => {
+                props.ActivateTrainee(record._id, data, {
+                  active: true,
+                });
+              }}
+            >
+              {" "}
+              <Tag color="success" style={{ cursor: "pointer" }}>
+                Activate
+              </Tag>
+            </Popconfirm>
           )}
-
-          <Popconfirm
-            title={"Are you sure you want to delete this Trainee?"}
-            onConfirm={() => {
-              props.AllTraineeDelete(record._id, data);
-            }}
-          >
-            {" "}
-            <p style={{ color: "red", margin: "0px 2px", cursor: "pointer" }}>
-              Delete
-            </p>
-          </Popconfirm>
         </Space>
       ),
     },
@@ -209,9 +253,13 @@ function Trainees(props) {
                 color: primary_color,
               }}
             >
-              All Trainees
+              {localStorage.getItem("role") === "staff" ? (
+                <>Trainees under my territory</>
+              ) : (
+                <>All Trainees</>
+              )}
             </h1>
-            <Input
+            {/* <Input
               placeholder="Name"
               suffix={<SearchOutlined />}
               style={{
@@ -221,7 +269,7 @@ function Trainees(props) {
                 borderRadius: 22,
                 margin: "0px 10px",
               }}
-            />
+            /> */}
           </Row>
 
           <div
@@ -269,26 +317,31 @@ function Trainees(props) {
               height: "2px",
             }}
           ></div>
+          {role === "staff" ? (
+            <></>
+          ) : (
+            <>
+              <Button
+                style={{ width: "202px", margin: "10px 0px" }}
+                type="primary"
+                onClick={() => {
+                  router.push("/Trainees/add-new");
+                }}
+              >
+                Add Trainee
+              </Button>
 
-          <Button
-            style={{ width: "202px", margin: "10px 0px" }}
-            type="primary"
-            onClick={() => {
-              router.push("/Trainees/add-new");
-            }}
-          >
-            Add Trainee
-          </Button>
-
-          <Button
-            style={{ width: "202px", margin: "10px 0px" }}
-            type="primary"
-            onClick={() => {
-              setvisible(true);
-            }}
-          >
-            Bulk Add Trainees
-          </Button>
+              <Button
+                style={{ width: "202px", margin: "10px 0px" }}
+                type="primary"
+                onClick={() => {
+                  setvisible(true);
+                }}
+              >
+                Bulk Add Trainees
+              </Button>
+            </>
+          )}
         </Col>
       </Row>
 
@@ -458,16 +511,19 @@ const mapDispatchToProps = (dispatch) => {
     getAllRegionSuccess: (l, p) => dispatch(getAllRegionSuccess(l, p)),
     getAllTerritorySuccess: (limit, page) =>
       dispatch(getAllTerritorySuccess(limit, page)),
+
     getAllTraineeSuccess: (limit, page) =>
       dispatch(getAllTraineeSuccess(limit, page)),
-
+    getAllTraineePerTerritory: (limit, page) =>
+      dispatch(getAllTraineePerTerritory(limit, page)),
     AllTraineeEdit: (id, trainees, edited) =>
       dispatch(AllTraineeEdit(id, trainees, edited)),
+      ActivateTrainee: (id, trainees, edited) =>
+      dispatch(ActivateTrainee(id, trainees, edited)),
+      
     AllTraineeDelete: (id, trainees) =>
       dispatch(AllTraineeDelete(id, trainees)),
-
     traineeBulkCreate: (formData) => dispatch(traineeBulkCreate(formData)),
-
     traineeCreate: (formData) => dispatch(traineeCreate(formData)),
   };
 };

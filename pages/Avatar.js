@@ -51,7 +51,7 @@ function Avatar({
           style={{
             width: 250,
           }}
-          cover={<img alt="example" src={`${URLst}images/${ele.image}`} />}
+          cover={<img alt="example" src={`${URLst}images/${ele.image}`} style={{ width: '100%',maxWidth: '300px',height: 'auto' }}/>}
           actions={[
             <EditOutlined
               key="edit"

@@ -36,18 +36,17 @@ const { Panel } = Collapse;
 
 function View_course(props) {
   const [form] = Form.useForm();
-  const [data,setdata]=useState([])
+  const [data, setdata] = useState([]);
   const [routervals, setroutervals] = useState({
     id: "",
     element: [],
-    courseName:"",
+    courseName: "",
   });
   const [visible, setvisible] = useState(false);
   const [isediting, setisediting] = useState(false);
   const [editingkey, seteditingkey] = useState("");
   const router = useRouter();
-  console.log(router.query);
-
+  const role = localStorage.getItem("role");
 
   // const { id, element, courseName } = router.query;
   let smpdata = [];
@@ -58,7 +57,7 @@ function View_course(props) {
 
   useEffect(() => {
     const { id, element, courseName } = router.query;
-     console.log(element);
+    console.log(element);
     setroutervals({
       id: id,
       element: JSON.parse(element),
@@ -68,15 +67,14 @@ function View_course(props) {
   }, []);
 
   useEffect(() => {
-   
     if (data.length == 0) {
       props.modules.forEach((element) => {
         if (routervals.element.includes(element.id)) {
           smpdata.push({ ...element, key: element.id });
         }
       });
-      setdata(smpdata)
-      smpdata=[]
+      setdata(smpdata);
+      smpdata = [];
     } else {
       let ddata = [];
       ddata = routervals.element;
@@ -88,11 +86,10 @@ function View_course(props) {
       props.modules.forEach((element) => {
         smpdata.push({ ...element, key: element.id });
       });
-     
+
       setdata(smpdata);
       smpdata = [];
     }
-  
   }, [props.modules]);
 
   const editor = (e) => {
@@ -101,7 +98,7 @@ function View_course(props) {
     form.setFieldsValue({
       title: e.title,
       summary: e.summary,
-      order:e.order
+      order: e.order,
     });
     setvisible(true);
   };
@@ -125,7 +122,11 @@ function View_course(props) {
     <div>
       <Row>
         <Col
-         span={16} xs={24} sm={24} md={16} lg={16}
+          span={16}
+          xs={24}
+          sm={24}
+          md={16}
+          lg={16}
           style={{
             padding: "0px 50px",
           }}
@@ -203,7 +204,6 @@ function View_course(props) {
                         defaultActiveKey="1"
                         style={{ margin: "10px 0px" }}
                         key={e.id}
-
                       >
                         <Panel
                           header={e.title}
@@ -237,39 +237,47 @@ function View_course(props) {
                                   />
                                 }
                               />
-                              <Avatar
-                                size="small"
-                                style={{
-                                  backgroundColor: primary_color,
-                                  margin: "0px 2px",
-                                }}
-                                icon={
-                                  <EditOutlined
-                                    onClick={() => {
-                                      editor(e);
-                                    }}
-                                  />
-                                }
-                              />
-                              <Avatar
-                                size="small"
-                                style={{
-                                  backgroundColor: "red",
-                                  margin: "0px 2px",
-                                }}
-                                icon={
-                                  <Popconfirm
-                                    title={
-                                      "Are you sure you want to delete this Module?\n\n(Deleting this Module will also delete the lessons of the course)"
-                                    }
-                                    onConfirm={() => {
-                                      props.AllModuleDelete(e.id, data);
-                                    }}
-                                  >
-                                    <DeleteOutlined />
-                                  </Popconfirm>
-                                }
-                              />
+                              {role === "staff" ? (
+                                <></>
+                              ) : (
+                                <Avatar
+                                  size="small"
+                                  style={{
+                                    backgroundColor: primary_color,
+                                    margin: "0px 2px",
+                                  }}
+                                  icon={
+                                    <EditOutlined
+                                      onClick={() => {
+                                        editor(e);
+                                      }}
+                                    />
+                                  }
+                                />
+                              )}
+                              {role === "staff" ? (
+                                <></>
+                              ) : (
+                                <Avatar
+                                  size="small"
+                                  style={{
+                                    backgroundColor: "red",
+                                    margin: "0px 2px",
+                                  }}
+                                  icon={
+                                    <Popconfirm
+                                      title={
+                                        "Are you sure you want to delete this Module?\n\n(Deleting this Module will also delete the lessons of the course)"
+                                      }
+                                      onConfirm={() => {
+                                        props.AllModuleDelete(e.id, data);
+                                      }}
+                                    >
+                                      <DeleteOutlined />
+                                    </Popconfirm>
+                                  }
+                                />
+                              )}
                             </Row>
                           }
                         >
@@ -316,16 +324,19 @@ function View_course(props) {
             }}
           ></div>
           <div style={{ marginBottom: 12 }}></div>
-
-          <Button
-            style={{ width: "202px", margin: "8px 0px", borderRadius: 6 }}
-            type="primary"
-            onClick={() => {
-              setvisible(true);
-            }}
-          >
-            Add Module
-          </Button>
+          {role === "staff" ? (
+            <></>
+          ) : (
+            <Button
+              style={{ width: "202px", margin: "8px 0px", borderRadius: 6 }}
+              type="primary"
+              onClick={() => {
+                setvisible(true);
+              }}
+            >
+              Add Module
+            </Button>
+          )}
         </Col>
       </Row>
       <Modal

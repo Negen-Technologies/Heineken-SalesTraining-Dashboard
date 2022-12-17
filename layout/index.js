@@ -9,7 +9,10 @@ import { connect } from "react-redux";
 
 export function index(props) {
   const router = useRouter();
-  const items = adminmenu;
+  const items =
+    localStorage.getItem("role") === "staff"
+      ? adminmenu.filter((e) => e.link !== "/UserManagment")
+      : adminmenu;
   const [contentIndex, setContentIndex] = useState(0);
   const [selectedKey, setSelectedKey] = useState(
     localStorage.getItem("selectedKey") || "0"

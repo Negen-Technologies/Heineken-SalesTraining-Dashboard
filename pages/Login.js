@@ -43,10 +43,10 @@ function Login({ userData, authLogin }) {
             alignItems: "center",
           }}
         >
-
-          <img src="/SeledaWordmark-White.png"  style={{ width: '100%',maxWidth: '300px',height: 'auto' }}/>
-      
-
+          <img
+            src="/SeledaWordmark-White.png"
+            style={{ width: "100%", maxWidth: "300px", height: "auto" }}
+          />
         </Col>
 
         <Col
@@ -81,7 +81,7 @@ function Login({ userData, authLogin }) {
                 <div>LOGIN TO</div>
                 <div>YOUR EXPERIENCE</div>
               </Col>
-              <Col span={12} style={{ textAlign: "right",fontWeight:700 }}>
+              <Col span={12} style={{ textAlign: "right", fontWeight: 700 }}>
                 Heineken
               </Col>
             </Row>

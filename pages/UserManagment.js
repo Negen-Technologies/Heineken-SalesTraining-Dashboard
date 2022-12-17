@@ -11,7 +11,7 @@ import {
   Modal,
   Select,
   Space,
-  Avatar
+  Avatar,
 } from "antd";
 import { connect } from "react-redux";
 import {
@@ -19,11 +19,14 @@ import {
   AllUserEdit,
   AllUserDelete,
   UserCreate,
+  getAllTerritorySuccess,
+  getAllSubRegionSuccess,
+  getAllRegionSuccess,
+  editUserTerritory,
 } from "../store";
 import withAuth from "../utils/protectRoute";
-import URLst,{ primary_color } from "../utils/constants";
+import URLst, { primary_color } from "../utils/constants";
 import FormData from "form-data";
-
 
 const EditableCell = ({
   editing,
@@ -69,18 +72,26 @@ const EditableCell = ({
 const UserManagment = (props) => {
   const [form] = Form.useForm();
   const formData = new FormData();
-  var numEachPage = 10;
-  var data = [];
+  let numEachPage = 10;
+  let data = [];
   const [isVisible, setVisible] = useState(false);
+  const [tervisible, settervisible] = useState(false);
+  const [selectedRegion, setSelectedRegion] = useState("");
+  const [selectedSubRegion, setSelectedSubRegion] = useState("");
+  const [selectedTerritory, setselectedTerritory] = useState("");
   const [current, setCurrent] = useState(1);
   const [loadedpage, setLoadedPage] = useState([1]);
+  const [editingKey, setEditingKey] = useState("");
+
   props.users.forEach((element) => {
     data.push({ ...element, key: element.id });
   });
-  const [editingKey, setEditingKey] = useState("");
 
   useEffect(() => {
     props.getAllUserSuccess(numEachPage, 1);
+    props.getAllTerritorySuccess(10, 1);
+    props.getAllSubRegionSuccess(10, 1);
+    props.getAllRegionSuccess(10, 1);
   }, []);
 
   const isEditing = (record) => record.key === editingKey;
@@ -101,7 +112,7 @@ const UserManagment = (props) => {
   const save = async (key) => {
     const row = await form.validateFields();
     setEditingKey("");
-    
+
     props.AllUserEdit(key, props.users, row);
   };
 
@@ -145,6 +156,29 @@ const UserManagment = (props) => {
       title: "Username",
       dataIndex: "username",
       editable: true,
+    },
+
+    {
+      title: "Territory",
+      dataIndex: "",
+      render: (_, record) => (
+        <div>
+          {record.territory === null ? (
+            <div
+              onClick={() => {
+                settervisible(true);
+
+                setEditingKey(record.id);
+              }}
+              style={{ color: "green", margin: "0px 2px", cursor: "pointer" }}
+            >
+              Add to territory
+            </div>
+          ) : (
+            <div>{record.territory.name}</div>
+          )}
+        </div>
+      ),
     },
 
     {
@@ -344,6 +378,7 @@ const UserManagment = (props) => {
             <Select placeholder="Role">
               <Select.Option value={"user"}>User</Select.Option>
               <Select.Option value={"admin"}>Admin</Select.Option>
+              <Select.Option value={"staff"}>Staff</Select.Option>
             </Select>
           </Form.Item>
           <Form.Item>
@@ -373,6 +408,92 @@ const UserManagment = (props) => {
           </Form.Item>
         </Form>
       </Modal>
+
+      <Modal
+        title="Add To Territory"
+        visible={tervisible}
+        closable={true}
+        okButtonProps={{ style: { display: "none" } }}
+        cancelButtonProps={{ style: { display: "none" } }}
+        onCancel={() => {
+          settervisible(false);
+          setEditingKey("");
+        }}
+      >
+        <Form
+          onFinish={(e) => {
+            console.log(selectedTerritory);
+            props.editUserTerritory(editingKey, props.users, {
+              territory: selectedTerritory,
+            });
+
+          }}
+        >
+          <Form.Item name="Region" label="Region">
+            <Select
+              name="Region"
+              style={{ width: "100%" }}
+              value={selectedRegion}
+              onChange={(e) => {
+                setSelectedRegion(e);
+              }}
+              placeholder="Select Region"
+              options={props.regions.map((regions) => {
+                return {
+                  value: regions.name,
+                  label: regions.name,
+                };
+              })}
+            />
+          </Form.Item>
+          <Form.Item name="Subregion" label="Subregion">
+            <Select
+              name="subregions"
+              style={{ width: "100%" }}
+              value={selectedSubRegion}
+              onChange={(e) => {
+                setSelectedSubRegion(e);
+              }}
+              placeholder="Select Subregion"
+              options={props.subregions.map((subregion) => {
+                return {
+                  value: subregion.name,
+                  label: subregion.name,
+                };
+              })}
+            />
+          </Form.Item>
+
+          <Form.Item name="Territory" label="Territory">
+            <Select
+              name="Territory"
+              style={{ width: "100%" }}
+              value={selectedTerritory}
+              onChange={(e) => {
+                setselectedTerritory(e);
+              }}
+              placeholder="Select Territory"
+              options={props.territory.map((territory) => {
+                return {
+                  value: territory.id,
+                  label: territory.name,
+                };
+              })}
+            />
+          </Form.Item>
+
+          <Form.Item style={{ textAlign: "right" }}>
+            <Button
+              style={{ borderRadius: 5 }}
+              loading={props.usersPending}
+              type="primary"
+              htmlType="submit"
+            >
+              Add To Territory
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };
@@ -383,6 +504,9 @@ const mapStateToProps = (state) => {
     count: state.allusers.count,
     usersPending: state.allusers.loading,
     usersError: state.allusers.error,
+    subregions: state.allsubregions.allsubregions,
+    regions: state.allregions.allregions,
+    territory: state.allterritory.allterritory,
   };
 };
 
@@ -392,8 +516,16 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(getAllUserSuccess(limit, page)),
     AllUserEdit: (id, users, edited) =>
       dispatch(AllUserEdit(id, users, edited)),
+    editUserTerritory: (id, users, edited) =>
+      dispatch(editUserTerritory(id, users, edited)),
+
     AllUserDelete: (id, users) => dispatch(AllUserDelete(id, users)),
     UserCreate: (formData) => dispatch(UserCreate(formData)),
+    getAllSubRegionSuccess: (limit, page) =>
+      dispatch(getAllSubRegionSuccess(limit, page)),
+    getAllRegionSuccess: (l, p) => dispatch(getAllRegionSuccess(l, p)),
+    getAllTerritorySuccess: (limit, page) =>
+      dispatch(getAllTerritorySuccess(limit, page)),
   };
 };
 

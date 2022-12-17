@@ -14,6 +14,7 @@ import {
   List,
   Radio,
   Upload,
+  Result,
 } from "antd";
 import {
   PlayCircleFilled,
@@ -32,6 +33,9 @@ import {
   AllTraineeEdit,
   AllTraineeDelete,
   traineeCreate,
+  getTraineeResultSuccess,
+  getSingleTraineePerTerritory,
+
 } from "../../store";
 import withAuth from "../../utils/protectRoute";
 import URLst, { primary_color } from "../../utils/constants";
@@ -43,6 +47,8 @@ const { Panel } = Collapse;
 function CourseProgress(props) {
   const [form] = Form.useForm();
   const [visible, setvisible] = useState(false);
+  const [resvisible, setresvisible] = useState(false);
+
   const [isediting, setisediting] = useState(false);
   const [editingkey, seteditingkey] = useState("");
   const [imageUrl, setImageUrl] = useState(null);
@@ -50,8 +56,9 @@ function CourseProgress(props) {
   const router = useRouter();
   const data = [];
 
+  const { id } = router.query;
+
   props.trainees.forEach((element) => {
-    console.log(element);
     // data.push({ ...dummydata, key: dummydata._id });
 
     data.push({ ...element, key: element._id });
@@ -59,7 +66,11 @@ function CourseProgress(props) {
 
   useEffect(() => {
     const { id } = router.query;
-    props.getSingleTrainee(id);
+    if (localStorage.getItem("role") === "staff") {
+      props.getSingleTraineePerTerritory(id);
+    } else {
+      props.getSingleTrainee(id);
+    }
   }, []);
 
   return props.traineesPending && data.length == 0 ? (
@@ -138,89 +149,111 @@ function CourseProgress(props) {
                     <h1 style={{ fontSize: "30px", fontWeight: 600 }}>
                       Current Course
                     </h1>
-                    {item.currentCourse==null?<></>:<Collapse defaultActiveKey={1}>
-                      <Panel
-                        header={
-                          <div style={{ fontSize: "20px", fontWeight: 500 }}>
-                            {item.currentCourse.title}
-                          </div>
-                        }
-                        key="1"
-                      >
-                        {item.currentCourse.modules.length == 0 ? (
-                          <div>
-                            <Empty description="No Module" />
-                          </div>
-                        ) : (
-                          item.currentCourse.modules
-                            .sort((a, b) => a.order - b.order)
-                            .map((el, ii) => {
-                              // el.id==item.currentModule.id
-                              console.log(el.lessons);
+                    {item.currentCourse == null ? (
+                      <></>
+                    ) : (
+                      <Collapse defaultActiveKey={1}>
+                        <Panel
+                          header={
+                            <div style={{ fontSize: "20px", fontWeight: 500 }}>
+                              {item.currentCourse.title}
+                            </div>
+                          }
+                          key="1"
+                        >
+                          {item.currentCourse.modules.length == 0 ? (
+                            <div>
+                              <Empty description="No Module" />
+                            </div>
+                          ) : (
+                            item.currentCourse.modules
+                              .sort((a, b) => a.order - b.order)
+                              .map((el, ii) => {
+                                // el.id==item.currentModule.id
 
-                              return (
-                                <Collapse key={ii}>
-                                  <Panel
-                                    style={
-                                      el.order < item.currentModule.order
-                                        ? {
-                                            backgroundColor: "#4BB543",
+                                return (
+                                  <Collapse key={ii}>
+                                    <Panel
+                                      style={
+                                        el.order < item.currentModule.order
+                                          ? {
+                                              backgroundColor: "#4BB543",
+                                            }
+                                          : el.order == item.currentModule.order
+                                          ? {
+                                              backgroundColor: "#1677FF",
+                                            }
+                                          : {
+                                              backgroundColor: "#FAFAFA",
+                                            }
+                                      }
+                                      header={
+                                        <span
+                                          style={
+                                            el.order < item.currentModule.order
+                                              ? { color: "white" }
+                                              : el.order ==
+                                                item.currentModule.order
+                                              ? {
+                                                  color: "white",
+                                                }
+                                              : {
+                                                  color: "black",
+                                                }
                                           }
-                                        : el.order == item.currentModule.order
-                                        ? {
-                                            backgroundColor: "#1677FF",
-                                          }
-                                        : {
-                                            backgroundColor: "#FAFAFA",
-                                          }
-                                    }
-                                    header={
-                                      <span
-                                        style={
-                                          el.order < item.currentModule.order
-                                            ? { color: "white" }
-                                            : el.order ==
-                                              item.currentModule.order
-                                            ? {
-                                                color: "white",
-                                              }
-                                            : {
-                                                color: "black",
-                                              }
-                                        }
-                                      >
-                                        Module {el.order}: {el.title}
-                                      </span>
-                                    }
-                                    key="1"
-                                  >
-                                    {el.lessons
-                                      .sort((a, b) => a.order - b.order)
-                                      .map((ep) => {
-                                        return (
-                                          <h1>
-                                            Lesson {ep.order}: {ep.title}
-                                          </h1>
-                                        );
-                                      })}
-                                  </Panel>
-                                </Collapse>
-                              );
-                            })
-                        )}
-                      </Panel>
-                    </Collapse>}
+                                        >
+                                          Module {el.order}: {el.title}
+                                        </span>
+                                      }
+                                      key="1"
+                                    >
+                                      {el.lessons
+                                        .sort((a, b) => a.order - b.order)
+                                        .map((ep) => {
+                                          return (
+                                            <Row justify="space-between">
+                                              <h1>
+                                                Lesson {ep.order}: {ep.title}
+                                              </h1>
+                                              {el.order <
+                                              item.currentModule.order ? (
+                                                <div
+                                                  style={{
+                                                    color: "green",
+                                                    cursor: "pointer",
+                                                  }}
+                                                  onClick={() => {
+                                                    props.getTraineeResultSuccess(
+                                                      ep.id,
+                                                      id
+                                                    );
+                                                    setresvisible(true);
+                                                  }}
+                                                >
+                                                  View Result
+                                                </div>
+                                              ) : (
+                                                <></>
+                                              )}
+                                            </Row>
+                                          );
+                                        })}
+                                    </Panel>
+                                  </Collapse>
+                                );
+                              })
+                          )}
+                        </Panel>
+                      </Collapse>
+                    )}
                   </>
                 );
               })}
-
-              
             </div>
           )}
         </Col>
         <Col span={6} xs={24} sm={24} md={6} lg={6} xl={6} xxl={6}>
           <ActionsTab />
-         
         </Col>
       </Row>
       <Modal
@@ -282,6 +315,42 @@ function CourseProgress(props) {
           </Form.Item>
         </Form>
       </Modal>
+
+      <Modal
+        visible={resvisible}
+        closable
+        onCancel={() => {
+          setresvisible(false);
+        }}
+        okButtonProps={{ style: { display: "none" } }}
+        cancelButtonProps={{ style: { display: "none" } }}
+      >
+        {props.resultLoading ? (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {" "}
+            <div>
+              <LoadingOutlined style={{ fontSize: 80 }} />
+            </div>
+          </div>
+        ) : (
+          <>
+            {" "}
+            <Result
+              status="success"
+              title="Successfully completed the lesson!"
+            />
+            {props.results.map((e) => {
+              return <h1 style={{ textAlign: "center" }}>Score: {e.score}</h1>;
+            })}
+          </>
+        )}
+      </Modal>
     </div>
   );
 }
@@ -291,6 +360,8 @@ const mapStateToProps = (state) => {
     count: state.alltrainees.count,
     traineesPending: state.alltrainees.loading,
     traineesError: state.alltrainees.error,
+    resultLoading: state.allresultsreducer.loading,
+    results: state.allresultsreducer.allresults,
   };
 };
 
@@ -299,12 +370,16 @@ const mapDispatchToProps = (dispatch) => {
     getAllTraineeSuccess: (limit, page) =>
       dispatch(getAllTraineeSuccess(limit, page)),
     getSingleTrainee: (id) => dispatch(getSingleTrainee(id)),
+    getSingleTraineePerTerritory: (id) =>
+      dispatch(getSingleTraineePerTerritory(id)),
 
     AllTraineeEdit: (id, trainees, edited) =>
       dispatch(AllTraineeEdit(id, trainees, edited)),
     AllTraineeDelete: (id, trainees) =>
       dispatch(AllTraineeDelete(id, trainees)),
     traineeCreate: (formData) => dispatch(traineeCreate(formData)),
+    getTraineeResultSuccess: (lessson, trainee) =>
+      dispatch(getTraineeResultSuccess(lessson, trainee)),
   };
 };
 

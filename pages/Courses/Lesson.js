@@ -40,6 +40,7 @@ function Lesson(props) {
   const [videovisible, setvideovisible] = useState(false);
   const [videosource, setvideosource] = useState("");
   const [routervals, setroutervals] = useState({ id: "", element: [] });
+  const role = localStorage.getItem("role");
 
   const [data, setdata] = useState([]);
   const [visible, setvisible] = useState(false);
@@ -164,7 +165,7 @@ function Lesson(props) {
                 .map((e) => {
                   return (
                     <Row
-                    key={e.id}
+                      key={e.id}
                       style={{ margin: "15px 0px" }}
                       // gutter={[1, { xs: 8, sm: 16, md: 24, lg: 24,xl:24 ,span:24}]}
                     >
@@ -202,43 +203,52 @@ function Lesson(props) {
                               <div>Play</div>
                             </Space>
                           </Button>
-                          <Button type="text" onClick={() => {
-                            router.push(
-                             `Lesson/quiz?id=${e.id}`
-                             
-                            );
-                          }}>
+                          <Button
+                            type="text"
+                            onClick={() => {
+                              router.push(`Lesson/quiz?id=${e.id}`);
+                            }}
+                          >
                             <Space style={{ color: "green" }}>
                               <QuestionCircleFilled />
                               <div>Quizes</div>
                             </Space>
                           </Button>
-                          <Button
-                            type="text"
-                            onClick={() => {
-                              editor(e);
-                            }}
-                          >
-                            <Space style={{ color: "blue" }}>
-                              <EditFilled />
-                              <div>Edit</div>
-                            </Space>
-                          </Button>
-                          <Popconfirm
-                            title={
-                              "Are you sure you want to delete this Lesson?"
-                            }
-                            onConfirm={() => {
-                              props.AllLessonDelete(e.id, data);
-                            }}
-                          >
-                            <Button type="text">
-                              <Space style={{ color: "red" }}>
-                                <DeleteFilled />
-                                <div>Delete</div>
+
+                          {role === "staff" ? (
+                            <></>
+                          ) : (
+                            <Button
+                              type="text"
+                              onClick={() => {
+                                editor(e);
+                              }}
+                            >
+                              <Space style={{ color: "blue" }}>
+                                <EditFilled />
+                                <div>Edit</div>
                               </Space>
                             </Button>
-                          </Popconfirm>
+                          )}
+                          {role === "staff" ? (
+                            <></>
+                          ) : (
+                            <Popconfirm
+                              title={
+                                "Are you sure you want to delete this Lesson?"
+                              }
+                              onConfirm={() => {
+                                props.AllLessonDelete(e.id, data);
+                              }}
+                            >
+                              <Button type="text">
+                                <Space style={{ color: "red" }}>
+                                  <DeleteFilled />
+                                  <div>Delete</div>
+                                </Space>
+                              </Button>
+                            </Popconfirm>
+                          )}
                         </Row>
                       </Col>
                     </Row>
@@ -249,15 +259,19 @@ function Lesson(props) {
         </Col>
         <Col span={6} xs={24} sm={24} md={6} lg={6} xl={6} xxl={6}>
           <ActionsTab />
-          <Button
-            style={{ width: "202px", margin: "8px 0px", borderRadius: 6 }}
-            type="primary"
-            onClick={() => {
-              setvisible(true);
-            }}
-          >
-            Lesson Builder
-          </Button>
+          {role === "staff" ? (
+            <></>
+          ) : (
+            <Button
+              style={{ width: "202px", margin: "8px 0px", borderRadius: 6 }}
+              type="primary"
+              onClick={() => {
+                setvisible(true);
+              }}
+            >
+              Lesson Builder
+            </Button>
+          )}
         </Col>
       </Row>
       <Modal

@@ -1,21 +1,33 @@
 import { useRouter } from "next/router";
 import Layout from "../layout";
-import {
-  adminmenu
-} from "../layout/menuLinks";
-
+import { adminmenu } from "../layout/menuLinks";
 
 const withAuth = (WrappedComponent) => {
   return (props) => {
     if (typeof window !== "undefined") {
       const Router = useRouter();
+      const role = localStorage.getItem("role");
       const accessToken = localStorage.getItem("token");
-       if (adminmenu.some((e) => e.link == Router.pathname)) {
-         var i = adminmenu.findIndex((element) => {
-           return element.link === Router.pathname;
-         });
-         localStorage.setItem("selectedKey", i.toString());
-       }
+
+      if (role === "admin") {
+        if (adminmenu.some((e) => e.link == Router.pathname)) {
+          var i = adminmenu.findIndex((element) => {
+            return element.link === Router.pathname;
+          });
+          localStorage.setItem("selectedKey", i.toString());
+        }
+      }
+
+      if (role === "staff") {
+        if (adminmenu.some((e) => e.link == Router.pathname)) {
+          var i = adminmenu
+            .filter((e) => e.link !== "/UserManagment")
+            .findIndex((element) => {
+              return element.link === Router.pathname;
+            });
+          localStorage.setItem("selectedKey", i.toString());
+        }
+      }
 
       if (!accessToken) {
         Router.replace("/Login");
