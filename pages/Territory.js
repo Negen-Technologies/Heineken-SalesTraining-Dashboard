@@ -12,8 +12,12 @@ import {
   Select,
   Space,
   Menu,
+  Tag,
+  Upload,
 } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+import { DownOutlined, UploadOutlined } from "@ant-design/icons";
+import Papa from "papaparse";
+
 import { connect } from "react-redux";
 import {
   getAllTerritorySuccess,
@@ -21,9 +25,10 @@ import {
   AllTerritoryEdit,
   AllTerritoryDelete,
   getAllSubRegionSuccess,
+  territoryCreateBulk,
 } from "../store";
 import withAuth from "../utils/protectRoute";
-import URLst, { primary_color } from "../utils/constants";
+import URLst, { primary_color, exportToExcel } from "../utils/constants";
 import { ContinuousLegend } from "@antv/g2/lib/dependents";
 
 const EditableCell = ({
@@ -65,10 +70,15 @@ const EditableCell = ({
 
 const Territory = (props) => {
   const [form] = Form.useForm();
+  const role = localStorage.getItem("role");
 
   var numEachPage = 10;
   var data = [];
   const [isVisible, setVisible] = useState(false);
+  const [bulkVisible, setbulkVisible] = useState(false);
+
+  const [File, setFile] = useState(null);
+  const [FileList, setFileList] = useState([]);
   const [current, setCurrent] = useState(1);
   const [loadedpage, setLoadedPage] = useState([1]);
   const [selectedRegion, setSelectedRegion] = useState("");
@@ -168,12 +178,16 @@ const Territory = (props) => {
               Cancel
             </Button>
           </span>
+        ) : role == "staff" ? (
+          <></>
         ) : (
           <Typography.Link
             disabled={editingKey !== ""}
             onClick={() => edit(record)}
           >
-            Edit
+            <Tag color="processing" style={{ cursor: "pointer" }}>
+              Edit
+            </Tag>
           </Typography.Link>
         );
       },
@@ -181,16 +195,21 @@ const Territory = (props) => {
     {
       title: "",
       dataIndex: "",
-      render: (_, record) => (
-        <Popconfirm
-          title="Sure to delete?"
-          onConfirm={() => {
-            handleDelete(record.key);
-          }}
-        >
-          <a style={{ color: "red" }}>Delete</a>
-        </Popconfirm>
-      ),
+      render: (_, record) =>
+        role == "staff" ? (
+          <></>
+        ) : (
+          <Popconfirm
+            title="Sure to delete?"
+            onConfirm={() => {
+              handleDelete(record.key);
+            }}
+          >
+            <Tag color="volcano" style={{ cursor: "pointer" }}>
+              Delete
+            </Tag>
+          </Popconfirm>
+        ),
     },
   ];
 
@@ -293,16 +312,53 @@ const Territory = (props) => {
             }}
           ></div>
 
+          {role == "staff" ? (
+            <></>
+          ) : (
+            <div>
+              {" "}
+              <Button
+                style={{ width: "202px", margin: "5px 0px" }}
+                type="primary"
+                onClick={() => {
+                  form.resetFields();
+
+                  setVisible(true);
+                }}
+              >
+                Add Territories
+              </Button>
+              <Button
+                style={{ width: "202px", margin: "5px 0px" }}
+                type="primary"
+                onClick={() => {
+                  setbulkVisible(true);
+                }}
+              >
+                Bulk Add Territories
+              </Button>
+            </div>
+          )}
           <Button
-            style={{ width: "202px", margin: "20px 0px" }}
+            style={{ width: "202px", margin: "5px 0px" }}
             type="primary"
             onClick={() => {
-              form.resetFields();
+              let newdata = [];
+              data.forEach((e) => {
+                let Territory = e.name;
+                let Subregion = e.subregionId.name;
+                let Region = e.subregionId.regionId.name;
 
-              setVisible(true);
+                newdata.push({
+                  Territory: Territory,
+                  Subregion: Subregion,
+                  Region: Region,
+                });
+              });
+              exportToExcel(newdata, "Territories");
             }}
           >
-            Add Territories
+            Export Table
           </Button>
         </Col>
       </Row>
@@ -357,6 +413,81 @@ const Territory = (props) => {
           </Form>
         </Space>
       </Modal>
+
+      <Modal
+        title="Bulk Add Territories"
+        visible={bulkVisible}
+        closable={true}
+        okButtonProps={{ style: { display: "none" } }}
+        cancelButtonProps={{ style: { display: "none" } }}
+        onCancel={() => {
+          setbulkVisible(false);
+          setFile(null);
+          setFileList([]);
+        }}
+      >
+        <Form
+          name="formupload"
+          onFinish={(e) => {
+            Papa.parse(File, {
+              header: true,
+              skipEmptyLines: true,
+              complete: function (results) {
+                
+                props.territoryCreateBulk(e.subregions, { data: results.data });
+              },
+            });
+          }}
+        >
+          <Form.Item name="subregions" label="Subregions">
+            <Select
+              name="subregions"
+              style={{ width: "100%" }}
+              value={selectedSubRegionName}
+              onChange={handleSelectChange}
+              placeholder="Select Subregion"
+              options={props.subregions.map((subregion) => {
+                return {
+                  value: subregion.id,
+                  label: subregion.name,
+                };
+              })}
+            ></Select>
+          </Form.Item>
+          <Form.Item>
+            <Upload
+              accept=".CSV"
+              onRemove={() => {
+                setFile(null);
+                setFileList([]);
+              }}
+              fileList={FileList}
+              beforeUpload={async (file) => {
+                setFile(file);
+                setFileList([file]);
+              }}
+            >
+              <Button
+                disabled={File == null ? false : true}
+                icon={<UploadOutlined />}
+              >
+                Click to Upload File
+              </Button>
+            </Upload>
+          </Form.Item>
+
+          <Form.Item style={{ textAlign: "right" }}>
+            <Button
+              style={{ borderRadius: 5 }}
+              type="primary"
+              htmlType="submit"
+              loading={props.territoryPending}
+            >
+              Add Territories
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };
@@ -381,6 +512,8 @@ const mapDispatchToProps = (dispatch) => {
     AllTerritoryDelete: (id, territory) =>
       dispatch(AllTerritoryDelete(id, territory)),
     territoryCreate: (formData) => dispatch(territoryCreate(formData)),
+    territoryCreateBulk: (id, formData) =>
+      dispatch(territoryCreateBulk(id, formData)),
   };
 };
 

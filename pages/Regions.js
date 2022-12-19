@@ -8,18 +8,18 @@ import {
   Button,
   Row,
   Col,
-  Modal
+  Modal,
+  Tag,
 } from "antd";
 import { connect } from "react-redux";
 import {
- getAllRegionSuccess,
-regionCreate,
-AllRegionEdit,
-AllRegionDelete
+  getAllRegionSuccess,
+  regionCreate,
+  AllRegionEdit,
+  AllRegionDelete,
 } from "../store";
 import withAuth from "../utils/protectRoute";
 import URLst, { primary_color } from "../utils/constants";
-
 
 const EditableCell = ({
   editing,
@@ -32,11 +32,7 @@ const EditableCell = ({
   ...restProps
 }) => {
   const inputNode =
-    dataIndex === "role" ? (
-      <Input disabled={true} />
-    ) : (
-      <Input />
-    );
+    dataIndex === "role" ? <Input disabled={true} /> : <Input />;
 
   return (
     <td {...restProps}>
@@ -64,7 +60,8 @@ const EditableCell = ({
 
 const Regions = (props) => {
   const [form] = Form.useForm();
-  
+  const role = localStorage.getItem("role");
+
   var numEachPage = 10;
   var data = [];
   const [isVisible, setVisible] = useState(false);
@@ -116,9 +113,8 @@ const Regions = (props) => {
     {
       title: "Name",
       dataIndex: "name",
-      editable: true
+      editable: true,
     },
-
 
     {
       title: "",
@@ -145,12 +141,16 @@ const Regions = (props) => {
               Cancel
             </Button>
           </span>
+        ) : role == "staff" ? (
+          <></>
         ) : (
           <Typography.Link
             disabled={editingKey !== ""}
             onClick={() => edit(record)}
           >
-            Edit
+            <Tag color="processing" style={{ cursor: "pointer" }}>
+              Edit
+            </Tag>
           </Typography.Link>
         );
       },
@@ -158,16 +158,21 @@ const Regions = (props) => {
     {
       title: "",
       dataIndex: "",
-      render: (_, record) => (
-        <Popconfirm
-          title="Sure to delete?"
-          onConfirm={() => {
-            handleDelete(record.key);
-          }}
-        >
-          <a style={{ color: "red" }}>Delete</a>
-        </Popconfirm>
-      ),
+      render: (_, record) =>
+        role == "staff" ? (
+          <></>
+        ) : (
+          <Popconfirm
+            title="Sure to delete?"
+            onConfirm={() => {
+              handleDelete(record.key);
+            }}
+          >
+            <Tag color="volcano" style={{ cursor: "pointer" }}>
+              Delete
+            </Tag>
+          </Popconfirm>
+        ),
     },
   ];
 
@@ -269,18 +274,21 @@ const Regions = (props) => {
               height: "2px",
             }}
           ></div>
+          {role == "staff" ? (
+            <></>
+          ) : (
+            <Button
+              style={{ width: "202px", margin: "20px 0px" }}
+              type="primary"
+              onClick={() => {
+                form.resetFields();
 
-          <Button
-            style={{ width: "202px", margin: "20px 0px" }}
-            type="primary"
-            onClick={() => {
-              form.resetFields();
-
-              setVisible(true);
-            }}
-          >
-            Add Region
-          </Button>
+                setVisible(true);
+              }}
+            >
+              Add Region
+            </Button>
+          )}
         </Col>
       </Row>
 
@@ -297,16 +305,12 @@ const Regions = (props) => {
         <Form
           form={form}
           onFinish={(doc) => {
-        
-
             props.regionCreate(doc);
           }}
         >
           <Form.Item name="name">
             <Input placeholder="Name" />
           </Form.Item>
-
-        
 
           <Form.Item>
             <p style={{ color: "red" }}>{props.regionsError}</p>

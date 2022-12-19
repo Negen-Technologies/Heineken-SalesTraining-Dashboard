@@ -81,15 +81,50 @@ export const getAllTerritorySuccess = (limit, page) => {
 };
 
 export const territoryCreate = (formData) => {
-  console.log(formData)
+  console.log(formData);
   console.log(formData);
   return (dispatch) => {
     dispatch(territoryPending());
     const token = localStorage.getItem("token");
     axios
-      .post(URLst + "v1/territories", {name:formData.name, subregionId: formData.subregions}, {
+      .post(
+        URLst + "v1/territories",
+        { name: formData.name, subregionId: formData.subregions },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res.data);
+
+        dispatch(territoryCreateSuccess(res.data));
+      })
+      .catch((err) => {
+        if (err.response.data.code == 401) {
+          handle401();
+        }
+
+        var errorData;
+        if (err.response != null) {
+          errorData = err.response.data.message;
+        } else {
+          errorData = err.message;
+        }
+        console.log(errorData);
+        dispatch(allterritoryFail(errorData));
+      });
+  };
+};
+
+export const territoryCreateBulk = (id, data) => {
+  return (dispatch) => {
+    dispatch(territoryPending());
+    const token = localStorage.getItem("token");
+    axios
+      .post(URLst + `v1/territories/bulkCreate/${id}`, data, {
         headers: {
-        
           Authorization: `Bearer ${token}`,
         },
       })
@@ -116,12 +151,10 @@ export const territoryCreate = (formData) => {
 };
 
 export const AllTerritoryEdit = (id, regions, edited) => {
-
   const token = localStorage.getItem("token");
 
   return (dispatch, getState) => {
     dispatch(territoryPending());
-    
 
     axios({
       method: "patch",

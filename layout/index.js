@@ -19,12 +19,12 @@ export function index(props) {
   );
   const [breakpointBool, setBreakpointBool] = useState(false);
 
-  const changeSelectedKey = (event) => {
+  const changeSelectedKey = (event, path = null) => {
     localStorage.setItem("selectedKey", event.key);
     const key = event.key;
     setSelectedKey(key);
     setContentIndex(+key);
-    router.push(items[key].link);
+    path === null ? router.push(items[key].link) : router.push(path);
   };
   const Menu = (
     <TopicMenu
@@ -85,29 +85,4 @@ const mapDispatchToProps = (dispatch) => {
 
 export default connect(mapStateToProps, mapDispatchToProps)(index);
 
-{
-  /* <Layout hasSider width="100%">
-  <SideBar
-    menu={Menu}
-    onBreakpoint={(broken) => {
-      setBreakpointBool(broken);
-    }}
-    theme="dark"
-  />
-  <Layout
-    style={breakpointBool ? { marginLeft: 0 } : { marginLeft: 200 }}
-    width="100%"
-  >
-    <NavBar menu={Menu} style={{ padding: 0 }} />
-    <Layout.Content
-      style={
-        breakpointBool
-          ? { margin: "24px 16px 0", height: "90vh" }
-          : { margin: "24px 16px 0", overflow: "initial", height: "90vh" }
-      }
-    >
-      {props.children}
-    </Layout.Content>
-  </Layout>
-</Layout>; */
-}
+

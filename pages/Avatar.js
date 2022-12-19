@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Row, Col, Form, Input, Button, Card, Modal, Popconfirm } from "antd";
-import URLst,{ primary_color } from "../utils/constants";
+import URLst, { primary_color } from "../utils/constants";
 import withAuth from "../utils/protectRoute";
 import { connect } from "react-redux";
 import {
@@ -27,6 +27,7 @@ function Avatar({
   avatarDelete,
   loading,
 }) {
+  const role = localStorage.getItem("role");
   const formData = new FormData();
   const [isVisible, setVisible] = useState(false);
   const [isEditing, setEditing] = useState(false);
@@ -51,30 +52,40 @@ function Avatar({
           style={{
             width: 250,
           }}
-          cover={<img alt="example" src={`${URLst}images/${ele.image}`} style={{ width: '100%',maxWidth: '300px',height: 'auto' }}/>}
-          actions={[
-            <EditOutlined
-              key="edit"
-              onClick={() => {
-                form.resetFields();
-                seteditingkey(ele.id);
-                setEditing(true);
-                onFill(ele);
-                setVisible(true);
-              }}
-            />,
-            <Popconfirm
-              title="Are you sure to delete this task?"
-              onConfirm={() => {
-                avatarDelete(ele.id, data);
-              }}
-              okText="Yes"
-              cancelText="No"
-            >
-              <DeleteOutlined key="setting" />
-            </Popconfirm>,
-            // <DeleteOutlined key="setting" onClick={()=>{avatarDelete(ele.id,data);}}/>,
-          ]}
+          cover={
+            <img
+              alt="example"
+              src={`${URLst}images/${ele.image}`}
+              style={{ width: "100%", maxWidth: "300px", height: "auto" }}
+            />
+          }
+          actions={
+            role == "staff"
+              ? null
+              : [
+                  <EditOutlined
+                    key="edit"
+                    onClick={() => {
+                      form.resetFields();
+                      seteditingkey(ele.id);
+                      setEditing(true);
+                      onFill(ele);
+                      setVisible(true);
+                    }}
+                  />,
+                  <Popconfirm
+                    title="Are you sure to delete this task?"
+                    onConfirm={() => {
+                      avatarDelete(ele.id, data);
+                    }}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <DeleteOutlined key="setting" />
+                  </Popconfirm>,
+                  // <DeleteOutlined key="setting" onClick={()=>{avatarDelete(ele.id,data);}}/>,
+                ]
+          }
         >
           <Meta
             //   avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
@@ -142,7 +153,7 @@ function Avatar({
             ></div>
             <Row gutter={[2, 16]}> {finalCard}</Row>
           </Col>
-          <Col span={6}  xs={24} sm={24} md={6} lg={6} xl={6} xxl={6}>
+          <Col span={6} xs={24} sm={24} md={6} lg={6} xl={6} xxl={6}>
             <h1
               style={{
                 fontSize: 20,
@@ -159,18 +170,21 @@ function Avatar({
                 height: "2px",
               }}
             ></div>
+            {role == "staff" ? (
+              <></>
+            ) : (
+              <Button
+                style={{ width: "202px", margin: "20px 0px" }}
+                type="primary"
+                onClick={() => {
+                  form.resetFields();
 
-            <Button
-              style={{ width: "202px", margin: "20px 0px" }}
-              type="primary"
-              onClick={() => {
-                form.resetFields();
-
-                setVisible(true);
-              }}
-            >
-              Add Avatar
-            </Button>
+                  setVisible(true);
+                }}
+              >
+                Add Avatar
+              </Button>
+            )}
           </Col>
         </Row>
       )}

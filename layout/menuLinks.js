@@ -8,9 +8,9 @@ import {
   UsergroupAddOutlined,
   UserOutlined,
   UngroupOutlined,
+  ApartmentOutlined,
   // <UsergroupAddOutlined />
 } from "@ant-design/icons";
-
 
 export const adminmenu = [
   {
@@ -43,21 +43,28 @@ export const adminmenu = [
     link: "/Avatar",
     icon: <UserOutlined style={{ fontSize: "26px" }} />,
   },
+
   {
-    name: "Region",
-    link: "/Regions",
-    icon: <UngroupOutlined style={{ fontSize: "26px" }} />,
-  },
-  
-  {
-    name: "Subregion",
-    link: "/Subregions",
-    icon: <UngroupOutlined style={{ fontSize: "26px" }} />,
-  },
-  {
-    name: "Territories",
-    link: "/Territory",
-    icon: <UngroupOutlined style={{ fontSize: "26px" }} />,
+    name: "Locations",
+    icon: <ApartmentOutlined style={{ fontSize: "26px" }} />,
+    children: [
+      {
+        name: "Region",
+        link: "/Regions",
+        icon: <UngroupOutlined style={{ fontSize: "26px" }} />,
+      },
+
+      {
+        name: "Subregion",
+        link: "/Subregions",
+        icon: <UngroupOutlined style={{ fontSize: "26px" }} />,
+      },
+      {
+        name: "Territories",
+        link: "/Territory",
+        icon: <UngroupOutlined style={{ fontSize: "26px" }} />,
+      },
+    ],
   },
 ];
 
@@ -70,5 +77,5 @@ export const adminroutes = [
   "/Avatar",
   "/Regions",
   "/Subregions",
-  "/Territory"
+  "/Territory",
 ];

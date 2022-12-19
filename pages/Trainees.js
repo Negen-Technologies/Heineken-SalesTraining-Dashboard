@@ -35,10 +35,10 @@ import {
   getAllRegionSuccess,
   traineeBulkCreate,
   getAllTraineePerTerritory,
-  ActivateTrainee
+  ActivateTrainee,
 } from "./../store";
 import withAuth from "./../utils/protectRoute";
-import URLst, { primary_color } from "./../utils/constants";
+import URLst, { primary_color, exportToExcel } from "./../utils/constants";
 import ActionsTab from "./../Components/SupplimentaryComponents/actionsTab";
 import OverviewTab from "./../Components/SupplimentaryComponents/overviewTab";
 import { useRouter } from "next/router";
@@ -69,7 +69,6 @@ function Trainees(props) {
 
   useEffect(() => {
     if (localStorage.getItem("role") === "staff") {
-      
       props.getAllTraineePerTerritory(10, 1);
     } else {
       props.getAllTraineeSuccess(10, 1);
@@ -340,6 +339,47 @@ function Trainees(props) {
               >
                 Bulk Add Trainees
               </Button>
+
+              <Button
+                style={{ width: "202px", margin: "5px 0px" }}
+                type="primary"
+                onClick={() => {
+                  let newdata = [];
+                  data.forEach((e) => {
+                    delete e.currentCourse;
+                    delete e.currentLesson;
+                    delete e.currentModule;
+                    delete e.createdAt;
+                    delete e.hasChangedPassword;
+                    delete e.updatedAt;
+                    delete e.avatar;
+                    delete e.key;
+                    delete e._id;
+                    delete e.__v;
+
+                    let terr =
+                      e.territories.length === 0 ? "" : e.territories[0].name;
+                    let name = e.user.name;
+                    let username = e.user.username;
+                    let email = e.user.email;
+
+                    delete e.user;
+
+                    newdata.push({
+                      name: name,
+                      username: username,
+                      email: email,
+                      ...e,
+                      badges: e.badges.length,
+                      territories: terr,
+                    });
+                  });
+
+                  exportToExcel(newdata, "Trainees");
+                }}
+              >
+                Export Table
+              </Button>
             </>
           )}
         </Col>
@@ -450,12 +490,14 @@ function Trainees(props) {
                 setSelectedSubRegion(e);
               }}
               placeholder="Select Subregion"
-              options={props.subregions.map((subregion) => {
-                return {
-                  value: subregion.name,
-                  label: subregion.name,
-                };
-              })}
+              options={props.subregions
+                .filter((e) => e.regionId.name === selectedRegion)
+                .map((subregion) => {
+                  return {
+                    value: subregion.name,
+                    label: subregion.name,
+                  };
+                })}
             />
           </Form.Item>
 
@@ -468,12 +510,14 @@ function Trainees(props) {
                 setselectedTerritory(e);
               }}
               placeholder="Select Territory"
-              options={props.territory.map((territory) => {
-                return {
-                  value: territory.id,
-                  label: territory.name,
-                };
-              })}
+              options={props.territory
+                .filter((e) => e.subregionId.name === selectedSubRegion)
+                .map((territory) => {
+                  return {
+                    value: territory.id,
+                    label: territory.name,
+                  };
+                })}
             />
           </Form.Item>
 
@@ -518,9 +562,9 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(getAllTraineePerTerritory(limit, page)),
     AllTraineeEdit: (id, trainees, edited) =>
       dispatch(AllTraineeEdit(id, trainees, edited)),
-      ActivateTrainee: (id, trainees, edited) =>
+    ActivateTrainee: (id, trainees, edited) =>
       dispatch(ActivateTrainee(id, trainees, edited)),
-      
+
     AllTraineeDelete: (id, trainees) =>
       dispatch(AllTraineeDelete(id, trainees)),
     traineeBulkCreate: (formData) => dispatch(traineeBulkCreate(formData)),

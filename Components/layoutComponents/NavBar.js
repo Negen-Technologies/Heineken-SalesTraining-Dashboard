@@ -84,7 +84,7 @@ function NavBar({
         </Col>
         <Col>
           <Row align="middle">
-            <Input
+            {/* <Input
             placeholder="Keywords"
               suffix={<SearchOutlined />}
               style={{
@@ -92,7 +92,7 @@ function NavBar({
 
                 borderRadius: 22,
               }}
-            ></Input>
+            ></Input> */}
 
             <div
               style={{

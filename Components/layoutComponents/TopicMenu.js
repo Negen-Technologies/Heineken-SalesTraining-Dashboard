@@ -1,6 +1,6 @@
 import React from "react";
 import { Menu, Row, Avatar, Col, Popover, Popconfirm, Divider } from "antd";
-import Router from 'next/router';
+import Router from "next/router";
 import {
   MenuOutlined,
   LogoutOutlined,
@@ -10,21 +10,41 @@ import {
 import { primary_color } from "../../utils/constants";
 export default function TopicMenu({ items, selectedKey, changeSelectedKey }) {
   const styledTopics = [];
-  items.forEach((topic, index) =>
-    styledTopics.push(
-      <Menu.Item
-        style={{
-          paddingLeft: "5px",
-        }}
-        key={index}
-        l={topic.link}
-        onClick={changeSelectedKey}
-        icon={topic.icon}
-      >
-        {topic.name}{" "}
-      </Menu.Item>
-    )
-  );
+  items.forEach((topic, index) => {
+    topic.children !== undefined
+      ? styledTopics.push(
+          <Menu.SubMenu key={index} icon={topic.icon} title={topic.name}>
+            {topic.children.map((e, i) => {
+              return (
+                <Menu.Item
+                  style={{
+                    paddingLeft: "5px",
+                  }}
+                  key={100 + i}
+                  l={e.link}
+                  onClick={(ev)=>{changeSelectedKey(ev,e.link)}}
+               
+                >
+                  {e.name}{" "}
+                </Menu.Item>
+              );
+            })}
+          </Menu.SubMenu>
+        )
+      : styledTopics.push(
+          <Menu.Item
+            style={{
+              paddingLeft: "5px",
+            }}
+            key={index}
+            l={topic.link}
+            onClick={(e)=>{changeSelectedKey(e)}}
+            icon={topic.icon}
+          >
+            {topic.name}{" "}
+          </Menu.Item>
+        );
+  });
 
   return (
     <>
@@ -37,6 +57,7 @@ export default function TopicMenu({ items, selectedKey, changeSelectedKey }) {
           marginBottom: "0px",
           display: "grid",
           placeItems: "center",
+         
         }}
       >
         <Row align="middle">
@@ -94,14 +115,14 @@ export default function TopicMenu({ items, selectedKey, changeSelectedKey }) {
                 </Row>
                 <Popconfirm
                   title="Are you sure you want to log out?"
-                  onConfirm={() => { localStorage.clear();window.location.reload();}}
+                  onConfirm={() => {
+                    localStorage.clear();
+                    window.location.reload();
+                  }}
                   okText="Logout"
                   cancelText="Cancel"
                 >
-                  <Row
-                    style={{ cursor: "pointer" }}
-                
-                  >
+                  <Row style={{ cursor: "pointer" }}>
                     <LogoutOutlined
                       style={{ marginRight: "10px", marginTop: "4px" }}
                     />
@@ -126,23 +147,7 @@ export default function TopicMenu({ items, selectedKey, changeSelectedKey }) {
         {styledTopics}{" "}
       </Menu>
 
-      <div
-        style={{
-          position: "fixed",
-          bottom: "0",
-          left: "0",
-          margin: "12px",
-          marginBottom: "-8px",
-          marginLeft: "16px",
-          color: "#fff",
-          fontSize: "11px",
-        }}
-      >
-        <pre>
-          ©2022 Leanbits
-          <pre>All Rights Reserved</pre>
-        </pre>
-      </div>
+     
     </>
   );
 }

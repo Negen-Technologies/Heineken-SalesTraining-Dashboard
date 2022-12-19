@@ -12,6 +12,7 @@ import {
   Select,
   Space,
   Avatar,
+  Tag,
 } from "antd";
 import { connect } from "react-redux";
 import {
@@ -25,7 +26,7 @@ import {
   editUserTerritory,
 } from "../store";
 import withAuth from "../utils/protectRoute";
-import URLst, { primary_color } from "../utils/constants";
+import URLst, { primary_color, exportToExcel } from "../utils/constants";
 import FormData from "form-data";
 
 const EditableCell = ({
@@ -84,6 +85,7 @@ const UserManagment = (props) => {
   const [editingKey, setEditingKey] = useState("");
 
   props.users.forEach((element) => {
+    //  let terr= element.territory === null?'':element.territory.name
     data.push({ ...element, key: element.id });
   });
 
@@ -164,16 +166,17 @@ const UserManagment = (props) => {
       render: (_, record) => (
         <div>
           {record.territory === null ? (
-            <div
+            <Tag
               onClick={() => {
                 settervisible(true);
 
                 setEditingKey(record.id);
               }}
-              style={{ color: "green", margin: "0px 2px", cursor: "pointer" }}
+              color="success"
+              style={{ cursor: "pointer" }}
             >
               Add to territory
-            </div>
+            </Tag>
           ) : (
             <div>{record.territory.name}</div>
           )}
@@ -211,7 +214,9 @@ const UserManagment = (props) => {
             disabled={editingKey !== ""}
             onClick={() => edit(record)}
           >
-            Edit
+            <Tag color="processing" style={{ cursor: "pointer" }}>
+              Edit
+            </Tag>
           </Typography.Link>
         );
       },
@@ -226,7 +231,9 @@ const UserManagment = (props) => {
             handleDelete(record.key);
           }}
         >
-          <a style={{ color: "red" }}>Delete</a>
+          <Tag color="volcano" style={{ cursor: "pointer" }}>
+            Delete
+          </Tag>
         </Popconfirm>
       ),
     },
@@ -342,6 +349,24 @@ const UserManagment = (props) => {
           >
             Add User
           </Button>
+
+          <Button
+            style={{ width: "202px", margin: "5px 0px" }}
+            type="primary"
+            onClick={() => {
+              let newdata = [];
+              data.forEach((e) => {
+                delete e.isEmailVerified;
+                delete e.key;
+                let terr = e.territory === null ? "" : e.territory.name;
+                newdata.push({ ...e, territory: terr });
+              });
+
+              exportToExcel(newdata, "UserManagement");
+            }}
+          >
+            Export Table
+          </Button>
         </Col>
       </Row>
 
@@ -378,7 +403,7 @@ const UserManagment = (props) => {
             <Select placeholder="Role">
               <Select.Option value={"user"}>User</Select.Option>
               <Select.Option value={"admin"}>Admin</Select.Option>
-              <Select.Option value={"staff"}>Staff</Select.Option>
+              <Select.Option value={"staff"}>BUM</Select.Option>
             </Select>
           </Form.Item>
           <Form.Item>
@@ -426,7 +451,6 @@ const UserManagment = (props) => {
             props.editUserTerritory(editingKey, props.users, {
               territory: selectedTerritory,
             });
-
           }}
         >
           <Form.Item name="Region" label="Region">
@@ -455,12 +479,14 @@ const UserManagment = (props) => {
                 setSelectedSubRegion(e);
               }}
               placeholder="Select Subregion"
-              options={props.subregions.map((subregion) => {
-                return {
-                  value: subregion.name,
-                  label: subregion.name,
-                };
-              })}
+              options={props.subregions
+                .filter((e) => e.regionId.name === selectedRegion)
+                .map((subregion) => {
+                  return {
+                    value: subregion.name,
+                    label: subregion.name,
+                  };
+                })}
             />
           </Form.Item>
 
@@ -473,12 +499,14 @@ const UserManagment = (props) => {
                 setselectedTerritory(e);
               }}
               placeholder="Select Territory"
-              options={props.territory.map((territory) => {
-                return {
-                  value: territory.id,
-                  label: territory.name,
-                };
-              })}
+              options={props.territory
+                .filter((e) => e.subregionId.name === selectedSubRegion)
+                .map((territory) => {
+                  return {
+                    value: territory.id,
+                    label: territory.name,
+                  };
+                })}
             />
           </Form.Item>
 

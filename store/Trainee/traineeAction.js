@@ -57,7 +57,7 @@ export const getAllTraineePerTerritory = (limit, page) => {
 
     axios({
       method: "get",
-      url: URLst + `v1/users/trainees`,
+      url: URLst + `v1/users/trainees?limit=${limit}&page=${page}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },

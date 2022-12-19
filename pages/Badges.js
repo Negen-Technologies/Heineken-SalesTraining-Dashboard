@@ -41,6 +41,8 @@ import FormData from "form-data";
 
 function Badges(props) {
   const [form] = Form.useForm();
+  const role = localStorage.getItem("role");
+
   const ref = useRef();
   const [imageUrl, setImageUrl] = useState(null);
   //   const [data, setdata] = useState([]);
@@ -157,32 +159,38 @@ function Badges(props) {
                       </h1>
                       {/* <br /> */}
                       <p>{e.description}</p>
-                      <Row justify="start">
-                        <Button
-                          type="text"
-                          onClick={() => {
-                            editor(e);
-                          }}
-                        >
-                          <Space style={{ color: "blue" }}>
-                            <EditFilled />
-                            <div>Edit</div>
-                          </Space>
-                        </Button>
-                        <Popconfirm
-                          title={"Are you sure you want to delete this Badge?"}
-                          onConfirm={() => {
-                            props.AllBadgeDelete(e.id, data);
-                          }}
-                        >
-                          <Button type="text">
-                            <Space style={{ color: "red" }}>
-                              <DeleteFilled />
-                              <div>Delete</div>
+                      {role == "staff" ? (
+                        <></>
+                      ) : (
+                        <Row justify="start">
+                          <Button
+                            type="text"
+                            onClick={() => {
+                              editor(e);
+                            }}
+                          >
+                            <Space style={{ color: "blue" }}>
+                              <EditFilled />
+                              <div>Edit</div>
                             </Space>
                           </Button>
-                        </Popconfirm>
-                      </Row>
+                          <Popconfirm
+                            title={
+                              "Are you sure you want to delete this Badge?"
+                            }
+                            onConfirm={() => {
+                              props.AllBadgeDelete(e.id, data);
+                            }}
+                          >
+                            <Button type="text">
+                              <Space style={{ color: "red" }}>
+                                <DeleteFilled />
+                                <div>Delete</div>
+                              </Space>
+                            </Button>
+                          </Popconfirm>
+                        </Row>
+                      )}
                     </Col>
                   </Row>
                 );
@@ -192,15 +200,19 @@ function Badges(props) {
         </Col>
         <Col span={6} xs={24} sm={24} md={6} lg={6} xl={6} xxl={6}>
           <ActionsTab />
-          <Button
-            style={{ width: "202px", margin: "8px 0px", borderRadius: 6 }}
-            type="primary"
-            onClick={() => {
-              setvisible(true);
-            }}
-          >
-            Badge Builder
-          </Button>
+          {role == "staff" ? (
+            <></>
+          ) : (
+            <Button
+              style={{ width: "202px", margin: "8px 0px", borderRadius: 6 }}
+              type="primary"
+              onClick={() => {
+                setvisible(true);
+              }}
+            >
+              Badge Builder
+            </Button>
+          )}
         </Col>
       </Row>
 
@@ -225,9 +237,9 @@ function Badges(props) {
             formData.append("description", e.description);
             formData.append("code", e.code);
             if (!isediting) {
-               formData.append("image", e.image.file.originFileObj);
+              formData.append("image", e.image.file.originFileObj);
             }
-           
+
             if (isediting) {
               delete e.image;
               props.AllBadgeEdit(editingkey, data, e);
