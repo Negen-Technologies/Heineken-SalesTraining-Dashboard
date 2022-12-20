@@ -199,7 +199,7 @@ function Dashboard(props) {
                     }}
                   >
                     <CustomCard
-                      num={role === "staff" ? 4 : 12}
+                      num={props.stats.trainees}
                       text={"Trainees"}
                     />
                   </div>
