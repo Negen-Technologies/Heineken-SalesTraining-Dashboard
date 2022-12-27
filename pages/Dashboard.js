@@ -20,7 +20,7 @@ function Dashboard(props) {
   useEffect(() => {
     props.getStatSuccess();
     // if (role === "staff") {
-      props.getAllSatffsPerRegion(3, 1);
+    props.getAllSatffsPerRegion(3, 1);
     // } else {
     //   props.getAllTraineeSuccess(3, 1);
     // }
@@ -74,7 +74,6 @@ function Dashboard(props) {
         </Row>
       ),
     },
-  
   ];
 
   const renderable = (data) => {
@@ -272,32 +271,82 @@ function Dashboard(props) {
                   borderRadius: 12,
                 }}
               >
-                <Row justify="space-between">
-                  {" "}
-                  <h1 style={{ color: "white" }}>Top 3 Trainees</h1>
-                  <h1
-                    style={{ color: "white", cursor: "pointer" }}
-                    onClick={() => {
-                      router.push("/Trainees");
-                    }}
-                  >
-                    {" "}
-                    View All
-                  </h1>
-                </Row>
+                {role === "supervisor" ? (
+                  <>
+                    <Row justify="space-between">
+                      {" "}
+                      <h1 style={{ color: "white" }}>Top 3 Staffs</h1>
+                    </Row>
 
-                <Table
-                  scroll={{ x: 200 }}
-                  columns={columns}
-                  dataSource={
-                    role == "staff"
-                      ? props.stats.topTrainees
-                      : props.stats.top3Trainees
-                  }
-                  pagination={false}
-                  // showHeader={false}
-                  loading={props.traineesPending}
-                />
+                    <Table
+                      scroll={{ x: 200 }}
+                      columns={[
+                        {
+                          title: "Name",
+                          dataIndex: "name",
+                          key: "name",
+                          render: (text, record) => (
+                            <Row>
+                              <div style={{ padding: "0px 10px" }}>
+                                {record.name}
+                              </div>
+                            </Row>
+                          ),
+                        },
+                        {
+                          title: "Average Progress",
+                          dataIndex: "age",
+                          key: "age",
+                          render: (_, record) => (
+                            <Row>
+                              <div
+                                style={{
+                                  padding: "0px 10px",
+                                  color: primary_color,
+                                }}
+                              >
+                                {record.averageProgress.averageProgress}
+                              </div>
+                            </Row>
+                          ),
+                        },
+                      ]}
+                      dataSource={props.stats.topStaffs}
+                      pagination={false}
+                      // showHeader={false}
+                      // loading={props.traineesPending}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <Row justify="space-between">
+                      {" "}
+                      <h1 style={{ color: "white" }}>Top 3 Trainees</h1>
+                      <h1
+                        style={{ color: "white", cursor: "pointer" }}
+                        onClick={() => {
+                          router.push("/Trainees");
+                        }}
+                      >
+                        {" "}
+                        View All
+                      </h1>
+                    </Row>
+
+                    <Table
+                      scroll={{ x: 200 }}
+                      columns={columns}
+                      dataSource={
+                        role == "staff"
+                          ? props.stats.topTrainees
+                          : props.stats.top3Trainees
+                      }
+                      pagination={false}
+                      // showHeader={false}
+                      loading={props.traineesPending}
+                    />
+                  </>
+                )}
               </div>
             </Col>
 
@@ -351,7 +400,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     getAllTraineeSuccess: (limit, page) =>
       dispatch(getAllTraineeSuccess(limit, page)),
-      getAllSatffsPerRegion: (limit, page) =>
+    getAllSatffsPerRegion: (limit, page) =>
       dispatch(getAllSatffsPerRegion(limit, page)),
     getStatSuccess: () => dispatch(getStatSuccess()),
   };
