@@ -73,6 +73,9 @@ const EditableCell = ({
 const UserManagment = (props) => {
   const [form] = Form.useForm();
   const formData = new FormData();
+  const role = localStorage.getItem("role");
+  const [userRole, setuserRole] = useState("");
+
   let numEachPage = 10;
   let data = [];
   const [isVisible, setVisible] = useState(false);
@@ -161,27 +164,69 @@ const UserManagment = (props) => {
     },
 
     {
-      title: "Territory",
+      title: "Location",
       dataIndex: "",
-      render: (_, record) => (
-        <div>
-          {record.territory === null ? (
-            <Tag
-              onClick={() => {
-                settervisible(true);
+      render: (_, record) =>
+        record.role === "admin" ? (
+          <div></div>
+        ) : record.role === "supervisor" ? (
+          <div>
+            {record.region === null ? (
+              <Tag
+                onClick={() => {
+                  setuserRole("supervisor");
 
-                setEditingKey(record.id);
-              }}
-              color="success"
-              style={{ cursor: "pointer" }}
-            >
-              Add to territory
-            </Tag>
-          ) : (
-            <div>{record.territory.name}</div>
-          )}
-        </div>
-      ),
+                  setEditingKey(record.id);
+                  settervisible(true);
+                }}
+                color="success"
+                style={{ cursor: "pointer" }}
+              >
+                Add to region
+              </Tag>
+            ) : (
+              <div>{record.region.name}</div>
+            )}
+          </div>
+        ) : record.role === "staff" ? (
+          <div>
+            {record.subregion === null ? (
+              <Tag
+                onClick={() => {
+                  setuserRole("staff");
+
+                  settervisible(true);
+
+                  setEditingKey(record.id);
+                }}
+                color="success"
+                style={{ cursor: "pointer" }}
+              >
+                Add to subregion
+              </Tag>
+            ) : (
+              <div>{record.subregion.name}</div>
+            )}
+          </div>
+        ) : (
+          <div>
+            {record.territory === null ? (
+              <Tag
+                onClick={() => {
+                  settervisible(true);
+
+                  setEditingKey(record.id);
+                }}
+                color="success"
+                style={{ cursor: "pointer" }}
+              >
+                Add to territory
+              </Tag>
+            ) : (
+              <div>{record.territory.name}</div>
+            )}
+          </div>
+        ),
     },
 
     {
@@ -401,8 +446,9 @@ const UserManagment = (props) => {
           </Form.Item>
           <Form.Item name="role">
             <Select placeholder="Role">
-              <Select.Option value={"user"}>User</Select.Option>
+              {/* <Select.Option value={"user"}>User</Select.Option> */}
               <Select.Option value={"admin"}>Admin</Select.Option>
+              <Select.Option value={"supervisor"}>FSM</Select.Option>
               <Select.Option value={"staff"}>BUM</Select.Option>
             </Select>
           </Form.Item>
@@ -443,14 +489,21 @@ const UserManagment = (props) => {
         onCancel={() => {
           settervisible(false);
           setEditingKey("");
+          setuserRole("");
         }}
       >
         <Form
           onFinish={(e) => {
-            console.log(selectedTerritory);
-            props.editUserTerritory(editingKey, props.users, {
-              territory: selectedTerritory,
-            });
+            let toSend =
+              userRole === "supervisor"
+                ? { region: selectedRegion }
+                : userRole === "staff"
+                ? { subregion: selectedSubRegion }
+                : {
+                    territory: selectedTerritory,
+                  };
+            console.log(toSend);
+            props.editUserTerritory(editingKey, props.users, toSend);
           }}
         >
           <Form.Item name="Region" label="Region">
@@ -464,51 +517,62 @@ const UserManagment = (props) => {
               placeholder="Select Region"
               options={props.regions.map((regions) => {
                 return {
-                  value: regions.name,
+                  value: regions.id,
                   label: regions.name,
                 };
               })}
             />
           </Form.Item>
-          <Form.Item name="Subregion" label="Subregion">
-            <Select
-              name="subregions"
-              style={{ width: "100%" }}
-              value={selectedSubRegion}
-              onChange={(e) => {
-                setSelectedSubRegion(e);
-              }}
-              placeholder="Select Subregion"
-              options={props.subregions
-                .filter((e) => e.regionId.name === selectedRegion)
-                .map((subregion) => {
-                  return {
-                    value: subregion.name,
-                    label: subregion.name,
-                  };
-                })}
-            />
-          </Form.Item>
-
-          <Form.Item name="Territory" label="Territory">
-            <Select
-              name="Territory"
-              style={{ width: "100%" }}
-              value={selectedTerritory}
-              onChange={(e) => {
-                setselectedTerritory(e);
-              }}
-              placeholder="Select Territory"
-              options={props.territory
-                .filter((e) => e.subregionId.name === selectedSubRegion)
-                .map((territory) => {
-                  return {
-                    value: territory.id,
-                    label: territory.name,
-                  };
-                })}
-            />
-          </Form.Item>
+          {userRole === "supervisor" ? (
+            <></>
+          ) : (
+            <div>
+              <Form.Item name="Subregion" label="Subregion">
+                <Select
+                  name="subregions"
+                  style={{ width: "100%" }}
+                  value={selectedSubRegion}
+                  onChange={(e) => {
+                    setSelectedSubRegion(e);
+                  }}
+                  placeholder="Select Subregion"
+                  options={props.subregions
+                    .filter((e) => e.regionId.id === selectedRegion)
+                    .map((subregion) => {
+                      return {
+                        value: subregion.id,
+                        label: subregion.name,
+                      };
+                    })}
+                />
+              </Form.Item>
+              {userRole === "staff" ? (
+                <></>
+              ) : (
+                <div>
+                  <Form.Item name="Territory" label="Territory">
+                    <Select
+                      name="Territory"
+                      style={{ width: "100%" }}
+                      value={selectedTerritory}
+                      onChange={(e) => {
+                        setselectedTerritory(e);
+                      }}
+                      placeholder="Select Territory"
+                      options={props.territory
+                        .filter((e) => e.subregionId.id === selectedSubRegion)
+                        .map((territory) => {
+                          return {
+                            value: territory.id,
+                            label: territory.name,
+                          };
+                        })}
+                    />
+                  </Form.Item>
+                </div>
+              )}
+            </div>
+          )}
 
           <Form.Item style={{ textAlign: "right" }}>
             <Button

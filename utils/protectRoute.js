@@ -18,7 +18,7 @@ const withAuth = (WrappedComponent) => {
         }
       }
 
-      if (role === "staff") {
+      if (role === "staff"|| role==="supervisor") {
         if (adminmenu.some((e) => e.link == Router.pathname)) {
           var i = adminmenu
             .filter((e) => e.link !== "/UserManagment")

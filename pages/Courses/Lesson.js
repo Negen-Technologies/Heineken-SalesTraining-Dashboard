@@ -215,7 +215,7 @@ function Lesson(props) {
                             </Space>
                           </Button>
 
-                          {role === "staff" ? (
+                          {role === "staff" || role === "supervisor" ? (
                             <></>
                           ) : (
                             <Button
@@ -230,7 +230,7 @@ function Lesson(props) {
                               </Space>
                             </Button>
                           )}
-                          {role === "staff" ? (
+                          {role === "staff" || role === "supervisor" ? (
                             <></>
                           ) : (
                             <Popconfirm
@@ -259,7 +259,7 @@ function Lesson(props) {
         </Col>
         <Col span={6} xs={24} sm={24} md={6} lg={6} xl={6} xxl={6}>
           <ActionsTab />
-          {role === "staff" ? (
+          {role === "staff" || role === "supervisor" ? (
             <></>
           ) : (
             <Button

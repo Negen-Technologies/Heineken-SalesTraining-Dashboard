@@ -82,6 +82,39 @@ export const getAllTraineePerTerritory = (limit, page) => {
   };
 };
 
+export const getAllSatffsPerRegion = (limit, page) => {
+  var token = localStorage.getItem("token");
+  return (dispatch) => {
+    dispatch(alltraineePending());
+
+    axios({
+      method: "get",
+      url: URLst + `v1/users/staffs?limit=${limit}&page=${page}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        console.log(res.data);
+        dispatch(alltraineeSuccess(res.data));
+      })
+      .catch((err) => {
+        var errorData;
+        if (err.response.data.code == 401) {
+          handle401();
+        }
+        if (err.response != null) {
+          errorData = err.response.data.message;
+        } else {
+          errorData = err.message;
+        }
+        console.log(errorData);
+        dispatch(alltraineeFail(errorData));
+      });
+  };
+};
+
+
 export const getAllTraineeSuccess = (limit, page) => {
   var token = localStorage.getItem("token");
   return (dispatch) => {

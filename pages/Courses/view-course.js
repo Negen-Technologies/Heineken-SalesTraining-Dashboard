@@ -237,7 +237,7 @@ function View_course(props) {
                                   />
                                 }
                               />
-                              {role === "staff" ? (
+                              {role === "staff" || role === "supervisor" ? (
                                 <></>
                               ) : (
                                 <Avatar
@@ -255,7 +255,7 @@ function View_course(props) {
                                   }
                                 />
                               )}
-                              {role === "staff" ? (
+                              {role === "staff" || role === "supervisor" ? (
                                 <></>
                               ) : (
                                 <Avatar
@@ -324,7 +324,7 @@ function View_course(props) {
             }}
           ></div>
           <div style={{ marginBottom: 12 }}></div>
-          {role === "staff" ? (
+          {role === "staff" || role === "supervisor" ? (
             <></>
           ) : (
             <Button

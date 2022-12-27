@@ -159,7 +159,7 @@ function Badges(props) {
                       </h1>
                       {/* <br /> */}
                       <p>{e.description}</p>
-                      {role == "staff" ? (
+                      {role == "staff" || role === "supervisor" ? (
                         <></>
                       ) : (
                         <Row justify="start">
@@ -200,7 +200,7 @@ function Badges(props) {
         </Col>
         <Col span={6} xs={24} sm={24} md={6} lg={6} xl={6} xxl={6}>
           <ActionsTab />
-          {role == "staff" ? (
+          {role == "staff"  || role === "supervisor"? (
             <></>
           ) : (
             <Button

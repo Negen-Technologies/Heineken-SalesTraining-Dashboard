@@ -68,7 +68,7 @@ function Trainees(props) {
   });
 
   useEffect(() => {
-    if (localStorage.getItem("role") === "staff") {
+    if (role === "staff" || role === "supervisor") {
       props.getAllTraineePerTerritory(10, 1);
     } else {
       props.getAllTraineeSuccess(10, 1);
@@ -316,7 +316,7 @@ function Trainees(props) {
               height: "2px",
             }}
           ></div>
-          {role === "staff" ? (
+          {role === "staff" || role === "supervisor" ? (
             <></>
           ) : (
             <>

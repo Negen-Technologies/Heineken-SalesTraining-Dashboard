@@ -9,8 +9,9 @@ import { connect } from "react-redux";
 
 export function index(props) {
   const router = useRouter();
+  const userRoles = localStorage.getItem("role");
   const items =
-    localStorage.getItem("role") === "staff"
+    userRoles === "staff" || userRoles === "supervisor"
       ? adminmenu.filter((e) => e.link !== "/UserManagment")
       : adminmenu;
   const [contentIndex, setContentIndex] = useState(0);
@@ -84,5 +85,3 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(index);
-
-

@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import { connect } from "react-redux";
 import {
   getAllTraineeSuccess,
-  getAllTraineePerTerritory,
+  getAllSatffsPerRegion,
   getStatSuccess,
 } from "./../store";
 
@@ -17,17 +17,13 @@ function Dashboard(props) {
   const router = useRouter();
   const role = localStorage.getItem("role");
 
-  props.trainees.forEach((element) => {
-    data.push({ ...element, key: element._id });
-  });
-
   useEffect(() => {
     props.getStatSuccess();
-    if (role === "staff") {
-      props.getAllTraineePerTerritory(3, 1);
-    } else {
-      props.getAllTraineeSuccess(3, 1);
-    }
+    // if (role === "staff") {
+      props.getAllSatffsPerRegion(3, 1);
+    // } else {
+    //   props.getAllTraineeSuccess(3, 1);
+    // }
   }, []);
 
   const columns = [
@@ -78,64 +74,148 @@ function Dashboard(props) {
         </Row>
       ),
     },
-    {
-      title: "Progress",
-      dataIndex: "percent",
-      key: "percent",
-      render: (_, record) => (
-        <Button
-          type="link"
-          onClick={() => {
-            // router.push(`Trainees/course-progress?id=${record._id}`);
-          }}
-        >
-          <Row>
-            {" "}
-            <div style={{ color: primary_color }}>Course Progress</div>
-            <div style={{ padding: "0px 10px" }}>
-              <Progress
-                percent={record.progress}
-                size="small"
-                showInfo={false}
-                strokeColor={primary_color}
-                trailColor={"grey"}
-                style={{ width: "150px" }}
-              />
-            </div>
-          </Row>
-        </Button>
-      ),
-    },
-    {
-      title: "Territory",
-      dataIndex: "",
-      key: "action",
-      render: (_, record) => (
-        <div>
-          {" "}
-          {record.territories.length == 0 ? (
-            <Tag
-              color="processing"
-              onClick={() => {
-                settervisible(true);
-                setEditingId(record._id);
-              }}
-              style={{ cursor: "pointer" }}
-            >
-              {" "}
-              Add to territory
-            </Tag>
-          ) : (
-            <>
-              {record.territories.map((e) => {
-                return e.name;
-              })}
-            </>
-          )}
-        </div>
-      ),
-    },
+  
   ];
+
+  const renderable = (data) => {
+    return role == "supervisor" ? (
+      <Row
+        gutter={{
+          xs: 8,
+          sm: 16,
+          md: 24,
+          lg: 32,
+        }}
+      >
+        <Col span={8} xs={12} sm={12} md={12} lg={8} xl={8} xxl={8}>
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              router.push("/Subregion");
+            }}
+          >
+            <CustomCard num={data.subregions} text={"Subregion"} />
+          </div>
+        </Col>
+        <Col span={8} xs={12} sm={12} md={12} lg={8} xl={8} xxl={8}>
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              // router.push("/Trainees");
+            }}
+          >
+            <CustomCard num={data.staffs} text={"Staffs"} />
+          </div>
+        </Col>{" "}
+        <Col span={8} xs={12} sm={12} md={12} lg={8} xl={8} xxl={8}>
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              // router.push("/Courses");
+            }}
+          >
+            <CustomCard
+              num={parseInt(data.averageProgress) + " %"}
+              text={"Average Progress"}
+            />
+          </div>
+        </Col>
+      </Row>
+    ) : role == "staff" ? (
+      <Row
+        gutter={{
+          xs: 8,
+          sm: 16,
+          md: 24,
+          lg: 32,
+        }}
+      >
+        <Col span={8} xs={12} sm={12} md={12} lg={8} xl={8} xxl={8}>
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              router.push("/Trainees");
+            }}
+          >
+            <CustomCard num={data.trainees} text={"Trainees"} />
+          </div>
+        </Col>{" "}
+        <Col span={8} xs={12} sm={12} md={12} lg={8} xl={8} xxl={8}>
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              router.push("/Courses");
+            }}
+          >
+            <CustomCard num={data.lessons} text={"Lessons"} />
+          </div>
+        </Col>
+        <Col span={8} xs={12} sm={12} md={12} lg={8} xl={8} xxl={8}>
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              // router.push("/Courses");
+            }}
+          >
+            <CustomCard
+              num={parseInt(data.averageProgress) + " %"}
+              text={"Average Progress"}
+            />
+          </div>
+        </Col>
+      </Row>
+    ) : (
+      <Row
+        gutter={{
+          xs: 8,
+          sm: 16,
+          md: 24,
+          lg: 32,
+        }}
+      >
+        <Col span={8} xs={12} sm={12} md={12} lg={8} xl={8} xxl={8}>
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              router.push("/Region");
+            }}
+          >
+            <CustomCard num={data.regions} text={"Region"} />
+          </div>
+        </Col>
+        <Col span={8} xs={12} sm={12} md={12} lg={8} xl={8} xxl={8}>
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              router.push("/Subregion");
+            }}
+          >
+            <CustomCard num={data.subregions} text={"Subregion"} />
+          </div>
+        </Col>{" "}
+        <Col span={8} xs={12} sm={12} md={12} lg={8} xl={8} xxl={8}>
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              router.push("/Trainees");
+            }}
+          >
+            <CustomCard num={data.trainees} text={"Trainees"} />
+          </div>
+        </Col>
+        <Col span={8} xs={12} sm={12} md={12} lg={8} xl={8} xxl={8}>
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              router.push("/Courses");
+            }}
+          >
+            <CustomCard num={data.lessons} text={"Lessons"} />
+          </div>
+        </Col>
+      </Row>
+    );
+  };
 
   return (
     <>
@@ -183,48 +263,7 @@ function Dashboard(props) {
                   height: "2px",
                 }}
               ></div>
-              <Row
-                gutter={{
-                  xs: 8,
-                  sm: 16,
-                  md: 24,
-                  lg: 32,
-                }}
-              >
-                <Col span={8} xs={12} sm={12} md={12} lg={8} xl={8} xxl={8}>
-                  <div
-                    style={{ cursor: "pointer" }}
-                    onClick={() => {
-                      router.push("/Trainees");
-                    }}
-                  >
-                    <CustomCard
-                      num={props.stats.trainees}
-                      text={"Trainees"}
-                    />
-                  </div>
-                </Col>
-                <Col span={8} xs={12} sm={12} md={12} lg={8} xl={8} xxl={8}>
-                  <div
-                    style={{ cursor: "pointer" }}
-                    onClick={() => {
-                      router.push("/Territory");
-                    }}
-                  >
-                    <CustomCard num={props.stats.territories} text={"Territories"} />
-                  </div>
-                </Col>
-                <Col span={8} xs={12} sm={12} md={12} lg={8} xl={8} xxl={8}>
-                  <div
-                    style={{ cursor: "pointer" }}
-                    onClick={() => {
-                      router.push("/Courses");
-                    }}
-                  >
-                    <CustomCard num={props.stats.lessons}  text={"Lessons"} />
-                  </div>
-                </Col>
-              </Row>
+              {renderable(props.stats)}
 
               <div
                 style={{
@@ -250,7 +289,11 @@ function Dashboard(props) {
                 <Table
                   scroll={{ x: 200 }}
                   columns={columns}
-                  dataSource={data}
+                  dataSource={
+                    role == "staff"
+                      ? props.stats.topTrainees
+                      : props.stats.top3Trainees
+                  }
                   pagination={false}
                   // showHeader={false}
                   loading={props.traineesPending}
@@ -308,8 +351,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     getAllTraineeSuccess: (limit, page) =>
       dispatch(getAllTraineeSuccess(limit, page)),
-    getAllTraineePerTerritory: (limit, page) =>
-      dispatch(getAllTraineePerTerritory(limit, page)),
+      getAllSatffsPerRegion: (limit, page) =>
+      dispatch(getAllSatffsPerRegion(limit, page)),
     getStatSuccess: () => dispatch(getStatSuccess()),
   };
 };

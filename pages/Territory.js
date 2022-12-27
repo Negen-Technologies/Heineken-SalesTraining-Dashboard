@@ -178,7 +178,7 @@ const Territory = (props) => {
               Cancel
             </Button>
           </span>
-        ) : role == "staff" ? (
+        ) : role == "staff" || role === "supervisor" ? (
           <></>
         ) : (
           <Typography.Link
@@ -196,7 +196,7 @@ const Territory = (props) => {
       title: "",
       dataIndex: "",
       render: (_, record) =>
-        role == "staff" ? (
+        role == "staff" || role === "supervisor" ? (
           <></>
         ) : (
           <Popconfirm
@@ -312,7 +312,7 @@ const Territory = (props) => {
             }}
           ></div>
 
-          {role == "staff" ? (
+          { role == "staff" || role === "supervisor"  ? (
             <></>
           ) : (
             <div>
@@ -433,7 +433,6 @@ const Territory = (props) => {
               header: true,
               skipEmptyLines: true,
               complete: function (results) {
-                
                 props.territoryCreateBulk(e.subregions, { data: results.data });
               },
             });

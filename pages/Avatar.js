@@ -60,7 +60,7 @@ function Avatar({
             />
           }
           actions={
-            role == "staff"
+            role == "staff" || role === "supervisor"
               ? null
               : [
                   <EditOutlined
@@ -170,7 +170,7 @@ function Avatar({
                 height: "2px",
               }}
             ></div>
-            {role == "staff" ? (
+            {role == "staff" || role === "supervisor" ? (
               <></>
             ) : (
               <Button

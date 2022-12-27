@@ -10,6 +10,7 @@ import {
 import { primary_color } from "../../utils/constants";
 export default function TopicMenu({ items, selectedKey, changeSelectedKey }) {
   const styledTopics = [];
+  const userRole = localStorage.getItem("role");
   items.forEach((topic, index) => {
     topic.children !== undefined
       ? styledTopics.push(
@@ -22,8 +23,9 @@ export default function TopicMenu({ items, selectedKey, changeSelectedKey }) {
                   }}
                   key={100 + i}
                   l={e.link}
-                  onClick={(ev)=>{changeSelectedKey(ev,e.link)}}
-               
+                  onClick={(ev) => {
+                    changeSelectedKey(ev, e.link);
+                  }}
                 >
                   {e.name}{" "}
                 </Menu.Item>
@@ -38,7 +40,9 @@ export default function TopicMenu({ items, selectedKey, changeSelectedKey }) {
             }}
             key={index}
             l={topic.link}
-            onClick={(e)=>{changeSelectedKey(e)}}
+            onClick={(e) => {
+              changeSelectedKey(e);
+            }}
             icon={topic.icon}
           >
             {topic.name}{" "}
@@ -57,7 +61,6 @@ export default function TopicMenu({ items, selectedKey, changeSelectedKey }) {
           marginBottom: "0px",
           display: "grid",
           placeItems: "center",
-         
         }}
       >
         <Row align="middle">
@@ -94,7 +97,11 @@ export default function TopicMenu({ items, selectedKey, changeSelectedKey }) {
                 fontSize: 11,
               }}
             >
-              {localStorage.getItem("role")}
+              {userRole === "supervisor"
+                ? "FSM"
+                : userRole === "staff"
+                ? "BUM"
+                : userRole}
             </div>
           </Col>
 
@@ -146,8 +153,6 @@ export default function TopicMenu({ items, selectedKey, changeSelectedKey }) {
       >
         {styledTopics}{" "}
       </Menu>
-
-     
     </>
   );
 }

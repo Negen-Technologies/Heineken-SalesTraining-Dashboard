@@ -141,7 +141,7 @@ const Regions = (props) => {
               Cancel
             </Button>
           </span>
-        ) : role == "staff" ? (
+        ) : role == "staff" || role === "supervisor" ? (
           <></>
         ) : (
           <Typography.Link
@@ -159,7 +159,7 @@ const Regions = (props) => {
       title: "",
       dataIndex: "",
       render: (_, record) =>
-        role == "staff" ? (
+        role == "staff"  || role === "supervisor"? (
           <></>
         ) : (
           <Popconfirm
@@ -274,7 +274,7 @@ const Regions = (props) => {
               height: "2px",
             }}
           ></div>
-          {role == "staff" ? (
+          {role == "staff" || role === "supervisor" ? (
             <></>
           ) : (
             <Button

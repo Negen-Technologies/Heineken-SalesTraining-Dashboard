@@ -187,7 +187,7 @@ function Courses(props) {
                             />
                           }
                         />
-                        {role === "staff" ? (
+                        {role === "staff"  || role === "supervisor"? (
                           <></>
                         ) : (
                           <Avatar
@@ -205,7 +205,7 @@ function Courses(props) {
                             }
                           />
                         )}
-                        {role === "staff" ? (
+                        {role === "staff" || role === "supervisor" ? (
                           <></>
                         ) : (
                           <Avatar
@@ -266,7 +266,7 @@ function Courses(props) {
 
         <Col span={6} xs={24} sm={24} md={6} lg={6}>
           <ActionsTab />
-          {role === "staff" ? (
+          {role === "staff"  || role === "supervisor"? (
             <></>
           ) : (
             <Button

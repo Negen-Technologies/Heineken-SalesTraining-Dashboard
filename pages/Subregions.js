@@ -171,7 +171,7 @@ const SubRegions = (props) => {
               Cancel
             </Button>
           </span>
-        ) : role == "staff" ? (
+        ) : role == "staff" || role === "supervisor" ? (
           <></>
         ) : (
           <Typography.Link
@@ -189,7 +189,7 @@ const SubRegions = (props) => {
       title: "",
       dataIndex: "",
       render: (_, record) =>
-        role == "staff" ? (
+        role == "staff" || role === "supervisor" ? (
           <></>
         ) : (
           <Popconfirm
@@ -305,7 +305,7 @@ const SubRegions = (props) => {
             }}
           ></div>
 
-          {role == "staff" ? (
+          {role == "staff" || role === "supervisor" ? (
             <></>
           ) : (
             <Button
