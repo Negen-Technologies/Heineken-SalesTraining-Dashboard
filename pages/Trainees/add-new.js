@@ -67,7 +67,25 @@ function Addnew(props) {
         }}
       >
         <h3>Trainee Information</h3>
-        <Form.Item name="image">
+        <Form.Item
+          name="image"
+          
+          rules={[
+            {
+              validator: (_, value) => {
+                if (value !== undefined) {
+                  if (value.file.size > 1048576) {
+                    return Promise.reject(new Error("Image is too large!"));
+                  }
+                  console.log();
+                  //
+                  return Promise.resolve();
+                }
+                return Promise.reject(new Error("Image is required!"));
+              },
+            },
+          ]}
+        >
           <Upload
             name="avatar"
             listType="picture-card"
@@ -104,7 +122,15 @@ function Addnew(props) {
         <Form.Item name="name">
           <Input placeholder="Full Name" />
         </Form.Item>
-        <Form.Item name="username">
+        <Form.Item
+          name="username"
+          rules={[
+            {
+              required: true,
+              message: "Username is required!",
+            },
+          ]}
+        >
           <Input placeholder="Username" />
         </Form.Item>
         <Form.Item name="department">
@@ -114,7 +140,15 @@ function Addnew(props) {
         <Form.Item name="phone">
           <Input placeholder="Phone Number" />
         </Form.Item>
-        <Form.Item name="email">
+        <Form.Item
+          name="email"
+          rules={[
+            {
+              required: true,
+              message: "email is required!",
+            },
+          ]}
+        >
           <Input placeholder="Email" />
         </Form.Item>
         <Form.Item>

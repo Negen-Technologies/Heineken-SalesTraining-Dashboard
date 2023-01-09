@@ -200,7 +200,7 @@ function Badges(props) {
         </Col>
         <Col span={6} xs={24} sm={24} md={6} lg={6} xl={6} xxl={6}>
           <ActionsTab />
-          {role == "staff"  || role === "supervisor"? (
+          {role == "staff" || role === "supervisor" ? (
             <></>
           ) : (
             <Button
@@ -260,7 +260,24 @@ function Badges(props) {
           {isediting ? (
             <></>
           ) : (
-            <Form.Item name="image">
+            <Form.Item
+              name="image"
+              rules={[
+                {
+                  validator: (_, value) => {
+                    if (value !== undefined) {
+                      if (value.file.size > 1048576) {
+                        return Promise.reject(new Error("Image is too large!"));
+                      }
+                      console.log();
+                      //
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(new Error("Image is required!"));
+                  },
+                },
+              ]}
+            >
               <Upload
                 name="avatar"
                 listType="picture-card"

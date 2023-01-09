@@ -260,11 +260,27 @@ function DetailInfo(props) {
           form={form}
           onFinish={(e) => {
             console.log(e, userid);
-            props.assignTraineeToCourse(e.courseId, userid);
+            // props.assignTraineeToCourse(e.courseId, userid);
           }}
         >
-          <Form.Item name="courseId">
+          {/* <Form.Item name="courseId">
             <Select placeholder="Courses">{corse_options}</Select>
+          </Form.Item> */}
+
+          <Form.Item name="Region" label="Region">
+            <Select
+              name="Region"
+              style={{ width: "100%" }}
+              
+              placeholder="Select Courses"
+              options={props.courses.map((c,i) => {
+                return {
+                  key: i,
+                  value: c.id,
+                  label: c.title,
+                };
+              })}
+            />
           </Form.Item>
 
           <Form.Item>

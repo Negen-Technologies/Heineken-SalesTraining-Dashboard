@@ -64,7 +64,9 @@ function Trainees(props) {
   const data = [];
 
   props.trainees.forEach((element) => {
-    data.push({ ...element, key: element._id });
+    if (element.user !== null) {
+      data.push({ ...element, key: element._id });
+    }
   });
 
   useEffect(() => {
@@ -573,5 +575,3 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withAuth(Trainees));
-
-// export default withAuth(Trainees);

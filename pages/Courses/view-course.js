@@ -56,7 +56,8 @@ function View_course(props) {
   // let passedModules = JSON.parse(element);
 
   useEffect(() => {
-    const { id, element, courseName } = router.query;
+    if (router.isReady) {
+      const { id, element, courseName } = router.query;
     console.log(element);
     setroutervals({
       id: id,
@@ -64,7 +65,9 @@ function View_course(props) {
       courseName: courseName,
     });
     props.getAllModuleSuccess(10, 1);
-  }, []);
+    }
+    
+  }, [router.isReady]);
 
   useEffect(() => {
     if (data.length == 0) {

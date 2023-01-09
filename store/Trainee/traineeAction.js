@@ -3,6 +3,7 @@ import URLst, { handle401 } from "../../utils/constants";
 import { userCreateSuccess } from "../Users/allUsersAction";
 import * as actionTypes from "./traineeActionTypes";
 import { territoryCreate } from "../Territory/territoryAction";
+import { successMessage } from "../index";
 
 export const alltraineePending = () => {
   return {
@@ -113,7 +114,6 @@ export const getAllSatffsPerRegion = (limit, page) => {
       });
   };
 };
-
 
 export const getAllTraineeSuccess = (limit, page) => {
   var token = localStorage.getItem("token");
@@ -266,6 +266,7 @@ export const traineeCreate = (formData) => {
       )
       .then((res) => {
         console.log(res.data);
+        dispatch(successMessage("mes"));
 
         dispatch(traineeCreateSuccess(res.data));
       })
@@ -303,6 +304,7 @@ export const traineeBulkCreate = (formData) => {
       )
       .then((res) => {
         console.log(res.data);
+        dispatch(successMessage("mes"));
 
         dispatch(traineeCreateSuccess(res.data));
       })
@@ -339,12 +341,15 @@ export const AllTraineeEdit = (id, trainees, edited) => {
       .then((res) => {
         console.log(res.data);
         let newData = [...trainees];
-        let index = newData.findIndex((av) => av.id === res.data.id);
+        let index = newData.findIndex((av) => av._id === res.data.id);
+        console.log(newData[index]);
+        newData[index].territories = res.data.territories;
 
         // newData[index].user.name = edited.name;
         // newData[index].user.email = edited.email;
         // newData[index].department = edited.department;
         // newData[index].user.image = res.data;
+        dispatch(successMessage("mes"));
 
         dispatch(updatetraineeSuccess(newData));
       })
@@ -395,7 +400,6 @@ export const AllTraineeDelete = (id, trainees) => {
       });
   };
 };
-
 
 export const ActivateTrainee = (id, trainees, edited) => {
   const token = localStorage.getItem("token");

@@ -14,6 +14,7 @@ import allterritoryreducer from './Territory/territoryReducer'
 import allprofilereducer from "./Profile/EditProfileReducer";
 import allresultsreducer from "./Results/resultReducer"
 import allstatsreducer from "./Stats/statReducer"
+import {messageReducer} from './Messages/messagesReducers'
 
 const rootReducer = combineReducers({
   auth: auth_reducer,
@@ -30,7 +31,8 @@ const rootReducer = combineReducers({
   allterritory: allterritoryreducer,
   allprofile: allprofilereducer,
   allresultsreducer:allresultsreducer,
-  allstatsreducer:allstatsreducer
+  allstatsreducer:allstatsreducer,
+  messageReducer:messageReducer
 });
 
 export default rootReducer;

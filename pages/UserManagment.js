@@ -13,6 +13,7 @@ import {
   Space,
   Avatar,
   Tag,
+  Upload,
 } from "antd";
 import { connect } from "react-redux";
 import {
@@ -25,6 +26,7 @@ import {
   getAllRegionSuccess,
   editUserTerritory,
 } from "../store";
+import { PlusOutlined } from "@ant-design/icons";
 import withAuth from "../utils/protectRoute";
 import URLst, { primary_color, exportToExcel } from "../utils/constants";
 import FormData from "form-data";
@@ -86,6 +88,7 @@ const UserManagment = (props) => {
   const [current, setCurrent] = useState(1);
   const [loadedpage, setLoadedPage] = useState([1]);
   const [editingKey, setEditingKey] = useState("");
+  const [imageUrl, setImageUrl] = useState(null);
 
   props.users.forEach((element) => {
     //  let terr= element.territory === null?'':element.territory.name
@@ -272,11 +275,16 @@ const UserManagment = (props) => {
       render: (_, record) => (
         <Popconfirm
           title="Sure to delete?"
+          disabled={record.role === "user"}
           onConfirm={() => {
             handleDelete(record.key);
           }}
         >
-          <Tag color="volcano" style={{ cursor: "pointer" }}>
+          <Tag
+            color="volcano"
+            style={{ cursor: "pointer" }}
+            hidden={record.role === "user"}
+          >
             Delete
           </Tag>
         </Popconfirm>
@@ -428,6 +436,9 @@ const UserManagment = (props) => {
         <Form
           form={form}
           onFinish={(doc) => {
+            console.log(doc);
+            formData.append("file", doc.image.file.originFileObj);
+            delete doc.image;
             Object.keys(doc).forEach((ele) => {
               formData.append(ele, doc[ele]);
             });
@@ -435,13 +446,34 @@ const UserManagment = (props) => {
             props.UserCreate(formData);
           }}
         >
-          <Form.Item name="name">
+          <Form.Item name="name"  rules={[
+            {
+              required: true,
+              message: "Name is required!",
+            },
+          ]}>
             <Input placeholder="Name" />
           </Form.Item>
-          <Form.Item name="username">
+          <Form.Item
+            name="username"
+            rules={[
+              {
+                required: true,
+                message: "Username is required!",
+              },
+            ]}
+          >
             <Input placeholder="Username" />
           </Form.Item>
-          <Form.Item name="email">
+          <Form.Item
+            name="email"
+            rules={[
+              {
+                required: true,
+                message: "Email is required!",
+              },
+            ]}
+          >
             <Input placeholder="Email" />
           </Form.Item>
           <Form.Item name="role">
@@ -452,18 +484,64 @@ const UserManagment = (props) => {
               <Select.Option value={"staff"}>BUM</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item>
-            <Input
-              placeholder="image"
-              type="file"
-              onChange={(e) => {
-                formData.append("file", e.target.files[0]);
-              }}
-              accept=".png ,.jpg"
-            />
-          </Form.Item>
-          <Form.Item name="password">
+
+          <Form.Item name="password"  rules={[
+            {
+              required: true,
+              message: "Password is required!",
+            },
+          ]}>
             <Input placeholder="Password" />
+          </Form.Item>
+          <Form.Item
+            name="image"
+            rules={[
+              {
+                validator: (_, value) => {
+                  if (value !== undefined) {
+                    if (value.file.size > 1048576) {
+                      return Promise.reject(new Error("Image is too large!"));
+                    }
+                    console.log();
+                    //
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(new Error("Image is required!"));
+                },
+              },
+            ]}
+          >
+            <Upload
+              name="avatar"
+              listType="picture-card"
+              className="avatar-uploader"
+              showUploadList={false}
+              beforeUpload={async (file) => {
+                setImageUrl(URL.createObjectURL(file));
+                console.log(file);
+              }}
+            >
+              {imageUrl ? (
+                <img
+                  src={imageUrl}
+                  alt="avatar"
+                  style={{
+                    width: "100%",
+                  }}
+                />
+              ) : (
+                <div>
+                  <PlusOutlined />
+                  <div
+                    style={{
+                      marginTop: 8,
+                    }}
+                  >
+                    Upload Image
+                  </div>
+                </div>
+              )}
+            </Upload>
           </Form.Item>
           <Form.Item>
             <p style={{ color: "red" }}>{props.usersError}</p>

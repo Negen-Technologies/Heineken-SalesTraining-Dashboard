@@ -57,10 +57,11 @@ function Quiz(props) {
     data.push({ ...element, key: element.id });
   });
   useEffect(() => {
-  const { id } = router.query;
-
-    props.getAllQuizSuccess(id);
-  }, []);
+    if (router.isReady) {
+      const { id } = router.query;
+      props.getAllQuizSuccess(id);
+    }
+  }, [router.isReady]);
 
   const editor = (e) => {
     let optionnum = [];
@@ -182,16 +183,15 @@ function Quiz(props) {
                               }}
                               icon={
                                 <Popconfirm
-                                title={
-                                  "Are you sure you want to delete this quiz?"
-                                }
-                                onConfirm={() => {
-                                  props.AllQuizDelete(e.id, data);
-                                }}
-                              >
-                                <DeleteFilled />
-                              </Popconfirm>
-                              
+                                  title={
+                                    "Are you sure you want to delete this quiz?"
+                                  }
+                                  onConfirm={() => {
+                                    props.AllQuizDelete(e.id, data);
+                                  }}
+                                >
+                                  <DeleteFilled />
+                                </Popconfirm>
                               }
                             />
                           </Row>

@@ -1,6 +1,7 @@
 import axios from "axios";
 import URLst, { handle401 } from "../../utils/constants";
 import * as actionTypes from "./allUsersActionTypes";
+import {successMessage} from '../index'
 
 export const alluserPending = () => {
   return {
@@ -93,6 +94,7 @@ export const UserCreate = (formData) => {
       })
       .then((res) => {
         console.log(res.data);
+        dispatch(successMessage('mes'));
 
         dispatch(userCreateSuccess(res.data));
       })
@@ -201,10 +203,12 @@ export const editUserTerritory = (id, users, edited) => {
       data: edited,
     })
       .then((res) => {
+        console.log(res)
         let newData = [...users];
         let index = newData.findIndex((av) => av.id === res.data.id);
 
         newData[index] = res.data;
+        dispatch(successMessage('mes'));
 
         dispatch(updateUserSuccess(newData));
       })

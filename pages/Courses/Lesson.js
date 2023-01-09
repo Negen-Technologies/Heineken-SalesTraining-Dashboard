@@ -51,11 +51,13 @@ function Lesson(props) {
   let lessonId = [];
 
   useEffect(() => {
-    const { id, element } = router.query;
-    console.log(element);
-    setroutervals({ id: id, element: JSON.parse(element) });
-    props.getAllLessonSuccess(10, 1);
-  }, []);
+    if (router.isReady) {
+      const { id, element } = router.query;
+      console.log(element);
+      setroutervals({ id: id, element: JSON.parse(element) });
+      props.getAllLessonSuccess(10, 1);
+    }
+  }, [router.isReady]);
 
   useEffect(() => {
     if (data.length == 0) {
