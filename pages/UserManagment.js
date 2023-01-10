@@ -214,17 +214,7 @@ const UserManagment = (props) => {
         ) : (
           <div>
             {record.territory === null ? (
-              <Tag
-                onClick={() => {
-                  settervisible(true);
-
-                  setEditingKey(record.id);
-                }}
-                color="success"
-                style={{ cursor: "pointer" }}
-              >
-                Add to territory
-              </Tag>
+              <></>
             ) : (
               <div>{record.territory.name}</div>
             )}
@@ -446,12 +436,15 @@ const UserManagment = (props) => {
             props.UserCreate(formData);
           }}
         >
-          <Form.Item name="name"  rules={[
-            {
-              required: true,
-              message: "Name is required!",
-            },
-          ]}>
+          <Form.Item
+            name="name"
+            rules={[
+              {
+                required: true,
+                message: "Name is required!",
+              },
+            ]}
+          >
             <Input placeholder="Name" />
           </Form.Item>
           <Form.Item
@@ -485,12 +478,15 @@ const UserManagment = (props) => {
             </Select>
           </Form.Item>
 
-          <Form.Item name="password"  rules={[
-            {
-              required: true,
-              message: "Password is required!",
-            },
-          ]}>
+          <Form.Item
+            name="password"
+            rules={[
+              {
+                required: true,
+                message: "Password is required!",
+              },
+            ]}
+          >
             <Input placeholder="Password" />
           </Form.Item>
           <Form.Item
@@ -559,7 +555,7 @@ const UserManagment = (props) => {
       </Modal>
 
       <Modal
-        title="Add To Territory"
+        title="Add To Location"
         visible={tervisible}
         closable={true}
         okButtonProps={{ style: { display: "none" } }}
@@ -659,7 +655,7 @@ const UserManagment = (props) => {
               type="primary"
               htmlType="submit"
             >
-              Add To Territory
+              Add To Location
             </Button>
           </Form.Item>
         </Form>

@@ -260,7 +260,7 @@ function DetailInfo(props) {
           form={form}
           onFinish={(e) => {
             console.log(e, userid);
-            // props.assignTraineeToCourse(e.courseId, userid);
+            props.assignTraineeToCourse(e.courseId, userid);
           }}
         >
           {/* <Form.Item name="courseId">

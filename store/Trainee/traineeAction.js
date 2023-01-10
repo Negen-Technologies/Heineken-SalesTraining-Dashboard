@@ -229,6 +229,8 @@ export const assignTraineeToCourse = (courseId, traineeId) => {
     })
       .then((res) => {
         console.log(res.data);
+        dispatch(successMessage("mes"));
+
         dispatch(alltraineeSuccess({ results: [res.data] }));
       })
       .catch((err) => {
