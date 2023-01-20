@@ -12,6 +12,7 @@ export const CustomCard = ({ num, text }) => (
       maxWidth: "250px",
       display: "flex",
       alignItems: "center",
+      
     }}
   >
     <div style={{ margin: "22px" }}>

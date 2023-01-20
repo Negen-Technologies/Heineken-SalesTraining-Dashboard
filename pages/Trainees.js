@@ -20,6 +20,7 @@ import {
   StarFilled,
   SearchOutlined,
   UploadOutlined,
+  PlusOutlined,
   DeleteOutlined,
   InboxOutlined,
 } from "@ant-design/icons";
@@ -36,6 +37,8 @@ import {
   traineeBulkCreate,
   getAllTraineePerTerritory,
   ActivateTrainee,
+  getAllCourseSuccess,
+  assignTraineeToCourse,
 } from "./../store";
 import withAuth from "./../utils/protectRoute";
 import URLst, { primary_color, exportToExcel } from "./../utils/constants";
@@ -50,6 +53,9 @@ function Trainees(props) {
 
   const [visible, setvisible] = useState(false);
   const [tervisible, settervisible] = useState(false);
+  const [createvisible, setcreatevisible] = useState(false);
+  const [coursevisible, setcoursevisible] = useState(false);
+
   const [editingId, setEditingId] = useState("");
   const [selectedRegion, setSelectedRegion] = useState("");
   const [selectedSubRegion, setSelectedSubRegion] = useState("");
@@ -58,7 +64,8 @@ function Trainees(props) {
 
   const [File, setFile] = useState(null);
   const [FileList, setFileList] = useState([]);
-
+  const [imageUrl, setImageUrl] = useState(null);
+  const formData = new FormData();
   const router = useRouter();
 
   const data = [];
@@ -74,6 +81,7 @@ function Trainees(props) {
       props.getAllTraineePerTerritory(10, 1);
     } else {
       props.getAllTraineeSuccess(10, 1);
+      props.getAllCourseSuccess(50, 1);
     }
     props.getAllTerritorySuccess(10, 1);
     props.getAllSubRegionSuccess(10, 1);
@@ -163,6 +171,37 @@ function Trainees(props) {
       ),
     },
     {
+      title: "Course",
+      dataIndex: "",
+      key: "action",
+      render: (_, record) => (
+        <>
+          {role !== "admin" ? (
+            <></>
+          ) : (
+            <div>
+              {" "}
+              {record.currentCourse === null ? (
+                <Tag
+                  color="processing"
+                  onClick={() => {
+                    setcoursevisible(true);
+                    setEditingId(record._id);
+                  }}
+                  style={{ cursor: "pointer" }}
+                >
+                  {" "}
+                  Add to Course
+                </Tag>
+              ) : (
+                <>{record.currentCourse.title}</>
+              )}
+            </div>
+          )}
+        </>
+      ),
+    },
+    {
       title: "Territory",
       dataIndex: "",
       key: "action",
@@ -197,38 +236,44 @@ function Trainees(props) {
       dataIndex: "",
       key: "action",
       render: (_, record) => (
-        <Space>
-          {record.active ? (
-            <Popconfirm
-              title={"Are you sure you want to deactivate this trainee?"}
-              onConfirm={() => {
-                props.AllTraineeDelete(record._id, data);
-              }}
-            >
-              {" "}
-              {/* <p style={{ color: "red", margin: "0px 2px", cursor: "pointer" }}>
+        <>
+          {role === "staff" ? (
+            <></>
+          ) : (
+            <Space>
+              {record.active ? (
+                <Popconfirm
+                  title={"Are you sure you want to deactivate this trainee?"}
+                  onConfirm={() => {
+                    props.AllTraineeDelete(record._id, data);
+                  }}
+                >
+                  {" "}
+                  {/* <p style={{ color: "red", margin: "0px 2px", cursor: "pointer" }}>
                 Deactivate
               </p> */}
-              <Tag color="volcano" style={{ cursor: "pointer" }}>
-                Deactivate
-              </Tag>
-            </Popconfirm>
-          ) : (
-            <Popconfirm
-              title={"Are you sure you want to activate this trainee?"}
-              onConfirm={() => {
-                props.ActivateTrainee(record._id, data, {
-                  active: true,
-                });
-              }}
-            >
-              {" "}
-              <Tag color="success" style={{ cursor: "pointer" }}>
-                Activate
-              </Tag>
-            </Popconfirm>
+                  <Tag color="volcano" style={{ cursor: "pointer" }}>
+                    Deactivate
+                  </Tag>
+                </Popconfirm>
+              ) : (
+                <Popconfirm
+                  title={"Are you sure you want to activate this trainee?"}
+                  onConfirm={() => {
+                    props.ActivateTrainee(record._id, data, {
+                      active: true,
+                    });
+                  }}
+                >
+                  {" "}
+                  <Tag color="success" style={{ cursor: "pointer" }}>
+                    Activate
+                  </Tag>
+                </Popconfirm>
+              )}
+            </Space>
           )}
-        </Space>
+        </>
       ),
     },
   ];
@@ -326,7 +371,8 @@ function Trainees(props) {
                 style={{ width: "202px", margin: "10px 0px" }}
                 type="primary"
                 onClick={() => {
-                  router.push("/Trainees/add-new");
+                  // router.push("/Trainees/add-new");
+                  setcreatevisible(true)
                 }}
               >
                 Add Trainee
@@ -535,6 +581,190 @@ function Trainees(props) {
           </Form.Item>
         </Form>
       </Modal>
+
+      <Modal
+        title="Add A Trainee"
+        visible={createvisible}
+        closable={true}
+        okButtonProps={{ style: { display: "none" } }}
+        cancelButtonProps={{ style: { display: "none" } }}
+        onCancel={() => {
+          setcreatevisible(false);
+        }}
+      >
+        <Form
+          labelCol={{
+            span: 8,
+          }}
+          wrapperCol={{
+            span: 8,
+          }}
+          onFinish={(e) => {
+            console.log(e);
+            formData.append("name", e.name);
+            formData.append("username", e.username);
+            formData.append("email", e.email);
+            formData.append("phone", e.phone);
+            formData.append("department", e.department);
+            if (e.image !== undefined) {
+              formData.append("file", e.image.file.originFileObj);
+            }
+            // formData.append("file", e.image.file.originFileObj);
+            props.traineeCreate(formData);
+          }}
+        >
+          <h3>Trainee Information</h3>
+          <Form.Item
+            name="image"
+            rules={[
+              {
+                validator: (_, value) => {
+                  if (value !== undefined) {
+                    if (value.file.size > 1048576) {
+                      return Promise.reject(new Error("Image is too large!"));
+                    }
+                    console.log();
+                    //
+                  }
+                  return Promise.resolve();
+                  // return Promise.reject(new Error("Image is required!"));
+                },
+              },
+            ]}
+          >
+            <Upload
+              name="avatar"
+              listType="picture-card"
+              className="avatar-uploader"
+              showUploadList={false}
+              beforeUpload={async (file) => {
+                setImageUrl(URL.createObjectURL(file));
+                console.log(file);
+              }}
+            >
+              {imageUrl ? (
+                <img
+                  src={imageUrl}
+                  alt="avatar"
+                  style={{
+                    width: "100%",
+                  }}
+                />
+              ) : (
+                <div>
+                  <PlusOutlined />
+                  <div
+                    style={{
+                      marginTop: 8,
+                    }}
+                  >
+                    Upload Image
+                  </div>
+                </div>
+              )}
+            </Upload>
+          </Form.Item>
+
+          <Form.Item name="name">
+            <Input placeholder="Full Name" />
+          </Form.Item>
+          <Form.Item
+            name="username"
+            rules={[
+              {
+                required: true,
+                message: "Username is required!",
+              },
+            ]}
+          >
+            <Input placeholder="Username" />
+          </Form.Item>
+          <Form.Item name="department">
+            <Input placeholder="Department" />
+          </Form.Item>
+          <h3>Contact Information</h3>
+          <Form.Item name="phone">
+            <Input placeholder="Phone Number" />
+          </Form.Item>
+          <Form.Item
+            name="email"
+            rules={[
+              {
+                required: true,
+                message: "email is required!",
+              },
+            ]}
+          >
+            <Input placeholder="Email" />
+          </Form.Item>
+          <Form.Item>
+            <p style={{ color: "red" }}>{props.traineesError}</p>
+          </Form.Item>
+          <Form.Item>
+            <Button
+              style={{ borderRadius: 5 }}
+              type="primary"
+              htmlType="submit"
+              loading={props.traineesPending}
+            >
+              Create Account
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      <Modal
+        title={"Add trainee to course"}
+        closable={true}
+        okButtonProps={{ style: { display: "none" } }}
+        cancelButtonProps={{ style: { display: "none" } }}
+        visible={coursevisible}
+        onCancel={() => {
+          setcoursevisible(false);
+          setImageUrl(null);
+          setEditingId("");
+        }}
+      >
+        <Form
+          // form={form}
+          onFinish={(e) => {
+            console.log(e, "MEHHHHHH", editingId);
+            props.assignTraineeToCourse(e.Course, editingId);
+          }}
+        >
+          {/* <Form.Item name="courseId">
+            <Select placeholder="Courses">{corse_options}</Select>
+          </Form.Item> */}
+
+          <Form.Item name="Course" label="Courses">
+            <Select
+              name="Courses"
+              style={{ width: "100%" }}
+              placeholder="Select Courses"
+              options={props.courses.map((c, i) => {
+                return {
+                  key: i,
+                  value: c.id,
+                  label: c.title,
+                };
+              })}
+            />
+          </Form.Item>
+
+          <Form.Item>
+            <p style={{ color: "red" }}>{props.traineesError}</p>
+          </Form.Item>
+          <Form.Item style={{ textAlign: "right" }}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={props.traineesPending}
+            >
+              {"Add trainee to course"}
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 }
@@ -547,6 +777,7 @@ const mapStateToProps = (state) => {
     subregions: state.allsubregions.allsubregions,
     regions: state.allregions.allregions,
     territory: state.allterritory.allterritory,
+    courses: state.allcourses.allcourses,
   };
 };
 
@@ -571,6 +802,10 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(AllTraineeDelete(id, trainees)),
     traineeBulkCreate: (formData) => dispatch(traineeBulkCreate(formData)),
     traineeCreate: (formData) => dispatch(traineeCreate(formData)),
+    getAllCourseSuccess: (limit, page) =>
+      dispatch(getAllCourseSuccess(limit, page)),
+    assignTraineeToCourse: (courseId, traineeId) =>
+      dispatch(assignTraineeToCourse(courseId, traineeId)),
   };
 };
 

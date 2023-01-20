@@ -25,8 +25,9 @@ import {
   getAllSubRegionSuccess,
   getAllRegionSuccess,
   editUserTerritory,
+  changeUserPassword
 } from "../store";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, EditOutlined } from "@ant-design/icons";
 import withAuth from "../utils/protectRoute";
 import URLst, { primary_color, exportToExcel } from "../utils/constants";
 import FormData from "form-data";
@@ -82,6 +83,8 @@ const UserManagment = (props) => {
   let data = [];
   const [isVisible, setVisible] = useState(false);
   const [tervisible, settervisible] = useState(false);
+  const [passvisible, setpassvisible] = useState(false);
+
   const [selectedRegion, setSelectedRegion] = useState("");
   const [selectedSubRegion, setSelectedSubRegion] = useState("");
   const [selectedTerritory, setselectedTerritory] = useState("");
@@ -154,6 +157,19 @@ const UserManagment = (props) => {
       title: "Role",
       dataIndex: "role",
       editable: true,
+      render: (_, record) => {
+        return (
+          <>
+            {record.role === "staff" ? (
+              <>BUM</>
+            ) : record.role === "supervisor" ? (
+              <>FSM</>
+            ) : (
+              <>{record.role}</>
+            )}
+          </>
+        );
+      },
     },
     {
       title: "Email",
@@ -188,7 +204,18 @@ const UserManagment = (props) => {
                 Add to region
               </Tag>
             ) : (
-              <div>{record.region.name}</div>
+              <Row justify="space-between">
+                <div>{record.region.name}</div>{" "}
+                <EditOutlined
+                  style={{ color: "blue" }}
+                  onClick={() => {
+                    setuserRole("supervisor");
+
+                    setEditingKey(record.id);
+                    settervisible(true);
+                  }}
+                />
+              </Row>
             )}
           </div>
         ) : record.role === "staff" ? (
@@ -197,9 +224,7 @@ const UserManagment = (props) => {
               <Tag
                 onClick={() => {
                   setuserRole("staff");
-
                   settervisible(true);
-
                   setEditingKey(record.id);
                 }}
                 color="success"
@@ -208,7 +233,17 @@ const UserManagment = (props) => {
                 Add to subregion
               </Tag>
             ) : (
-              <div>{record.subregion.name}</div>
+              <Row justify="space-between">
+                <div>{record.subregion.name}</div>{" "}
+                <EditOutlined
+                  style={{ color: "blue" }}
+                  onClick={() => {
+                    setuserRole("staff");
+                    settervisible(true);
+                    setEditingKey(record.id);
+                  }}
+                />
+              </Row>
             )}
           </div>
         ) : (
@@ -221,7 +256,29 @@ const UserManagment = (props) => {
           </div>
         ),
     },
-
+    {
+      title: "",
+      dataIndex: "",
+      editable: true,
+      render: (_, record) => {
+        return (
+          <>
+            {" "}
+            <Typography.Link
+              disabled={editingKey !== ""}
+              onClick={() => {
+                setEditingKey(record.id);
+                setpassvisible(true);
+              }}
+            >
+              <Tag color="warning" style={{ cursor: "pointer" }}>
+                Change Password
+              </Tag>
+            </Typography.Link>
+          </>
+        );
+      },
+    },
     {
       title: "",
       dataIndex: "",
@@ -427,7 +484,10 @@ const UserManagment = (props) => {
           form={form}
           onFinish={(doc) => {
             console.log(doc);
-            formData.append("file", doc.image.file.originFileObj);
+            if (doc.image !== undefined) {
+              formData.append("file", doc.image.file.originFileObj);
+            }
+
             delete doc.image;
             Object.keys(doc).forEach((ele) => {
               formData.append(ele, doc[ele]);
@@ -500,9 +560,9 @@ const UserManagment = (props) => {
                     }
                     console.log();
                     //
-                    return Promise.resolve();
                   }
-                  return Promise.reject(new Error("Image is required!"));
+                  return Promise.resolve();
+                  // return Promise.reject(new Error("Image is required!"));
                 },
               },
             ]}
@@ -660,6 +720,38 @@ const UserManagment = (props) => {
           </Form.Item>
         </Form>
       </Modal>
+
+      <Modal
+        title="Change Password"
+        visible={passvisible}
+        closable={true}
+        okButtonProps={{ style: { display: "none" } }}
+        cancelButtonProps={{ style: { display: "none" } }}
+        onCancel={() => {
+          setpassvisible(false);
+          setEditingKey("");
+        }}
+      >
+        <Form
+          onFinish={(e) => {
+            console.log(e);
+            props.changeUserPassword(editingKey, props.users, e)
+          }}
+        >
+          <Form.Item name="password">
+            <Input placeholder="Password" />
+          </Form.Item>
+          <Form.Item style={{ textAlign: "right" }}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={props.usersPending}
+            >
+              Submit
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };
@@ -682,6 +774,9 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(getAllUserSuccess(limit, page)),
     AllUserEdit: (id, users, edited) =>
       dispatch(AllUserEdit(id, users, edited)),
+      changeUserPassword: (id, users, edited) =>
+      dispatch(changeUserPassword(id, users, edited)),
+      
     editUserTerritory: (id, users, edited) =>
       dispatch(editUserTerritory(id, users, edited)),
 

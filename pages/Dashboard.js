@@ -34,20 +34,24 @@ function Dashboard(props) {
       render: (text, record) => (
         <Row>
           {" "}
-          <Avatar
-            shape="circle"
-            size="small"
-            src={`${URLst}images/${record.user.image}`}
-            style={{ backgroundColor: "#10c70e" }}
-            icon={<UserOutlined />}
-          />
+          {role === "admin" ? (
+            <></>
+          ) : (
+            <Avatar
+              shape="circle"
+              size="small"
+              src={`${URLst}images/${record.user.image}`}
+              style={{ backgroundColor: "#10c70e" }}
+              icon={<UserOutlined />}
+            />
+          )}
           <a
             style={{ padding: "0px 10px" }}
             onClick={() => {
               // router.push(`Trainees/detail-info?id=${record._id}`);
             }}
           >
-            {record.user.name}
+            {role === "admin"?record.name:record.user.name}
           </a>
         </Row>
       ),
@@ -69,7 +73,7 @@ function Dashboard(props) {
               // router.push(`Trainees/badge-detail?id=${record._id}`);
             }}
           >
-            {record.badges.length} Badges
+            {role === "admin"?record.noBadges:record.badges.length} Badges
           </Button>
         </Row>
       ),
@@ -321,7 +325,11 @@ function Dashboard(props) {
                   <>
                     <Row justify="space-between">
                       {" "}
-                      <h1 style={{ color: "white" }}>Top 3 Trainees</h1>
+                      {role == "admin" ? (
+                        <h1 style={{ color: "white" }}>Top 3 Regions</h1>
+                      ) : (
+                        <h1 style={{ color: "white" }}>Top 3 Trainees</h1>
+                      )}
                       <h1
                         style={{ color: "white", cursor: "pointer" }}
                         onClick={() => {
@@ -339,7 +347,7 @@ function Dashboard(props) {
                       dataSource={
                         role == "staff"
                           ? props.stats.topTrainees
-                          : props.stats.top3Trainees
+                          : props.stats.top3Region
                       }
                       pagination={false}
                       // showHeader={false}

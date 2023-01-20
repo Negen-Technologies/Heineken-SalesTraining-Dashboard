@@ -36,8 +36,8 @@ const withAuth = (WrappedComponent) => {
 
       if (
         Router.pathname == "/Login" ||
-        Router.pathname == "/ForgotPassword" ||
-        Router.pathname == "/ResetPasswordPage" ||
+        Router.pathname == "/forgot-password" ||
+        Router.pathname == "/reset-password" ||
         Router.pathname == "/"
       ) {
         return <WrappedComponent {...props} />;

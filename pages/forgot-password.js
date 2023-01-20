@@ -2,18 +2,16 @@ import React, { useState } from "react";
 import { Row, Col, Form, Input, Button } from "antd";
 import { primary_color } from "../utils/constants";
 import { connect } from "react-redux";
-import { authLogin } from "../store/index";
+import { forgotPassword } from "../store/index";
 import Router from "next/router";
 
-function Login({ userData, authLogin }) {
-  if (userData.token) {
-    Router.replace("/Dashboard");
-  }
+function ForgotPassword({ userData, forgotPassword }) {
+
 
   const onFinish = (data) => {
-    authLogin({
-      username: data.username,
-      password: data.password,
+    console.log(data)
+    forgotPassword({
+      email: data.email,
     });
   };
 
@@ -77,12 +75,11 @@ function Login({ userData, authLogin }) {
             }}
           >
             <Row style={{ margin: "20px 30px" }}>
-              <Col span={12} style={{ color: "red", fontWeight: 400 }}>
-                <div>LOGIN TO</div>
-                <div>YOUR EXPERIENCE</div>
-              </Col>
-              <Col span={12} style={{ textAlign: "right", fontWeight: 700 }}>
-                Heineken
+              <Col
+                span={12}
+                style={{ color: "black", fontWeight: 700, fontSize: "16px" }}
+              >
+                <div>Forgot Password</div>
               </Col>
             </Row>
             <hr style={{ backgroundColor: "red" }} />
@@ -93,34 +90,31 @@ function Login({ userData, authLogin }) {
                 autoComplete="off"
                 onFinish={onFinish}
               >
+               
                 <Form.Item
                   style={{ margin: "20px 30px" }}
-                  name="username"
+                  label='Email'
+                  name="email"
                   rules={[
                     {
                       required: true,
-                      message: "Please input your username!",
+                      message: "Please input your email!",
                     },
                   ]}
                 >
-                  <Input style={{ borderRadius: 6 }} placeholder="Username" />
+                  <Input style={{ borderRadius: 6 }} placeholder="Email" />
                 </Form.Item>
-                <Form.Item
-                  style={{ margin: "20px 30px" }}
-                  name="password"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input your password!",
-                    },
-                  ]}
-                >
-                  <Input.Password
-                    style={{ borderRadius: 6 }}
-                    placeholder="Password"
-                  />
-                </Form.Item>
+
                 <Form.Item style={{ margin: "20px 30px" }}>
+                  {userData.successMes === null ? (
+                    <></>
+                  ) : (
+                    <>
+                      <p style={{ color: "green", fontSize: "16px" }}>
+                        {userData.successMes}
+                      </p>
+                    </>
+                  )}
                   {userData.error == null ? (
                     <div></div>
                   ) : (
@@ -145,14 +139,6 @@ function Login({ userData, authLogin }) {
                     Submit
                   </Button>
                 </Form.Item>
-                <a
-                  style={{ margin: "20px 30px" }}
-                  onClick={() => {
-                    Router.push("/forgot-password");
-                  }}
-                >
-                  Forgot Password
-                </a>
               </Form>
             </div>
           </Col>
@@ -171,8 +157,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    authLogin: (value) => dispatch(authLogin(value)),
+    forgotPassword: (value) => dispatch(forgotPassword(value)),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(ForgotPassword);

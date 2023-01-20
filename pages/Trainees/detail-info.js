@@ -78,6 +78,7 @@ function DetailInfo(props) {
   });
 
   useEffect(() => {
+    if (router.isReady) {
     const { id } = router.query;
 
     if (localStorage.getItem("role") === "staff") {
@@ -85,7 +86,8 @@ function DetailInfo(props) {
     } else {
       props.getSingleTrainee(id);
     }
-  }, []);
+  }
+  }, [router.isReady]);
 
   const courseCreater = () => {
     setisediting(true);
@@ -259,17 +261,17 @@ function DetailInfo(props) {
         <Form
           form={form}
           onFinish={(e) => {
-            console.log(e, userid);
-            props.assignTraineeToCourse(e.courseId, userid);
+            console.log(e,"MEHHHHHH", userid);
+            props.assignTraineeToCourse(e.Course, userid);
           }}
         >
           {/* <Form.Item name="courseId">
             <Select placeholder="Courses">{corse_options}</Select>
           </Form.Item> */}
 
-          <Form.Item name="Region" label="Region">
+          <Form.Item name="Course" label="Courses">
             <Select
-              name="Region"
+              name="Courses"
               style={{ width: "100%" }}
               
               placeholder="Select Courses"

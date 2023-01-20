@@ -23,6 +23,12 @@ export const authSuccess = (token, data) => {
     data: data,
   };
 };
+export const forgotSuccess = (mes) => {
+  return {
+    type: actionTypes.FORGOT_SUCCESS,
+    mes: mes,
+  };
+};
 
 export const authFail = (error) => {
   return {
@@ -52,6 +58,66 @@ export const authLogin = (value) => {
         const data = res.data.user;
         // dispatch(loadingTrue);
         dispatch(authSuccess(token, data));
+      })
+      .catch((err) => {
+        var errorData;
+        if (err.response != null) {
+          errorData = err.response.data.message;
+        } else {
+          errorData = err.message;
+        }
+        dispatch(authFail(errorData));
+      });
+  };
+};
+
+export const forgotPassword = (value) => {
+  return (dispatch) => {
+    dispatch(authStart());
+
+    axios
+      .post(URLst + "v1/auth/forgot-password", {
+        email: value.email,
+      })
+      .then((res) => {
+        console.log(res);
+        
+        // dispatch(loadingTrue);
+        dispatch(
+          forgotSuccess(
+            "A link to reset your password has been sent via your email."
+          )
+        );
+      })
+      .catch((err) => {
+        var errorData;
+        if (err.response != null) {
+          errorData = err.response.data.message;
+        } else {
+          errorData = err.message;
+        }
+        dispatch(authFail(errorData));
+      });
+  };
+};
+
+
+export const resetPassword = (value) => {
+  return (dispatch) => {
+    dispatch(authStart());
+
+    axios
+      .post(URLst + `v1/auth/reset-password?token=${value.token}`, {
+        password: value.password,
+      })
+      .then((res) => {
+        console.log(res);
+        
+        dispatch(
+          forgotSuccess(
+            "Your password has been successfully reset. Please login to continue."
+          )
+        );
       })
       .catch((err) => {
         var errorData;

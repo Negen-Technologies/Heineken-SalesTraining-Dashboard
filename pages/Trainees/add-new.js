@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import withAuth from "../../utils/protectRoute";
 import { primary_color } from "../../utils/constants";
-import { Button, Input, message, Upload, Space, Form } from "antd";
+import { Button, Input, message, Upload, Space, Form,Modal ,Select} from "antd";
 import {
   PlusCircleFilled,
   LeftCircleFilled,
   PlusOutlined,
 } from "@ant-design/icons";
-import { traineeCreate } from "../../store";
+import { traineeCreate ,getAllCourseSuccess} from "../../store";
 import { connect } from "react-redux";
 
 import { useRouter } from "next/router";
@@ -15,8 +15,25 @@ import FormData from "form-data";
 
 function Addnew(props) {
   const router = useRouter();
+  const [form] = Form.useForm();
+  const [visible, setvisible] = useState(false);
+  const [isediting, setisediting] = useState(false);
+  const [courses, setcourses] = useState([]);
+
   const [imageUrl, setImageUrl] = useState(null);
   const formData = new FormData();
+
+
+useEffect(() => {
+  props.getAllCourseSuccess(50, 1);
+}, [])
+
+
+  const courseCreater = () => {
+    setisediting(true);
+    props.getAllCourseSuccess(50, 1);
+    setvisible(true);
+  };
 
   return (
     <div>
@@ -62,14 +79,17 @@ function Addnew(props) {
           formData.append("email", e.email);
           formData.append("phone", e.phone);
           formData.append("department", e.department);
-          formData.append("file", e.image.file.originFileObj);
-          props.traineeCreate(formData);
+          if (e.image !== undefined) {
+            formData.append("file", e.image.file.originFileObj);
+          }
+   
+          // props.traineeCreate(formData);
+          setvisible(true);
         }}
       >
         <h3>Trainee Information</h3>
         <Form.Item
           name="image"
-          
           rules={[
             {
               validator: (_, value) => {
@@ -79,9 +99,9 @@ function Addnew(props) {
                   }
                   console.log();
                   //
-                  return Promise.resolve();
                 }
-                return Promise.reject(new Error("Image is required!"));
+                return Promise.resolve();
+                // return Promise.reject(new Error("Image is required!"));
               },
             },
           ]}
@@ -165,6 +185,62 @@ function Addnew(props) {
           </Button>
         </Form.Item>
       </Form>
+
+      <Modal
+        title={"Add trainee to course"}
+        closable={true}
+        
+        okButtonProps={{ style: { display: "none" } }}
+        cancelButtonProps={{ style: { display: "none" } }}
+        visible={visible}
+        onCancel={() => {
+          setvisible(false);
+          setImageUrl(null);
+          setisediting(false);
+          form.resetFields();
+        }}
+      >
+        <Form
+          form={form}
+          onFinish={(e) => {
+            console.log(e,"MEHHHHHH", userid);
+            props.assignTraineeToCourse(e.Course, userid);
+          }}
+        >
+          {/* <Form.Item name="courseId">
+            <Select placeholder="Courses">{corse_options}</Select>
+          </Form.Item> */}
+
+          <Form.Item name="Course" label="Courses">
+            <Select
+              name="Courses"
+              style={{ width: "100%" }}
+              
+              placeholder="Select Courses"
+              options={props.courses.map((c,i) => {
+                return {
+                  key: i,
+                  value: c.id,
+                  label: c.title,
+                };
+              })}
+            />
+          </Form.Item>
+
+          <Form.Item>
+            <p style={{ color: "red" }}>{props.traineesError}</p>
+          </Form.Item>
+          <Form.Item style={{ textAlign: "right" }}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={props.traineesPending}
+            >
+              {"Add trainee to course"}
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 }
@@ -175,12 +251,16 @@ const mapStateToProps = (state) => {
     count: state.alltrainees.count,
     traineesPending: state.alltrainees.loading,
     traineesError: state.alltrainees.error,
+    courses: state.allcourses.allcourses,
+
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     traineeCreate: (formData) => dispatch(traineeCreate(formData)),
+    getAllCourseSuccess: (limit, page) =>
+    dispatch(getAllCourseSuccess(limit, page)),
   };
 };
 

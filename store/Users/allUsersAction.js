@@ -1,7 +1,7 @@
 import axios from "axios";
 import URLst, { handle401 } from "../../utils/constants";
 import * as actionTypes from "./allUsersActionTypes";
-import {successMessage} from '../index'
+import { successMessage } from "../index";
 
 export const alluserPending = () => {
   return {
@@ -94,7 +94,7 @@ export const UserCreate = (formData) => {
       })
       .then((res) => {
         console.log(res.data);
-        dispatch(successMessage('mes'));
+        dispatch(successMessage("mes"));
 
         dispatch(userCreateSuccess(res.data));
       })
@@ -104,6 +104,46 @@ export const UserCreate = (formData) => {
         }
 
         var errorData;
+        if (err.response != null) {
+          errorData = err.response.data.message;
+        } else {
+          errorData = err.message;
+        }
+        console.log(errorData);
+        dispatch(alluserFail(errorData));
+      });
+  };
+};
+
+export const changeUserPassword = (id, users, edited) => {
+  const token = localStorage.getItem("token");
+
+  return (dispatch, getState) => {
+    dispatch(alluserPending());
+
+    axios({
+      method: "patch",
+      url: URLst + `v1/users/${id}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: edited,
+    })
+      .then((res) => {
+        console.log(res.data)
+        dispatch(successMessage("mes"));
+        let newData = [...users];
+        let index = newData.findIndex((av) => av.id === res.data.id);
+
+        newData[index] = res.data;
+
+        dispatch(updateUserSuccess(newData));
+      })
+      .catch((err) => {
+        var errorData;
+        if (err.response.data.code == 401) {
+          handle401();
+        }
         if (err.response != null) {
           errorData = err.response.data.message;
         } else {
@@ -186,13 +226,11 @@ export const AllUserDelete = (id, users) => {
   };
 };
 
-
 export const editUserTerritory = (id, users, edited) => {
   const token = localStorage.getItem("token");
 
   return (dispatch, getState) => {
     dispatch(alluserPending());
-    
 
     axios({
       method: "patch",
@@ -203,12 +241,12 @@ export const editUserTerritory = (id, users, edited) => {
       data: edited,
     })
       .then((res) => {
-        console.log(res)
+        console.log(res);
         let newData = [...users];
         let index = newData.findIndex((av) => av.id === res.data.id);
 
         newData[index] = res.data;
-        dispatch(successMessage('mes'));
+        dispatch(successMessage("mes"));
 
         dispatch(updateUserSuccess(newData));
       })
