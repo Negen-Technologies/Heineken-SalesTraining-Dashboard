@@ -70,7 +70,7 @@ function NavBar({
 
           {/* <img style={{ height: "42px", padding:"0" }} src="/school-logo.png" alt="logo" /> */}
           {/* <div style={{display:'flex',justifyContent:'center'}}> */}
-          <h3
+          {/* <h3
             style={{
               marginTop: "10px",
               color: "white",
@@ -79,7 +79,11 @@ function NavBar({
             }}
           >
             Trainees
-          </h3>
+          </h3> */}
+          <img
+            src="/Seleda-Logo-04.png"
+            style={{ height: "100%", maxHeight: "50px", width: "auto" }}
+          />
           {/* </div> */}
         </Col>
         <Col>

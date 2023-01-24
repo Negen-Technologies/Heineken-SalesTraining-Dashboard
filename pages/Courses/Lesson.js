@@ -174,7 +174,9 @@ function Lesson(props) {
                       <Col span={10} xl={10} lg={24} md={24} xs={24} sm={24}>
                         <img
                           src={`http://img.youtube.com/vi/${
-                            e.video_source.split("watch?v=")[1]
+                            e.video_source.includes("watch?v=")
+                              ? e.video_source.split("watch?v=")[1]
+                              : e.video_source.split(".be/")[1]
                           }/hqdefault.jpg`}
                           height={200}
                           width={"auto"}
@@ -289,7 +291,16 @@ function Lesson(props) {
           setvideosource("");
         }}
       >
-        <YoutubeEmbed src={videosource.replace("watch?v=", "embed/")} />
+        {/* e.video_source.includes("watch?v=")?
+                            e.video_source.split("watch?v=")[1]:
+                            e.video_source.split(".be/")[1] */}
+        <YoutubeEmbed
+          src={
+            videosource.includes("watch?v=")
+              ? videosource.replace("watch?v=", "embed/")
+              : videosource.replace("youtu.be/", "www.youtube.com/embed/")
+          }
+        />
       </Modal>
       <Modal
         title={isediting ? "Edit Lessons" : "Add Lessons"}

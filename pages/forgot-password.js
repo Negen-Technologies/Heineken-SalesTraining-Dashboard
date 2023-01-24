@@ -42,7 +42,7 @@ function ForgotPassword({ userData, forgotPassword }) {
           }}
         >
           <img
-            src="/SeledaWordmark-White.png"
+            src="/Seleda-Logo-04.png"
             style={{ width: "100%", maxWidth: "300px", height: "auto" }}
           />
         </Col>

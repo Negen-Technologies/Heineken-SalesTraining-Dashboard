@@ -44,7 +44,7 @@ function Login({ userData, authLogin }) {
           }}
         >
           <img
-            src="/SeledaWordmark-White.png"
+            src="/Seleda-Logo-04.png"
             style={{ width: "100%", maxWidth: "300px", height: "auto" }}
           />
         </Col>
@@ -82,7 +82,10 @@ function Login({ userData, authLogin }) {
                 <div>YOUR EXPERIENCE</div>
               </Col>
               <Col span={12} style={{ textAlign: "right", fontWeight: 700 }}>
-                Heineken
+                <img
+                  src="/Heineken-ethiopia-logo.png"
+                  style={{ width: "100%", maxWidth: "300px", height: "auto" }}
+                />
               </Col>
             </Row>
             <hr style={{ backgroundColor: "red" }} />

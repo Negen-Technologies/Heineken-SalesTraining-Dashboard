@@ -203,7 +203,7 @@ useEffect(() => {
         <Form
           form={form}
           onFinish={(e) => {
-            console.log(e,"MEHHHHHH", userid);
+            
             props.assignTraineeToCourse(e.Course, userid);
           }}
         >

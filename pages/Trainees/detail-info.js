@@ -234,7 +234,7 @@ function DetailInfo(props) {
         </Col>
         <Col span={6} xs={24} sm={24} md={6} lg={6} xl={6} xxl={6}>
           <ActionsTab />
-          <Button
+          {/* <Button
             style={{ width: "202px", margin: "8px 0px", borderRadius: 6 }}
             type="primary"
             onClick={() => {
@@ -242,7 +242,7 @@ function DetailInfo(props) {
             }}
           >
             Add Trainee to course
-          </Button>
+          </Button> */}
         </Col>
       </Row>
       <Modal

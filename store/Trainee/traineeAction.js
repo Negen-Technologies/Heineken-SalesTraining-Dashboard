@@ -212,7 +212,8 @@ export const getSingleTraineePerTerritory = (id) => {
   };
 };
 
-export const assignTraineeToCourse = (courseId, traineeId) => {
+export const assignTraineeToCourse = (courseId, traineeId, trainees) => {
+
   var token = localStorage.getItem("token");
   return (dispatch) => {
     dispatch(alltraineePending());
@@ -229,9 +230,14 @@ export const assignTraineeToCourse = (courseId, traineeId) => {
     })
       .then((res) => {
         console.log(res.data);
-        dispatch(successMessage("mes"));
 
-        dispatch(alltraineeSuccess({ results: [res.data] }));
+        let newData = [...trainees];
+        let index = newData.findIndex((av) => av._id === res.data.id); 
+        newData[index].currentCourse = res.data.currentCourse
+        newData[index].currentLesson = res.data.currentLesson
+        newData[index].currentModule = res.data.currentModule
+        dispatch(successMessage("mes"));
+        dispatch(updatetraineeSuccess(newData));
       })
       .catch((err) => {
         var errorData;

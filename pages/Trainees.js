@@ -729,7 +729,7 @@ function Trainees(props) {
           // form={form}
           onFinish={(e) => {
             console.log(e, "MEHHHHHH", editingId);
-            props.assignTraineeToCourse(e.Course, editingId);
+            props.assignTraineeToCourse(e.Course, editingId, data);
           }}
         >
           {/* <Form.Item name="courseId">
@@ -804,8 +804,8 @@ const mapDispatchToProps = (dispatch) => {
     traineeCreate: (formData) => dispatch(traineeCreate(formData)),
     getAllCourseSuccess: (limit, page) =>
       dispatch(getAllCourseSuccess(limit, page)),
-    assignTraineeToCourse: (courseId, traineeId) =>
-      dispatch(assignTraineeToCourse(courseId, traineeId)),
+    assignTraineeToCourse: (courseId, traineeId, data) =>
+      dispatch(assignTraineeToCourse(courseId, traineeId, data)),
   };
 };
 
