@@ -12,7 +12,9 @@ export function index(props) {
   const userRoles = localStorage.getItem("role");
   const items =
     userRoles === "staff" || userRoles === "supervisor"
-      ? adminmenu.filter((e) => e.link !== "/UserManagment")
+      ? adminmenu
+          .filter((e) => e.link !== "/UserManagment")
+          .filter((e) => e.name !== "Locations")
       : adminmenu;
   const [contentIndex, setContentIndex] = useState(0);
   const [selectedKey, setSelectedKey] = useState(

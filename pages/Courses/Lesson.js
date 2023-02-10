@@ -20,6 +20,8 @@ import {
   EditFilled,
   EyeOutlined,
   LoadingOutlined,
+  CheckOutlined,
+  CloseCircleOutlined,
 } from "@ant-design/icons";
 import { connect } from "react-redux";
 import {
@@ -94,6 +96,7 @@ function Lesson(props) {
     form.setFieldsValue({
       title: e.title,
       summary: e.summary,
+      pdf: e.pdf,
       video_source: e.video_source,
       order: e.order,
     });
@@ -237,21 +240,46 @@ function Lesson(props) {
                           {role === "staff" || role === "supervisor" ? (
                             <></>
                           ) : (
-                            <Popconfirm
-                              title={
-                                "Are you sure you want to delete this Lesson?"
-                              }
-                              onConfirm={() => {
-                                props.AllLessonDelete(e.id, data);
-                              }}
-                            >
-                              <Button type="text">
-                                <Space style={{ color: "red" }}>
-                                  <DeleteFilled />
-                                  <div>Delete</div>
-                                </Space>
-                              </Button>
-                            </Popconfirm>
+                            <>
+                              {e.active ? (
+                                <>
+                                  <Popconfirm
+                                    title={
+                                      "Are you sure you want to deactivate this Lesson?"
+                                    }
+                                    onConfirm={() => {
+                                      props.AllLessonDelete(e.id, data);
+                                    }}
+                                  >
+                                    <Button type="text">
+                                      <Space style={{ color: "red" }}>
+                                        <CloseCircleOutlined />
+                                        <div>Deactivate</div>
+                                      </Space>
+                                    </Button>
+                                  </Popconfirm>
+                                </>
+                              ) : (
+                                <Popconfirm
+                                  title={
+                                    "Are you sure you want to activate this Lesson?"
+                                  }
+                                  onConfirm={() => {
+                                    let newdic=e
+                                    newdic.active=true
+                                    props.AllLessonEdit(newdic.id, data, newdic);
+
+                                  }}
+                                >
+                                  <Button type="text">
+                                    <Space style={{ color: "green" }}>
+                                      <CheckOutlined />
+                                      <div>Activate</div>
+                                    </Space>
+                                  </Button>
+                                </Popconfirm>
+                              )}
+                            </>
                           )}
                         </Row>
                       </Col>
@@ -333,6 +361,9 @@ function Lesson(props) {
           </Form.Item>
           <Form.Item name="summary">
             <Input.TextArea placeholder="Summary" />
+          </Form.Item>
+          <Form.Item name="pdf">
+            <Input placeholder="PDF Link" />
           </Form.Item>
           <Form.Item name="video_source">
             <Input placeholder="Video Link" />

@@ -145,6 +145,8 @@ export const AllLessonEdit = (id, lessons, edited) => {
         newData[index].title = edited.title;
         newData[index].video_source = edited.video_source;
         newData[index].order = edited.order;
+        newData[index].active = edited.active;
+
 
         dispatch(updatelessonSuccess(newData));
       })
@@ -165,7 +167,11 @@ export const AllLessonEdit = (id, lessons, edited) => {
 };
 
 export const AllLessonDelete = (id, lessons) => {
-  var filtereddata = lessons.filter((item) => item.id !== id);
+  // var filtereddata = lessons.filter((item) => item.id !== id);
+  let newData = [...lessons];
+  let index = newData.findIndex((av) => av.id === id);
+  newData[index].active = false;
+
   var token = localStorage.getItem("token");
   return (dispatch) => {
     dispatch(alllessonPending());
@@ -178,7 +184,7 @@ export const AllLessonDelete = (id, lessons) => {
       },
     })
       .then((res) => {
-        dispatch(deletelessonSuccess(filtereddata));
+        dispatch(deletelessonSuccess(newData));
       })
       .catch((err) => {
         var errorData;

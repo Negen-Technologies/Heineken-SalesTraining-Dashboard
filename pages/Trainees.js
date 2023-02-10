@@ -69,12 +69,13 @@ function Trainees(props) {
   const router = useRouter();
 
   const data = [];
-
-  props.trainees.forEach((element) => {
-    if (element.user !== null) {
-      data.push({ ...element, key: element._id });
-    }
-  });
+  if (props.trainees !== undefined) {
+    props.trainees.forEach((element) => {
+      if (element.user !== null) {
+        data.push({ ...element, key: element._id });
+      }
+    });
+  }
 
   useEffect(() => {
     if (role === "staff" || role === "supervisor") {
@@ -372,7 +373,7 @@ function Trainees(props) {
                 type="primary"
                 onClick={() => {
                   // router.push("/Trainees/add-new");
-                  setcreatevisible(true)
+                  setcreatevisible(true);
                 }}
               >
                 Add Trainee
