@@ -64,7 +64,7 @@ function View_course(props) {
       element: JSON.parse(element),
       courseName: courseName,
     });
-    props.getAllModuleSuccess(10, 1);
+    props.getAllModuleSuccess(1000, 1);
     }
     
   }, [router.isReady]);

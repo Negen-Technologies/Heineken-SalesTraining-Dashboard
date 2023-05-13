@@ -112,6 +112,9 @@ export const avatarCreate = (formData) => {
   };
 };
 
+
+
+
 export const avatarGet = () => {
   return (dispatch) => {
     dispatch(avatarStart());
@@ -138,6 +141,9 @@ export const avatarGet = () => {
       });
   };
 };
+
+
+
 export const avatarDelete = (id, users) => {
   var filtereddata = users.filter((item) => item.id !== id);
   var token = localStorage.getItem("token");

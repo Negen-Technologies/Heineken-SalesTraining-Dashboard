@@ -42,7 +42,7 @@ function Courses(props) {
 
   const role = localStorage.getItem("role");
 
-  const numEachPage = 10;
+  const numEachPage = 100;
   let data = [];
   let moduleIds = [];
   let courses = 0;
